@@ -5,22 +5,30 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 //get /transaction #returns all transactions
 exports.transactions = (req, res) => {
-    dbFunctions.queryRet("SELECT * FROM transactions", (result) => {
-        if (result.length == 0) {
-            res.sendStatus(404);
+    dbFunctions.query("SELECT * FROM transactions", (err, result) => {
+        if (err)
+            res.status(500).send(err);
+        else {
+            if (result.length == 0) {
+                res.sendStatus(404);
+            }
+            else
+                res.json(result);
         }
-        else
-            res.json(result);
     });
 };
 //get /transaction/{1} #returns transaction with id 1
 exports.getTransaction = (req, res) => {
-    dbFunctions.queryRet(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (result) => {
-        if (result.length == 0) {
-            res.sendStatus(404);
+    dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
+        if (err)
+            res.status(500).send(err);
+        else {
+            if (result.length == 0) {
+                res.sendStatus(404);
+            }
+            else
+                res.json(result);
         }
-        else
-            res.json(result);
     });
 };
 //post /transaction #adds new transaction to table
@@ -52,8 +60,12 @@ exports.addTransaction = (req, res) => {
                     keys = keys.slice(0, -1);
                 if (vals.length > 0)
                     vals = vals.slice(0, -1);
-                dbFunctions.queryNoRet(`INSERT INTO transactions (${keys}) VALUES (${vals})`);
-                res.send(JSON.stringify(req.body));
+                dbFunctions.query(`INSERT INTO transactions (${keys}) VALUES (${vals})`, (err) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else
+                        res.send(JSON.stringify(req.body));
+                });
             }
         }
     });
@@ -66,13 +78,21 @@ exports.delTransaction = (req, res) => {
             res.status(403).send(err.message);
         }
         else {
-            dbFunctions.queryRet(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (result) => {
-                if (result.length == 0) {
-                    res.sendStatus(404);
-                }
+            dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
+                if (err)
+                    res.status(500).send(err);
                 else {
-                    dbFunctions.queryNoRet(`DELETE FROM transactions where transactionid = '${req.params.id}'`);
-                    res.send(`transaction id: ${req.params.id} deleted`);
+                    if (result.length == 0) {
+                        res.sendStatus(404);
+                    }
+                    else {
+                        dbFunctions.query(`DELETE FROM transactions where transactionid = '${req.params.id}'`, (err, result) => {
+                            if (err)
+                                res.status(500).send(err);
+                            else
+                                res.send(`transaction id: ${req.params.id} deleted`);
+                        });
+                    }
                 }
             });
         }
@@ -85,17 +105,30 @@ exports.updateTransaction = (req, res) => {
             res.status(403).send(err.message);
         }
         else {
+            //Needs to have routing properly handled
             if (req.params.execute == 'execute') {
                 let successful = 1;
-                dbFunctions.queryRet(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (result) => {
+                dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
+                    if (err)
+                        console.log(err);
                     if (result.length > 0) {
-                        dbFunctions.queryRet(`SELECT * FROM wallets WHERE walletid = '${result[0].sourceid}' OR walletid = '${result[0].destid}'`, (wResults) => {
+                        dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${result[0].sourceid}' OR walletid = '${result[0].destid}'`, (err, wResults) => {
+                            if (err)
+                                console.log(err);
                             if (wResults.length > 1) {
-                                dbFunctions.queryRet(`SELECT * FROM wallets WHERE walletid = '${result[0].sourceid}'`, (wResult) => {
-                                    dbFunctions.queryNoRet(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance) - parseInt(result[0].value)}' WHERE walletid = '${result[0].sourceid}'`);
+                                dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${result[0].sourceid}'`, (err, wResult) => {
+                                    if (err)
+                                        console.log(err);
+                                    dbFunctions.query(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance) - parseInt(result[0].value)}' WHERE walletid = '${result[0].sourceid}'`, (err) => {
+                                        if (err)
+                                            console.log(err);
+                                    });
                                 });
-                                dbFunctions.queryRet(`SELECT * FROM wallets WHERE walletid = '${result[0].destid}'`, (wResult) => {
-                                    dbFunctions.queryNoRet(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance) + parseInt(result[0].value)}' WHERE walletid = '${result[0].destid}'`);
+                                dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${result[0].destid}'`, (wResult) => {
+                                    dbFunctions.query(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance) + parseInt(result[0].value)}' WHERE walletid = '${result[0].destid}'`, (err) => {
+                                        if (err)
+                                            console.log(err);
+                                    });
                                 });
                                 // console.log("successful update")
                             }
@@ -135,15 +168,21 @@ exports.updateTransaction = (req, res) => {
                     }
                     if (str.length > 0)
                         str = str.slice(0, -1);
-                    dbFunctions.queryNoRet(`UPDATE transactions SET ${str} WHERE transactionid = '${req.params.id}'`);
-                    dbFunctions.queryRet(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (result) => {
-                        if (result.length == 0) {
-                            //    console.log(404);
-                            res.status(404);
-                            res.send("invalid id requested");
+                    dbFunctions.query(`UPDATE transactions SET ${str} WHERE transactionid = '${req.params.id}'`, (err) => {
+                        if (err)
+                            res.status(500).send(err);
+                        else {
+                            dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
+                                if (err)
+                                    res.status(500).send(err);
+                                else {
+                                    if (result.length == 0)
+                                        res.status(404).send("invalid id requested");
+                                    else
+                                        res.json(result);
+                                }
+                            });
                         }
-                        else
-                            res.json(result);
                     });
                 }
             }
