@@ -30,7 +30,6 @@ app.get("/getToken", jwtController.genToken);
 
 app.get("/exchange", exchange.getRates);
 
-
 app.listen(app.get("port"), () => {
     console.log("server running on port %d", app.get("port"));
 });
