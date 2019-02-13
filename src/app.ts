@@ -29,7 +29,6 @@ app.get("/drop", dbController.drop);
 app.get("/getToken", jwtController.genToken);
 
 app.get("/exchange", exchange.getRates);
-app.get("/exchange", exchange.getRates);
 
 
 app.listen(app.get("port"), () => {
