@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
-const wallet = require("./controllers/wallet");
-const transaction = require("./controllers/transaction");
 const bodyParser = require("body-parser");
+const express = require("express");
 const dbController = require("./controllers/dbController");
-const jwtController = require("./controllers/jwtcontroller");
-const middleware = require("./middleware");
 const exchange = require("./controllers/exchangeController");
+const jwtController = require("./controllers/jwtcontroller");
+const transaction = require("./controllers/transaction");
+const wallet = require("./controllers/wallet");
+const middleware = require("./middleware");
 const app = express();
 app.set("port", 3000);
 app.use(bodyParser.json());
@@ -24,6 +24,7 @@ app.put("/wallet/:id", middleware.verifyToken, wallet.updateWallet);
 app.get("/initialise", dbController.initialise);
 app.get("/drop", dbController.drop);
 app.get("/getToken", jwtController.genToken);
+app.get("/exchange", exchange.getRates);
 app.get("/exchange", exchange.getRates);
 app.listen(app.get("port"), () => {
     console.log("server running on port %d", app.get("port"));
