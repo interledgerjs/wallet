@@ -2,7 +2,7 @@ import * as express from "express";
 import * as wallet from "./controllers/wallet";
 import * as transaction from "./controllers/transaction"; 
 import * as bodyParser from "body-parser";
-import * as dbController from "./controllers/dbController";
+import * as dbFunctions from "./db";
 import * as jwtController from "./controllers/jwtcontroller";
 import * as middleware from "./middleware";
 import * as exchange from "./controllers/exchangeController";
@@ -10,6 +10,8 @@ import * as exchange from "./controllers/exchangeController";
 const app = express();
 app.set("port", 3000);
 app.use(bodyParser.json());
+
+dbFunctions.initialise();
 
 app.get("/transactions", transaction.transactions);
 app.get("/transaction/:id/", transaction.getTransaction);
@@ -22,9 +24,6 @@ app.get("/wallet/:id/:transactions*?", wallet.getWallet);
 app.post("/wallet", middleware.verifyToken, wallet.addWallet);
 app.delete("/wallet/:id", middleware.verifyToken, wallet.delWallet);
 app.put("/wallet/:id", middleware.verifyToken, wallet.updateWallet);
-
-app.get("/initialise", dbController.initialise);
-app.get("/drop", dbController.drop);
 
 app.get("/getToken", jwtController.genToken);
 
