@@ -5,25 +5,29 @@ const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 //get /wallet #returns all wallets
 exports.wallets = (req, res) => {
-    dbFunctions.queryRet("SELECT * FROM wallets", (result) => {
-        if (result.length == 0) {
-            res.sendStatus(404);
+    dbFunctions.query("SELECT * FROM accounts", (err, result) => {
+        if (err)
+            res.status(500).send(err);
+        else {
+            if (result.length == 0)
+                res.sendStatus(404);
+            else
+                res.json(result);
         }
-        else
-            res.json(result);
     });
 };
 //get /wallet/{1} #returns wallet with id 1
 exports.getWallet = (req, res) => {
     if (req.params.transactions == 'transactions') {
-        dbFunctions.queryRet(`SELECT *
-                            FROM transactions
-                            WHERE destid = '${req.params.id}' OR sourceid = '${req.params.id}'`, (result) => {
-            if (result.length == 0) {
-                res.sendStatus(404);
+        dbFunctions.query(`SELECT * FROM transactions WHERE destid = '${req.params.id}' OR sourceid = '${req.params.id}'`, (err, result) => {
+            if (err)
+                res.status(500).send(err);
+            else {
+                if (result.length == 0)
+                    res.sendStatus(404);
+                else
+                    res.json(result);
             }
-            else
-                res.json(result);
         });
     }
     else if (req.params.transactions !== undefined) {
@@ -31,12 +35,15 @@ exports.getWallet = (req, res) => {
         res.sendStatus(400);
     }
     else {
-        dbFunctions.queryRet(`SELECT * FROM wallets WHERE walletid = '${req.params.id}'`, (result) => {
-            if (result.length == 0) {
-                res.sendStatus(404);
+        dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${req.params.id}'`, (err, result) => {
+            if (err)
+                res.status(500).send(err);
+            else {
+                if (result.length == 0)
+                    res.sendStatus(404);
+                else
+                    res.json(result);
             }
-            else
-                res.json(result);
         });
     }
 };
@@ -67,8 +74,12 @@ exports.addWallet = (req, res) => {
                     keys = keys.slice(0, -1);
                 if (vals.length > 0)
                     vals = vals.slice(0, -1);
-                dbFunctions.queryNoRet(`INSERT INTO wallets (${keys}) VALUES (${vals})`);
-                res.send(JSON.stringify(req.body));
+                dbFunctions.query(`INSERT INTO wallets (${keys}) VALUES (${vals})`, (err) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else
+                        res.send(JSON.stringify(req.body));
+                });
             }
         }
     });
@@ -80,13 +91,21 @@ exports.delWallet = (req, res) => {
             res.status(403).send(err.message);
         }
         else {
-            dbFunctions.queryRet(`SELECT * FROM wallets WHERE walletid = '${req.params.id}'`, (result) => {
-                if (result.length == 0) {
-                    res.sendStatus(404);
-                }
+            dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${req.params.id}'`, (err, result) => {
+                if (err)
+                    res.status(500).send(err);
                 else {
-                    dbFunctions.queryNoRet(`DELETE FROM wallets where walletid = '${req.params.id}'`);
-                    res.send(`Wallet id: ${req.params.id} deleted`);
+                    if (result.length == 0) {
+                        res.sendStatus(404);
+                    }
+                    else {
+                        dbFunctions.query(`DELETE FROM wallets where walletid = '${req.params.id}'`, (err) => {
+                            if (err)
+                                res.status(500).send(err);
+                            else
+                                res.send(`Wallet id: ${req.params.id} deleted`);
+                        });
+                    }
                 }
             });
         }
@@ -114,15 +133,24 @@ exports.updateWallet = (req, res) => {
                 }
                 if (str.length > 0)
                     str = str.slice(0, -1);
-                dbFunctions.queryNoRet(`UPDATE wallets SET ${str} WHERE walletid = '${req.params.id}'`);
-                dbFunctions.queryRet(`SELECT * FROM wallets WHERE walletid = '${req.params.id}'`, (result) => {
-                    if (result.length == 0) {
-                        //    console.log(404);
-                        res.status(404);
-                        res.send("invalid id requested");
+                dbFunctions.query(`UPDATE wallets SET ${str} WHERE walletid = '${req.params.id}'`, (err) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else {
+                        dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${req.params.id}'`, (err, result) => {
+                            if (err)
+                                res.status(500).send(err);
+                            else {
+                                if (result.length == 0) {
+                                    //    console.log(404);
+                                    res.status(404);
+                                    res.send("invalid id requested");
+                                }
+                                else
+                                    res.json(result);
+                            }
+                        });
                     }
-                    else
-                        res.json(result);
                 });
             }
         }
