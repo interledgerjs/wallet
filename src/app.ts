@@ -1,11 +1,12 @@
-import * as express from "express";
-import * as wallet from "./controllers/wallet";
-import * as transaction from "./controllers/transaction"; 
-import * as bodyParser from "body-parser";
-import * as dbFunctions from "./db";
-import * as jwtController from "./controllers/jwtcontroller";
-import * as middleware from "./middleware";
-import * as exchange from "./controllers/exchangeController";
+import * as bodyParser      from "body-parser";
+import * as express         from "express";
+import * as exchange        from "./controllers/exchangeController";
+import * as jwtController   from "./controllers/jwtcontroller";
+import * as status          from "./controllers/status";
+import * as transaction     from "./controllers/transaction"; 
+import * as wallet          from "./controllers/wallet";
+import * as dbFunctions     from "./db";
+import * as middleware      from "./middleware";
 
 const app = express();
 app.set("port", 3000);
@@ -15,9 +16,16 @@ dbFunctions.initialise();
 
 app.get("/getToken", jwtController.genToken);
 
-//add users routes
+//users table description: user_id, user_name, date_created, active
+app.get ('/users/user_id/:user_id', status.get_user_by_user_id);
+app.get ('/users/user_name/:user_name', status.get_user_by_user_name);
+app.post('/users/:user_name', status.create_new_user); 
+app.put ('/users/:user_id', status.deactivate_status_of_user_id);
 
-//add acounts routes
+app.get ('/accounts/owner_user_id/:owner_user_id', status.get_acc_by_owner_user_id); 
+app.get ('/accounts/account_id/:account_id', status.get_acc_by_account_id);
+app.post('/accounts', status.create_new_acc);
+app.put ('/accounts', status.update_acc); //json fields: account_id, amount
 
 app.get("/transactions", transaction.transactions);
 app.get("/transaction/:id/", transaction.getTransaction);
