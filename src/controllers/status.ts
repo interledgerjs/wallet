@@ -3,8 +3,6 @@ import * as dbFunctions from "../db";
 import * as Joi from "joi";
 import * as jwt from "jsonwebtoken";
 
-
-
 export let get_acc_by_owner_user_id = (req: Request, res: Response) => {
     dbFunctions.query(`SELECT * FROM accounts WHERE owner_user_id = '${req.params.id}'`, (err, result) => {
         if (result.length == 0) 
@@ -53,44 +51,3 @@ export let update_acc = (req: Request, res: Response) => {
         } 
     })
 }
-
-export let get_user_by_user_id = (req: Request, res: Response) => {
-    let sql = "SELECT * FROM users WHERE user_id = " + req.params.user_id;
-    dbFunctions.query(sql, (err, result) => {
-        if (err) 
-            res.status(500).json(err)
-        else
-            res.json(result)
-    })
-}
-
-export let get_user_by_user_name = (req: Request, res: Response) => {
-    let sql = "SELECT * FROM users WHERE user_name = '" + req.params.user_name + "'";
-    dbFunctions.query(sql, (err, result) => {
-        if (err) 
-            res.status(500).json(err)
-        else
-            res.json(result)
-    })
-}
-
-export let create_new_user = (req: Request, res: Response) => {
-    let sql = "INSERT INTO users (user_name, date_created, active) VALUES ('" + req.params.user_name + "', DEFAULT, " + 1 + ")";
-    dbFunctions.query(sql, (err, result) => {
-        if (err) 
-            res.status(500).json(err)
-        else
-            res.json(result)
-    })
-}
-
-export let deactivate_status_of_user_id = (req: Request, res: Response) => {
-    let sql = "UPDATE users SET active = 0 WHERE user_id = " + req.params.user_id;
-    dbFunctions.query(sql, (err, result) => {
-        if (err) 
-            res.status(500).json(err)
-        else
-            res.json(result)
-    })
-}
-

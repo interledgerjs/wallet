@@ -7,6 +7,7 @@ import * as transaction     from "./controllers/transaction";
 import * as wallet          from "./controllers/wallet";
 import * as dbFunctions     from "./db";
 import * as middleware      from "./middleware";
+import * as users           from "./controllers/users";
 
 const app = express();
 app.set("port", 3000);
@@ -17,10 +18,11 @@ dbFunctions.initialise();
 app.get("/getToken", jwtController.genToken);
 
 //users table description: user_id, user_name, date_created, active
-app.get ('/users/user_id/:user_id', status.get_user_by_user_id);
-app.get ('/users/user_name/:user_name', status.get_user_by_user_name);
-app.post('/users/:user_name', status.create_new_user); 
-app.put ('/users/:user_id', status.deactivate_status_of_user_id);
+//USERS ENDPOINTS ARE UNTESTED
+app.get ('/user/:user_id', users.get_user_by_user_id);
+app.get ('/user/:user_name', users.get_user_by_user_name);
+app.post('/user/:user_name', users.create_new_user);
+app.put ('/user/:user_id/status', users.deactivate_status_of_user_id);
 
 app.get ('/accounts/owner_user_id/:owner_user_id', status.get_acc_by_owner_user_id); 
 app.get ('/accounts/account_id/:account_id', status.get_acc_by_account_id);
