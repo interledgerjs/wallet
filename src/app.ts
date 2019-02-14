@@ -13,6 +13,12 @@ app.use(bodyParser.json());
 
 dbFunctions.initialise();
 
+app.get("/getToken", jwtController.genToken);
+
+//add users routes
+
+//add acounts routes
+
 app.get("/transactions", transaction.transactions);
 app.get("/transaction/:id/", transaction.getTransaction);
 app.post("/transaction", middleware.verifyToken, transaction.addTransaction);
@@ -25,8 +31,6 @@ app.get("/wallet/:id/:transactions*?", wallet.getWallet);
 app.post("/wallet", middleware.verifyToken, wallet.addWallet);
 app.delete("/wallet/:id", middleware.verifyToken, wallet.delWallet); //consider for deprecation
 app.put("/wallet/:id", middleware.verifyToken, wallet.updateWallet);
-
-app.get("/getToken", jwtController.genToken);
 
 app.get("/exchange", exchange.getRates);
 
