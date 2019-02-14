@@ -1,4 +1,4 @@
-import { Request, Response} from "express";
+import { Request, Response } from "express";
 
 //verifyToken
 export let verifyToken = (req: Request, res: Response, next: any) => {

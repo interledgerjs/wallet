@@ -5,13 +5,13 @@ export let returnedRes: JSON;
 let connectServer = (mysql.createConnection({
         host		: 'localhost',
 		user		: 'root',
-		password	: 'password'
+		password	: 'wethinkcoil'
     }));
 
 let connectDb = (mysql.createConnection({
         host		: 'localhost',
         user		: 'root',
-        password	: 'password',
+        password	: 'wethinkcoil',
         database    : 'my_db'
     }))
 
