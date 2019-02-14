@@ -15,7 +15,7 @@ let connectDb = (mysql.createConnection({
         database    : 'my_db'
     }))
 
-export let query = (sqlQuery: string, callback) => {
+export let query = (sqlQuery: string, callback : any) => {
     connectDb.query(sqlQuery, (err, result) => {
             if (err) console.log(err);
             callback(err, result);

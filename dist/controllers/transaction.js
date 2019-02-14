@@ -19,7 +19,7 @@ exports.transactions = (req, res) => {
 };
 //get /transaction/{1} #returns transaction with id 1
 exports.getTransaction = (req, res) => {
-    dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
+    dbFunctions.query(`SELECT * FROM transactions WHERE transaction_id = '${req.params.id}'`, (err, result) => {
         if (err)
             res.status(500).send(err);
         else {
@@ -39,9 +39,11 @@ exports.addTransaction = (req, res) => {
         }
         else {
             const schema = Joi.object().keys({
-                value: Joi.number().required(),
-                sourceid: Joi.number().required(),
-                destid: Joi.number().required()
+                account_id: Joi.number().required(),
+                transaction_date: Joi.string().required(),
+                credit: Joi.number().required(),
+                debit: Joi.number().required(),
+                scale: Joi.number().required()
             });
             const result = Joi.validate(req.body, schema);
             //    console.log(result);
@@ -78,7 +80,7 @@ exports.delTransaction = (req, res) => {
             res.status(403).send(err.message);
         }
         else {
-            dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
+            dbFunctions.query(`SELECT * FROM transactions WHERE transaction_id = '${req.params.id}'`, (err, result) => {
                 if (err)
                     res.status(500).send(err);
                 else {
@@ -86,7 +88,7 @@ exports.delTransaction = (req, res) => {
                         res.sendStatus(404);
                     }
                     else {
-                        dbFunctions.query(`DELETE FROM transactions where transactionid = '${req.params.id}'`, (err, result) => {
+                        dbFunctions.query(`DELETE FROM transactions where transaction_id = '${req.params.id}'`, (err, result) => {
                             if (err)
                                 res.status(500).send(err);
                             else
@@ -105,7 +107,7 @@ exports.updateTransaction = (req, res) => {
             res.status(403).send(err.message);
         }
         else {
-            //Needs to have routing properly handled
+            //Needs to have routing properly handled and sql to match schemas
             if (req.params.execute == 'execute') {
                 let successful = 1;
                 dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
@@ -153,10 +155,12 @@ exports.updateTransaction = (req, res) => {
             }
             else {
                 const schema = Joi.object().keys({
-                    value: Joi.number(),
-                    sourceid: Joi.number(),
-                    destid: Joi.number()
-                }).or('value', 'sourceid', 'destid');
+                    account_id: Joi.number(),
+                    transaction_date: Joi.string(),
+                    credit: Joi.number(),
+                    debit: Joi.number(),
+                    scale: Joi.number()
+                }).or('account_id', 'transaction_date', 'credit', 'debit', 'scale');
                 const result = Joi.validate(req.body, schema);
                 if (result.error) {
                     res.send(result.error.name).status(400);
@@ -168,11 +172,11 @@ exports.updateTransaction = (req, res) => {
                     }
                     if (str.length > 0)
                         str = str.slice(0, -1);
-                    dbFunctions.query(`UPDATE transactions SET ${str} WHERE transactionid = '${req.params.id}'`, (err) => {
+                    dbFunctions.query(`UPDATE transactions SET ${str} WHERE transaction_id = '${req.params.id}'`, (err) => {
                         if (err)
                             res.status(500).send(err);
                         else {
-                            dbFunctions.query(`SELECT * FROM transactions WHERE transactionid = '${req.params.id}'`, (err, result) => {
+                            dbFunctions.query(`SELECT * FROM transactions WHERE transaction_id = '${req.params.id}'`, (err, result) => {
                                 if (err)
                                     res.status(500).send(err);
                                 else {
