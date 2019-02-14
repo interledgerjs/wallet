@@ -58,10 +58,9 @@ export let addWallet = (req : Request, res: Response) => {
         }
         else {
             const schema = Joi.object().keys({
-                account_type:Joi.number().required(),
-                account_number: Joi.number().required(),
-                account_balance: Joi.number().required(),
-                scale: Joi.number().required()
+                account_name:Joi.string().required(),
+                owner_user_id: Joi.number().required(),
+                balance: Joi.number().required()
             });
             const result = Joi.validate(req.body, schema);
         //    console.log(result);
@@ -124,11 +123,10 @@ export let updateWallet = (req : Request, res: Response) => {
         }
         else {
             const schema = Joi.object().keys({
-                account_type:Joi.number(),
-                account_number: Joi.number(),
-                account_balance: Joi.number(),
-                scale: Joi.number()
-            }).or('account_type', 'account_number', 'account_balance', 'scale');
+                account_name:Joi.string(),
+                owner_user_id: Joi.number(),
+                balance: Joi.number()
+            }).or('account_name', 'owner_user_id', 'balance');
             const result = Joi.validate(req.body, schema);
             if (result.error) {
                 res.sendStatus(400)

@@ -27,40 +27,32 @@ exports.serverDB = (sqlQuery, callback) => {
     });
 };
 exports.initialise = () => {
+    console.log('db building');
     exports.serverDB("CREATE DATABASE IF NOT EXISTS my_db", (err) => {
         if (!err) {
             exports.query("CREATE TABLE IF NOT EXISTS users (\
-                user_id INTEGER PRIMARY KEY AUTO_INCREMENT,\
-                first_name TEXT, \
-                last_name TEXT, \
-                email TEXT, \
-                password TEXT);", (err) => {
+                user_id INT AUTO_INCREMENT PRIMARY KEY,\
+                user_name VARCHAR(255),\
+                date_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
+                active INT);", (err) => {
                 if (err)
                     throw err;
             });
             exports.query("CREATE TABLE IF NOT EXISTS accounts (\
-                account_id INTEGER PRIMARY KEY AUTO_INCREMENT, \
-                account_type INTEGER, account_number INTEGER, \
-                account_balance INTEGER, scale REAL);", (err) => {
+                account_id INT AUTO_INCREMENT PRIMARY KEY,\
+                account_name VARCHAR(255),\
+                owner_user_id INT,\
+                balance INT,\
+                last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);", (err) => {
                 if (err)
                     throw err;
             });
             exports.query("CREATE TABLE IF NOT EXISTS transactions (\
-                transaction_id INTEGER PRIMARY KEY AUTO_INCREMENT, \
-                account_id INTEGER, \
-                transaction_date TEXT, \
-                credit INTEGER, \
-                debit INTEGER, \
-                scale REAL, \
-                FOREIGN KEY(account_id) REFERENCES accounts(account_id));", (err) => {
-                if (err)
-                    throw err;
-            });
-            exports.query("CREATE TABLE IF NOT EXISTS account_owner (\
-                user_id INTEGER, \
-                account_id INTEGER, \
-                FOREIGN KEY (user_id) REFERENCES users(user_id), \
-                FOREIGN KEY(account_id) REFERENCES accounts(account_id));", (err) => {
+                trans_id INT AUTO_INCREMENT PRIMARY KEY,\
+                dbt_acc_id INT,\
+                crdt_acc_id INT,\
+                amount INT,\
+                date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);", (err) => {
                 if (err)
                     throw err;
             });
