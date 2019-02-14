@@ -24,6 +24,12 @@ app.delete("/wallet/:id", middleware.verifyToken, wallet.delWallet);
 app.put("/wallet/:id", middleware.verifyToken, wallet.updateWallet);
 app.get("/getToken", jwtController.genToken);
 app.get("/exchange", exchange.getRates);
+app.get('/api', (req, res) => {
+    res.json({
+        message: 'Wallet API Online'
+    });
+});
+//app.post('api/posts/',(req, res) =>)
 app.listen(app.get("port"), () => {
-    console.log("server running on port %d", app.get("port"));
+    console.log("server running on portals %d", app.get("port"));
 });
