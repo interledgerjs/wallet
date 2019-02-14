@@ -41,7 +41,7 @@ export let addTransaction = (req : Request, res: Response) => {
         }
         else {
             const schema = Joi.object().keys({
-                debt_acc_id: Joi.number().required(),
+                dbt_acc_id: Joi.number().required(),
                 crdt_acc_id: Joi.number().required(),
                 amount: Joi.number().required()
             });
@@ -151,10 +151,10 @@ export let updateTransaction = (req : Request, res: Response) => {
             }
             else {
                 const schema = Joi.object().keys({
-                    debt_acc_id: Joi.number(),
+                    dbt_acc_id: Joi.number(),
                     crdt_acc_id: Joi.number(),
                     amount: Joi.number()
-                }).or('debt_acc_id', 'crdt_acc_id', 'amount');
+                }).or('dbt_acc_id', 'crdt_acc_id', 'amount');
                 const result = Joi.validate(req.body, schema);
                 if (result.error) {
                     res.send(result.error.name).status(400)

@@ -137,7 +137,7 @@ export let updateWallet = (req : Request, res: Response) => {
                     str += `${k}='${req.body[k]}',`;
                 }
                 if (str.length > 0) str = str.slice(0, -1);
-                dbFunctions.query(`UPDATE accounts SET ${str} WHERE account_id = '${req.params.id}'`, (err) => {
+                dbFunctions.query(`UPDATE accounts SET ${str}, last_updated = default WHERE account_id = '${req.params.id}'`, (err) => {
                     if (err)
                         res.status(500).send(err);
                     else {
