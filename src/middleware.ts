@@ -14,7 +14,7 @@ export let verifyToken = (req: Request, res: Response, next: any) => {
             if (err) {
                 res.sendStatus(403);
             } else {
-                console.log('Token Verified');
+                //console.log('Token Verified');
                 next();
             }
         });
