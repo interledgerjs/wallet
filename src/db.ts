@@ -3,17 +3,18 @@ import * as mysql from "mysql";
 export let returnedRes: JSON;
 
 let connectServer = (mysql.createConnection({
-        host		: 'localhost',
+        host		: '127.0.0.1',
 		user		: 'root',
-		password	: 'password'
+        password	: 'password',
+        insecureAuth : true
     }));
 
 let connectDb = (mysql.createConnection({
-        host		: 'localhost',
+        host		: '127.0.0.1',
         user		: 'root',
         password	: 'password',
-        database    : 'my_db'
-    }))
+        database    : 'my_db',
+    }));
 
 export let queryRet = (sqlQuery: string, callback) => {
     connectDb.query(sqlQuery, (err, result) => {

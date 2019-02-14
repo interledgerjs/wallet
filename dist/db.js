@@ -2,15 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const mysql = require("mysql");
 let connectServer = (mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password'
-}));
-let connectDb = (mysql.createConnection({
-    host: 'localhost',
+    host: '127.0.0.1',
     user: 'root',
     password: 'password',
-    database: 'my_db'
+    insecureAuth: true
+}));
+let connectDb = (mysql.createConnection({
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'password',
+    database: 'my_db',
 }));
 exports.queryRet = (sqlQuery, callback) => {
     connectDb.query(sqlQuery, (err, result) => {
