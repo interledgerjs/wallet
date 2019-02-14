@@ -1,13 +1,13 @@
 import * as bodyParser      from "body-parser";
 import * as express         from "express";
+import * as accounts        from "./controllers/accounts";
 import * as exchange        from "./controllers/exchangeController";
 import * as jwtController   from "./controllers/jwtcontroller";
-import * as status          from "./controllers/status";
-import * as transactions     from "./controllers/transactions"; 
+import * as transactions    from "./controllers/transactions"; 
+import * as users           from "./controllers/users";
 import * as wallet          from "./controllers/wallet";
 import * as dbFunctions     from "./db";
 import * as middleware      from "./middleware";
-import * as users           from "./controllers/users";
 
 const app = express();
 app.set("port", 3000);
@@ -24,10 +24,10 @@ app.get ('/users/:user_name', users.get_user_by_user_name);
 app.post('/users/:user_name', users.create_new_user);
 app.put ('/users/:user_id/status', users.deactivate_status_of_user_id); //is this route name ok? refer to staff
 
-app.get ('/accounts/:owner_user_id', status.get_accs_by_owner_user_id); 
-app.get ('/accounts/:account_id', status.get_acc_by_account_id);
-app.post('/accounts', status.create_new_acc);
-app.put ('/accounts', status.update_acc); //json fields: account_id, amount
+app.get ('/accounts/:owner_user_id', accounts.get_accs_by_owner_user_id); 
+app.get ('/accounts/:account_id', accounts.get_acc_by_account_id);
+app.post('/accounts', accounts.create_new_acc);
+app.put ('/accounts', accounts.update_acc); //json fields: account_id, amount
 
 app.get("/transactions", transactions.transactions);
 app.get("/transaction/:id/", transactions.getTransaction);
