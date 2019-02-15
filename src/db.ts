@@ -1,6 +1,6 @@
 import * as mysql from "mysql";
-
-export let returnedRes: JSON;
+import * as sqlite3 from "sqlite3";
+//const sqlite3:any = require('sqlite3');
 
 let connectServer = (mysql.createConnection({
         host		: 'localhost',
@@ -15,54 +15,70 @@ let connectDb = (mysql.createConnection({
         database    : 'my_db'
     }))
 
-export let query = (sqlQuery: string, callback) => {
-    connectDb.query(sqlQuery, (err, result) => {
+const db:any = new sqlite3.Database('accounts');
+
+export let query = (sqlQuery: string, callback : any) => {
+    if (process.argv.length > 2 && process.argv[2] == "-mysql") {
+        connectDb.query(sqlQuery, (err, result) => {
+                if (err) console.log(err);
+                callback(err, result);
+            });
+    }
+    else {
+        db.all(sqlQuery, (err, result) => {
             if (err) console.log(err);
             callback(err, result);
         });
-}
-
-export let serverDB = (sqlQuery: string, callback) => {
-    connectServer.query(sqlQuery, (err) => {
-        if (err) throw err;
-        callback(err);
-    });
+    }
 }
 
 export let initialise = () => {
-    serverDB("CREATE DATABASE IF NOT EXISTS my_db", (err) => {
-        if (!err) {
-            query("CREATE TABLE IF NOT EXISTS users (\
-                user_id INTEGER PRIMARY KEY AUTO_INCREMENT,\
-                first_name TEXT, \
-                last_name TEXT, \
-                email TEXT, \
-                password TEXT);", (err) => {
-                    if (err) throw err;
-                });
-            query("CREATE TABLE IF NOT EXISTS accounts (\
-                account_id INTEGER PRIMARY KEY AUTO_INCREMENT, \
-                account_type INTEGER, account_number INTEGER, \
-                account_balance INTEGER, scale REAL);", (err) => {
-                    if (err) throw err;
-                });
-            query("CREATE TABLE IF NOT EXISTS transactions (\
-                transaction_id INTEGER PRIMARY KEY AUTO_INCREMENT, \
-                account_id INTEGER, \
-                transaction_date TEXT, \
-                credit INTEGER, \
-                debit INTEGER, \
-                scale REAL, \
-                FOREIGN KEY(account_id) REFERENCES accounts(account_id));", (err) => {
-                    if (err) throw err;
-                });
-            query("CREATE TABLE IF NOT EXISTS account_owner (\
-                user_id INTEGER, \
-                account_id INTEGER, \
-                FOREIGN KEY (user_id) REFERENCES users(user_id), \
-                FOREIGN KEY(account_id) REFERENCES accounts(account_id));", (err) => {
-                    if (err) throw err;
-                });
+    if (process.argv.length > 2 && process.argv[2] == "-mysql") {
+
+        let serverDB = (sqlQuery: string, callback) => {
+            connectServer.query(sqlQuery, (err) => {
+                if (err) throw err;
+                callback(err);
+            });
         }
-    });
+
+        console.log('mysql db building');
+        serverDB("CREATE DATABASE IF NOT EXISTS my_db", (err) => {
+            if (!err) {
+                connectDb.query("CREATE TABLE IF NOT EXISTS users (\
+                    user_id INT AUTO_INCREMENT PRIMARY KEY,\
+                    user_name VARCHAR(255),\
+                    date_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
+                    active INT,\
+                    password VARCHAR(255));", (err) => {
+                        if (err) throw err;
+                    });
+                connectDb.query("CREATE TABLE IF NOT EXISTS accounts (\
+                    account_id INT AUTO_INCREMENT PRIMARY KEY,\
+                    account_name VARCHAR(255),\
+                    owner_user_id INT,\
+                    balance INT,\
+                    last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);", (err) => {
+                        if (err) throw err;
+                    });
+                connectDb.query("CREATE TABLE IF NOT EXISTS transactions (\
+                    trans_id INT AUTO_INCREMENT PRIMARY KEY,\
+                    dbt_acc_id INT,\
+                    crdt_acc_id INT,\
+                    amount INT,\
+                    date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);", (err) => {
+                        if (err) throw err;
+                    });
+            }
+        });
+    }
+    else {
+        console.log('sqlite db building');
+
+        db.serialize(function() {
+            db.run("CREATE TABLE IF NOT EXISTS users (user_id INT AUTO_INCREMENT PRIMARY KEY, user_name VARCHAR(255), date_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, active INT, password VARCHAR(255))"); 
+            db.run("CREATE TABLE IF NOT EXISTS accounts (account_id INT AUTO_INCREMENT PRIMARY KEY, account_name VARCHAR(255), owner_user_id INT, balance INT, last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)");
+            db.run("CREATE TABLE IF NOT EXISTS transactions (trans_id INT AUTO_INCREMENT PRIMARY KEY, dbt_acc_id INT, crdt_acc_id INT, amount INT, date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)");    
+        });
+    }   
 }
