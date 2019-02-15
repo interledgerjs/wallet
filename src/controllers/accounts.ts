@@ -3,7 +3,7 @@ import * as dbFunctions from "../db";
 import * as Joi from "joi";
 import * as jwt from "jsonwebtoken";
 
-export let get_acc_by_owner_user_id = (req: Request, res: Response) => {
+export let get_accs_by_owner_user_id = (req: Request, res: Response) => {
     dbFunctions.query(`SELECT * FROM accounts WHERE owner_user_id = '${req.params.id}'`, (err, result) => {
         if (result.length == 0) 
             res.status(500).json(err)
