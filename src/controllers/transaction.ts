@@ -18,6 +18,15 @@ export let transactions = (req: Request, res: Response) => {
     });
 }
 
+//------------------------------------------------------------------------------------------------------------------------------
+//Use script to initialise db
+//check: 12 factor app, .env, hibernate, ORM, mocha
+//build data layer for further abstraction, create separation between low level data and do further processing in controllers
+//
+//mvc mvm
+//
+//------------------------------------------------------------------------------------------------------------------------------
+
 //get /transaction/{1} #returns transaction with id 1
 export let getTransaction = (req: Request, res: Response) => {
     dbFunctions.query(`SELECT * FROM transactions WHERE trans_id = '${req.params.id}'`, (err, result) => {
