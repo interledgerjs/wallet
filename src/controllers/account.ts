@@ -3,8 +3,8 @@ import * as dbFunctions from "../db";
 import * as Joi from "joi";
 import * as jwt from "jsonwebtoken";
 
-//get /wallet #returns all wallets
-export let wallets = (req: Request, res: Response) => {
+//get /account #returns all accounts
+export let accounts = (req: Request, res: Response) => {
     dbFunctions.query("SELECT * FROM accounts", (err, result) => {
         if (err)
             res.status(500).send(err);
@@ -17,41 +17,22 @@ export let wallets = (req: Request, res: Response) => {
     });
 }
 
-//get /wallet/{1} #returns wallet with id 1
-export let getWallet = (req: Request, res: Response) => {
-    //routing needs to be redone for /accounts/{id}/transactions
-    if (req.params.transactions == 'transactions') {
-        dbFunctions.query(`SELECT * FROM transactions WHERE destid = '${req.params.id}' OR sourceid = '${req.params.id}'`, (err, result) => {
-            if (err)
-                res.status(500).send(err);
-            else {
-                if (result.length == 0)
-                    res.sendStatus(404);
-                else
-                    res.json(result);
-            }
-        });
-    }
-    else if (req.params.transactions !== undefined) {
-        console.log(req.params.transactions)
-        res.sendStatus(400);
-    }
-    else {
-        dbFunctions.query(`SELECT * FROM accounts WHERE account_id = '${req.params.id}'`, (err, result) => {
-            if (err)
-                res.status(500).send(err);
-            else {
-                if (result.length == 0)
-                    res.sendStatus(404);
-                else
-                    res.json(result);
-            }
-        });
-    }
+//get /account/{1} #returns account with id 1
+export let getAccount = (req: Request, res: Response) => {
+    dbFunctions.query(`SELECT * FROM accounts WHERE account_id = '${req.params.id}'`, (err, result) => {
+        if (err)
+            res.status(500).send(err);
+        else {
+            if (result.length == 0)
+                res.sendStatus(404);
+            else
+                res.json(result);
+        }
+    });
 }
 
-//post /wallet #adds new wallet to table
-export let addWallet = (req : Request, res: Response) => {
+//post /account #adds new account to table
+export let addAccount = (req : Request, res: Response) => {
     jwt.verify(req.token, "secret", (err, authData) => {
         if (err) {
             res.status(403).send(err.message);
@@ -87,8 +68,8 @@ export let addWallet = (req : Request, res: Response) => {
     });
 }
 
-//delete /wallet/{1} #removes wallet with id 1
-export let delWallet = (req : Request, res: Response) => {
+//delete /account/{1} #removes account with id 1
+export let delAccount = (req : Request, res: Response) => {
     jwt.verify(req.token, "secret", (err, authData) => {
         if (err) {
             res.status(403).send(err.message);
@@ -115,8 +96,8 @@ export let delWallet = (req : Request, res: Response) => {
     });
 }
 
-//put /wallet/{1} #updates wallet with id 1
-export let updateWallet = (req : Request, res: Response) => {
+//put /account/{1} #updates account with id 1
+export let updateAccount = (req : Request, res: Response) => {
     jwt.verify(req.token, "secret", (err, authData) => {
         if (err) {
             res.status(403).send(err.message);
