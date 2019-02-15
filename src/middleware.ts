@@ -17,6 +17,7 @@ export let verifyToken = (req: Request, res: Response, next: any) => {
             } else {
                 //console.log('Token Verified');
                 res.json({authData});
+                //module.exports(authData);
                 next();
             }
         });

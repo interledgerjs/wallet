@@ -45,7 +45,7 @@ app.post('/test/posts', middleware.verifyToken,(req, res) => {
     });
 });
 
-// a prototype login function
+// a prototype login function to be replaced
 app.post('/login', (req, res) => {
     //mock user
     const user = {
