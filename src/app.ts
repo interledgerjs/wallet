@@ -1,5 +1,6 @@
 import * as express from "express";
 import * as account from "./controllers/account";
+import * as user from "./controllers/user";
 import * as transaction from "./controllers/transaction"; 
 import * as bodyParser from "body-parser";
 import * as dbFunctions from "./db";
@@ -17,13 +18,19 @@ app.get("/transactions", transaction.transactions);
 app.get("/transaction/:id/", transaction.getTransaction);
 app.post("/transaction", middleware.verifyToken, transaction.addTransaction);
 app.delete("/transaction/:id", middleware.verifyToken, transaction.delTransaction);
-app.put("/transaction/:id/:execute*?", middleware.verifyToken, transaction.updateTransaction);
+app.put("/transaction/:id", middleware.verifyToken, transaction.updateTransaction);
 
 app.get("/accounts", account.accounts);
-app.get("/account/:id/:transactions*?", account.getAccount);
+app.get("/account/:id", account.getAccount);
 app.post("/account", middleware.verifyToken, account.addAccount);
 app.delete("/account/:id", middleware.verifyToken, account.delAccount);
 app.put("/account/:id", middleware.verifyToken, account.updateAccount);
+
+app.get("/users", user.users);
+app.get("/user/:id", user.getuser);
+app.post("/user", middleware.verifyToken, user.adduser);
+app.delete("/user/:id", middleware.verifyToken, user.deluser);
+app.put("/user/:id", middleware.verifyToken, user.updateuser);
 
 app.get("/getToken", jwtController.genToken);
 

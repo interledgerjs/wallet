@@ -96,7 +96,6 @@ export let updateuser = (req : Request, res: Response) => {
             res.status(403).send(err.message);
         }
         else {
-            
                 let str: string = "";
                 for (var k in req.body) {
                     str += `${k}='${req.body[k]}',`;
@@ -106,7 +105,7 @@ export let updateuser = (req : Request, res: Response) => {
                     if (err)
                         res.status(500).send(err);
                     else {
-                        dbFunctions.query(`SELECT * FROM users WHERE trans_id = '${req.params.id}'`, (err, result) => {
+                        dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.id}'`, (err, result) => {
                             if (err)
                                 res.status(500).send(err);
                             else {
@@ -118,7 +117,6 @@ export let updateuser = (req : Request, res: Response) => {
                         });
                     }
                 });   
-            
         }
     });
 }
