@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as dbFunctions from "../db";
 import * as Joi from "joi";
 import * as jwt from "jsonwebtoken";
+import * as middleware from "../middleware";
 
 //get /wallet #returns all wallets
 export let wallets = (req: Request, res: Response) => {
@@ -50,7 +51,7 @@ export let getWallet = (req: Request, res: Response) => {
 }
 
 //post /wallet #adds new wallet to table
-export let addWallet = (req : Request, res: Response) => {
+export let addWallet = (req : Request, res: Response) => { 
     jwt.verify(req.token, "secret", (err, authData) => {
         if (err) {
             res.status(403).send(err.message);

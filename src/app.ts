@@ -30,14 +30,6 @@ app.get("/getToken", jwtController.genToken);
 
 app.get("/exchange", exchange.getRates);
 
-/*
-app.get('/api', (req, res) => {
-    res.json({
-        message: 'Wallet API Online'
-    });
-});
-*/
-
 // test for tokens
 app.post('/test/posts', middleware.verifyToken,(req, res) => {
     res.json({
