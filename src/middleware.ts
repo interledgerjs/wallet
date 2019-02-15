@@ -5,16 +5,18 @@ import * as jwt from "jsonwebtoken";
 export let verifyToken = (req: Request, res: Response, next: any) => {
     const bearerHeader : string = req.headers['authorization'];
     if (bearerHeader) {
+        // pulls token out of header
         const bearer : string[] = bearerHeader.split(' ');
         const bearerToken : string = bearer[1];
-        //console.log(req.token);
         req['token'] = bearerToken;
-
+        
+        // verifies token and returns authData
         jwt.verify(req.token, 'secretkey', (err, authData) => {
             if (err) {
                 res.sendStatus(403);
             } else {
                 //console.log('Token Verified');
+                res.json({authData});
                 next();
             }
         });

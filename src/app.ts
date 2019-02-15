@@ -39,31 +39,28 @@ app.get('/api', (req, res) => {
 */
 
 // test for tokens
-
 app.post('/test/posts', middleware.verifyToken,(req, res) => {
     res.json({
         message: 'Post created...'
     });
 });
 
-app.post('/test/login', (req, res) => {
+// a prototype login function
+app.post('/login', (req, res) => {
     //mock user
     const user = {
         id: 1,
         username: 'john',
         email: 'john@foo.com'
-    }
-
+    };
     jwt.sign({user}, 'secretkey', (err, token) => {
         console.log(`Token generated for ${user.username}`);
         
-        res.json({
-            token
-        });
+        res.json({token});
     });
 });
 
 
 app.listen(app.get("port"), () => {
     console.log("server running on portals %d", app.get("port"));
-});
+;});
