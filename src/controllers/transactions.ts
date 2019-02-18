@@ -116,12 +116,12 @@ export let updateTransaction = (req: Request, res: Response) => {
               if (wResults.length > 1) {
                 dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${result[0].sourceid}'`, (err, wResult) => {
                   if (err) console.log(err)
-                  dbFunctions.query(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance) - parseInt(result[0].value)}' WHERE walletid = '${result[0].sourceid}'`, (err) => {
+                  dbFunctions.query(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance, 10) - parseInt(result[0].value, 10)}' WHERE walletid = '${result[0].sourceid}'`, (err) => {
                     if (err) console.log(err)
                   })
                 })
                 dbFunctions.query(`SELECT * FROM wallets WHERE walletid = '${result[0].destid}'`, (wResult) => {
-                  dbFunctions.query(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance) + parseInt(result[0].value)}' WHERE walletid = '${result[0].destid}'`, (err) => {
+                  dbFunctions.query(`UPDATE wallets SET balance = '${parseInt(wResult[0].balance, 10) + parseInt(result[0].value, 10)}' WHERE walletid = '${result[0].destid}'`, (err) => {
                     if (err) console.log(err)
                   })
                 })

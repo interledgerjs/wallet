@@ -1,27 +1,24 @@
-import * as app from '../build/app'
-import expect from "expect";
-import request from "supertest";
+const assert = require('assert');
+const expect = require('chai').expect
+const request = require('supertest');
+const app = require('../app')
 
-describe('POST /users', () => {
-	it('it should create a new user', (done) => {
-		var text = 'Test todo text'
+describe('Unit testing the /home route', function() {
 
-		request(app)
-			.post('/users')
-			.send({text})
-			.expect(200)
-			.expect((res) => {
-				expect(res.body.text).toBe(text)
-			})
-			.end((err), (res) => {
-				if (err) {
-					return done(err)
-				}
-				Todo.find().then((todos) => {
-					expect(todos.length).toBe(1)
-					expect(todos[0].text).toBe(text)
-					done()
-				}).catch((e) => done(e))
-			})
-	})
-})
+    it('should return OK status', function() {
+      return request(app)
+        .get('/home')
+        .then(function(response){
+            assert.equal(response.status, 200)
+        })
+    });
+
+    it('should return message on rendering', function() {
+      return request(app)
+        .get('/home')
+        .then(function(response){
+            expect(response.text).to.contain('Welcome Home Dude !!');
+        })
+    });
+
+});
