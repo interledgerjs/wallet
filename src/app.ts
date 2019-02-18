@@ -54,5 +54,5 @@ app.post('/login', (req, res) => {
 
 
 app.listen(app.get("port"), () => {
-    console.log("server running on portals %d", app.get("port"));
-;});
+    console.log("server running on port %d", app.get("port"));
+});

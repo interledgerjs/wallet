@@ -11,7 +11,7 @@ export let verifyToken = (req: Request, res: Response, next: any) => {
         req['token'] = bearerToken;
         
         // verifies token and returns authData
-        jwt.verify(req.token, 'secret', {algorithms: 'HS256'}, (err: Error, authData) => {
+        jwt.verify(req.token, 'secret', {algorithms: ['HS256']}, (err: Error, authData) => {
             if (err) {
                 res.sendStatus(403);
             } else {
