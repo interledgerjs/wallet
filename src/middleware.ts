@@ -10,9 +10,8 @@ export let verifyToken = (req: Request, res: Response, next: any) => {
         const bearerToken : string = bearer[1];
         req['token'] = bearerToken;
         
-        //TODO Option that forces check for HS256 encryption
         // verifies token and returns authData
-        jwt.verify(req.token, 'secretkey', (err: Error, authData) => {
+        jwt.verify(req.token, 'secret', {algorithms: 'HS256'}, (err: Error, authData) => {
             if (err) {
                 res.sendStatus(403);
             } else {

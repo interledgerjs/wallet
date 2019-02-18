@@ -45,7 +45,7 @@ app.post('/login', (req, res) => {
         username: 'john',
         email: 'john@foo.com'
     };
-    jwt.sign({user}, 'secretkey', (err, token) => {
+    jwt.sign({user}, 'secret',{ expiresIn: '1d' }, (err, token) => {
         console.log(`Token generated for ${user.username}`);
         
         res.json({token});
