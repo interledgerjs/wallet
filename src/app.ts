@@ -18,15 +18,15 @@ dbFunctions.initialise()
 app.get('/getToken', jwtController.genToken)
 
 // USERS ENDPOINTS ARE UNTESTED
-app.get('/users/:user_id', users.get_user_by_user_id)
-app.get('/users/:user_name', users.get_user_by_user_name)
-app.post('/users/:user_name', users.create_new_user)
-app.put('/users/:user_id/status', users.deactivate_status_of_user_id) // is this route name ok? refer to staff
+app.get('/users/:user_id', users.getUserByUserId)
+app.get('/users/:user_name', users.getUserByUserName)
+app.post('/users/:user_name', users.createNewUser)
+app.put('/users/:user_id/status', users.deactivateStatusOfUserId) // is this route name ok? refer to staff
 
-app.get('/accounts/:owner_user_id', accounts.get_accs_by_owner_user_id)
-app.get('/accounts/:account_id', accounts.get_acc_by_account_id)
-app.post('/accounts', accounts.create_new_acc)
-app.put('/accounts', accounts.update_acc)
+app.get('/accounts/:owner_user_id', accounts.getAccsByOwnerUserId)
+app.get('/accounts/:account_id', accounts.getAccByAccountId)
+app.post('/accounts', accounts.createNewAcc)
+app.put('/accounts', accounts.updateAcc)
     // json fields: account_id, amount
 
 app.get('/transactions', transactions.transactions)
