@@ -1,11 +1,10 @@
-import { Request, Response } from "express";
-import * as dbFunctions from "../db";
-import * as Joi from "joi";
-import * as jwt from "jsonwebtoken";
-import * as middleware from "../middleware";
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const dbFunctions = require("../db");
+const Joi = require("joi");
+const jwt = require("jsonwebtoken");
 //get /wallet #returns all wallets
-export let wallets = (req: Request, res: Response) => {
+exports.wallets = (req, res) => {
     dbFunctions.query("SELECT * FROM accounts", (err, result) => {
         if (err)
             res.status(500).send(err);
@@ -16,10 +15,9 @@ export let wallets = (req: Request, res: Response) => {
                 res.json(result);
         }
     });
-}
-
+};
 //get /wallet/{1} #returns wallet with id 1
-export let getWallet = (req: Request, res: Response) => {
+exports.getWallet = (req, res) => {
     //routing needs to be redone for /accounts/{id}/transactions
     if (req.params.transactions == 'transactions') {
         dbFunctions.query(`SELECT * FROM transactions WHERE destid = '${req.params.id}' OR sourceid = '${req.params.id}'`, (err, result) => {
@@ -34,7 +32,7 @@ export let getWallet = (req: Request, res: Response) => {
         });
     }
     else if (req.params.transactions !== undefined) {
-        console.log(req.params.transactions)
+        console.log(req.params.transactions);
         res.sendStatus(400);
     }
     else {
@@ -49,47 +47,47 @@ export let getWallet = (req: Request, res: Response) => {
             }
         });
     }
-}
-
+};
 //post /wallet #adds new wallet to table
-export let addWallet = (req : Request, res: Response) => { 
+exports.addWallet = (req, res) => {
     jwt.verify(req.token, "secret", (err, authData) => {
         if (err) {
             res.status(403).send(err.message);
         }
         else {
             const schema = Joi.object().keys({
-                account_name:Joi.string().required(),
+                account_name: Joi.string().required(),
                 owner_user_id: Joi.number().required(),
                 balance: Joi.number().required()
             });
             const result = Joi.validate(req.body, schema);
-        //    console.log(result);
+            //    console.log(result);
             if (result.error) {
                 res.sendStatus(400);
             }
             else {
-                let keys: string = "";
-                let vals: string = "";
+                let keys = "";
+                let vals = "";
                 for (var k in req.body) {
                     keys += `${k},`;
-                    vals += `'${req.body[k]}',`
+                    vals += `'${req.body[k]}',`;
                 }
-                if (keys.length > 0) keys = keys.slice(0, -1);
-                if (vals.length > 0) vals = vals.slice(0, -1);
+                if (keys.length > 0)
+                    keys = keys.slice(0, -1);
+                if (vals.length > 0)
+                    vals = vals.slice(0, -1);
                 dbFunctions.query(`INSERT INTO accounts (${keys}) VALUES (${vals})`, (err) => {
                     if (err)
                         res.status(500).send(err);
-                    else 
+                    else
                         res.send(JSON.stringify(req.body));
                 });
             }
         }
     });
-}
-
+};
 //delete /wallet/{1} #removes wallet with id 1
-export let delWallet = (req : Request, res: Response) => {
+exports.delWallet = (req, res) => {
     jwt.verify(req.token, "secret", (err, authData) => {
         if (err) {
             res.status(403).send(err.message);
@@ -114,30 +112,30 @@ export let delWallet = (req : Request, res: Response) => {
             });
         }
     });
-}
-
+};
 //put /wallet/{1} #updates wallet with id 1
-export let updateWallet = (req : Request, res: Response) => {
+exports.updateWallet = (req, res) => {
     jwt.verify(req.token, "secret", (err, authData) => {
         if (err) {
             res.status(403).send(err.message);
         }
         else {
             const schema = Joi.object().keys({
-                account_name:Joi.string(),
+                account_name: Joi.string(),
                 owner_user_id: Joi.number(),
                 balance: Joi.number()
             }).or('account_name', 'owner_user_id', 'balance');
             const result = Joi.validate(req.body, schema);
             if (result.error) {
-                res.sendStatus(400)
+                res.sendStatus(400);
             }
             else {
-                let str: string = "";
+                let str = "";
                 for (var k in req.body) {
                     str += `${k}='${req.body[k]}',`;
                 }
-                if (str.length > 0) str = str.slice(0, -1);
+                if (str.length > 0)
+                    str = str.slice(0, -1);
                 dbFunctions.query(`UPDATE accounts SET ${str}, last_updated = default WHERE account_id = '${req.params.id}'`, (err) => {
                     if (err)
                         res.status(500).send(err);
@@ -147,7 +145,7 @@ export let updateWallet = (req : Request, res: Response) => {
                                 res.status(500).send(err);
                             else {
                                 if (result.length == 0) {
-                                //    console.log(404);
+                                    //    console.log(404);
                                     res.status(404);
                                     res.send("invalid id requested");
                                 }
@@ -157,8 +155,7 @@ export let updateWallet = (req : Request, res: Response) => {
                         });
                     }
                 });
-                
             }
         }
     });
-}
+};
