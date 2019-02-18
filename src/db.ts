@@ -3,17 +3,18 @@ import * as sqlite3 from "sqlite3";
 //const sqlite3:any = require('sqlite3');
 
 let connectServer = (mysql.createConnection({
-        host		: 'localhost',
+        host		: '127.0.0.1',
 		user		: 'root',
-		password	: 'password'
+        password	: 'password',
+        insecureAuth : true
     }));
 
 let connectDb = (mysql.createConnection({
-        host		: 'localhost',
+        host		: '127.0.0.1',
         user		: 'root',
         password	: 'password',
         database    : 'my_db'
-    }))
+    }));
 
 const db:any = new sqlite3.Database('accounts');
 

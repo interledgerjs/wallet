@@ -63,5 +63,4 @@ typings/
 # compiled js files
 dist/
 
-# sqlite database
-accounts
+.DS_Store
