@@ -21,10 +21,27 @@
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.4.0",
     "mysql": "^2.16.0",
-    "sqlite3": "^4.0.6",
-    "typescript": "^3.3.1"
+    "sqlite3": "^4.0.6"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/mocha": "^5.2.5",
+    "@types/sinon": "^5.0.7",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "codecov": "^3.1.0",
+    "mocha": "^5.2.0",
+    "mocha-typescript": "^1.1.17",
+    "nyc": "^13.1.0",
+    "sinon": "^7.1.1",
+    "source-map-support": "^0.5.9",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-standard": "^8.0.1",
+    "typedoc": "^0.13.0",
+    "typescript": "^3.1.6"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheReasonWhy/wallet.git"
