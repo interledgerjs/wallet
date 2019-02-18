@@ -61,7 +61,7 @@ typings/
 .next
 
 # compiled js files
-dist/
+build/
 
 # db files
 accounts
