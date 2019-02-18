@@ -6,6 +6,7 @@ import * as dbFunctions from "./db";
 import * as jwtController from "./controllers/jwtcontroller";
 import * as middleware from "./middleware";
 import * as exchange from "./controllers/exchangeController";
+import * as jwt from "jsonwebtoken";
 
 const app = express();
 app.set("port", 3000);
@@ -28,6 +29,29 @@ app.put("/wallet/:id", middleware.verifyToken, wallet.updateWallet);
 app.get("/getToken", jwtController.genToken);
 
 app.get("/exchange", exchange.getRates);
+
+// test for tokens
+app.post('/test/posts', middleware.verifyToken,(req, res) => {
+    res.json({
+        message: 'Post created...'
+    });
+});
+
+// a prototype login function to be replaced
+app.post('/login', (req, res) => {
+    //mock user
+    const user = {
+        id: 1,
+        username: 'john',
+        email: 'john@foo.com'
+    };
+    jwt.sign({user}, 'secret',{ expiresIn: '1d' }, (err, token) => {
+        console.log(`Token generated for ${user.username}`);
+        
+        res.json({token});
+    });
+});
+
 
 app.listen(app.get("port"), () => {
     console.log("server running on port %d", app.get("port"));

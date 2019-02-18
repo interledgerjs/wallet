@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import * as dbFunctions from "../db";
 import * as Joi from "joi";
 import * as jwt from "jsonwebtoken";
+import * as middleware from "../middleware";
 
 //get /wallet #returns all wallets
 export let wallets = (req: Request, res: Response) => {
