@@ -4,7 +4,15 @@
   "description": "> **This project is being built by the interns at Coil and is NOT ready to use. We'll make a release as soon as it is.**",
   "main": "./dist/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
+    "build": "tsc",
+    "lint": "tslint --project .",
+    "pretest": "tsc --build",
+    "test": "nyc mocha --require ts-node/register --ui mocha-typescript --require source-map-support/register test/**/*.ts",
+    "doc": "typedoc --options typedoc.js src/index.ts",
+    "codecov": "codecov",
+    "preversion": "npm run lint && npm test",
+    "prepublishOnly": "npm run lint && npm test && npm run doc"
   },
   "author": "",
   "license": "ISC",
