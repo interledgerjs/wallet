@@ -2,7 +2,7 @@
   "name": "wallet",
   "version": "1.0.0",
   "description": "> **This project is being built by the interns at Coil and is NOT ready to use. We'll make a release as soon as it is.**",
-  "main": "./dist/app.js",
+  "main": "./build/app.js",
   "scripts": {
     "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "build": "tsc",
