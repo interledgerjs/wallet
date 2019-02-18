@@ -13,7 +13,7 @@ let connectDb = (mysql.createConnection({
         host		: '127.0.0.1',
         user		: 'root',
         password	: 'password',
-        database    : 'my_db',
+        database    : 'my_db'
     }));
 
 const db:any = new sqlite3.Database('accounts');
