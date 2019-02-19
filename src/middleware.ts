@@ -3,11 +3,11 @@ import * as jwt from 'jsonwebtoken'
 
 // verifyToken
 export let verifyToken = (req: Request, res: Response, next: any) => {
-  const bearerHeader : string = req.headers['authorization']
+  const bearerHeader: string = req.headers['authorization']
   if (bearerHeader) {
         // pulls token out of header
-    const bearer : string[] = bearerHeader.split(' ')
-    const bearerToken : string = bearer[1]
+    const bearer: string[] = bearerHeader.split(' ')
+    const bearerToken: string = bearer[1]
     req['token'] = bearerToken
 
         // verifies token and returns authData

@@ -18,16 +18,16 @@ export let transactions = (req: Request, res: Response) => {
   })
 }
 
-//------------------------------------------------------------------------------------------------------------------------------
-//Use script to initialise db
-//check: 12 factor app, .env, hibernate, ORM, mocha
-//build data layer for further abstraction, create separation between low level data and do further processing in controllers
+// ------------------------------------------------------------------------------------------------------------------------------
+// Use script to initialise db
+// check: 12 factor app, .env, hibernate, ORM, mocha
+// build data layer for further abstraction, create separation between low level data and do further processing in controllers
 //
-//mvc mvm
+// mvc mvm
 //
-//------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------
 
-//get /transaction/{1} #returns transaction with id 1
+// get /transaction/{1} #returns transaction with id 1
 export let getTransaction = (req: Request, res: Response) => {
   dbFunctions.query(`SELECT * FROM transactions WHERE trans_id = '${req.params.id}'`, (err, result) => {
     if (err) {
@@ -108,47 +108,44 @@ export let delTransaction = (req: Request, res: Response) => {
   })
 }
 
-//put /transaction/{1} #updates transaction with id 1
-export let updateTransaction = (req : Request, res: Response) => {
-    jwt.verify(req.token, "secret", (err, authData) => {
-        if (err) {
-            res.status(403).send(err.message);
+// put /transaction/{1} #updates transaction with id 1
+export let updateTransaction = (req: Request, res: Response) => {
+  jwt.verify(req.token, 'secret', (err, authData) => {
+    if (err) {
+      res.status(403).send(err.message)
+    } else {
+      const schema = Joi.object().keys({
+              dbt_acc_id: Joi.number(),
+              crdt_acc_id: Joi.number(),
+              amount: Joi.number()
+          }).or('dbt_acc_id', 'crdt_acc_id', 'amount')
+      const result = Joi.validate(req.body, schema)
+      if (result.error) {
+        res.send(result.error.name).status(400)
+      } else {
+        let str: string = ''
+        for (let k in req.body) {
+          str += `${k}='${req.body[k]}',`
         }
-        else {
-            const schema = Joi.object().keys({
-                dbt_acc_id: Joi.number(),
-                crdt_acc_id: Joi.number(),
-                amount: Joi.number()
-            }).or('dbt_acc_id', 'crdt_acc_id', 'amount');
-            const result = Joi.validate(req.body, schema);
-            if (result.error) {
-                res.send(result.error.name).status(400)
-            }
-            else {
-                let str: string = "";
-                for (var k in req.body) {
-                    str += `${k}='${req.body[k]}',`;
+        if (str.length > 0) str = str.slice(0, -1)
+        dbFunctions.query(`UPDATE transactions SET ${str} WHERE trans_id = '${req.params.id}'`, (err) => {
+          if (err) {
+            res.status(500).send(err)
+          } else {
+            dbFunctions.query(`SELECT * FROM transactions WHERE trans_id = '${req.params.id}'`, (err, result) => {
+              if (err) {
+                res.status(500).send(err)
+              } else {
+                if (result.length === 0) {
+                  res.status(404).send('invalid id requested')
+                } else {
+                  res.json(result)
                 }
-                if (str.length > 0) str = str.slice(0, -1);
-                dbFunctions.query(`UPDATE transactions SET ${str} WHERE trans_id = '${req.params.id}'`, (err) => {
-                    if (err)
-                        res.status(500).send(err);
-                    else {
-                        dbFunctions.query(`SELECT * FROM transactions WHERE trans_id = '${req.params.id}'`, (err, result) => {
-                            if (err)
-                                res.status(500).send(err);
-                            else {
-                                if (result.length == 0)
-                                    res.status(404).send("invalid id requested");
-                                else
-                                    res.json(result);
-                            }
-                        });
-                    }
-                });   
-            }
-        }
-      },
+              }
+            })
+          }
+        })
+      }
     }
   })
 }
