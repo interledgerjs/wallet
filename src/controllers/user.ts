@@ -1,11 +1,14 @@
 import { Request, Response } from 'express'
-import * as dbFunctions from '../db'
-import * as Joi from 'joi'
 import * as jwt from 'jsonwebtoken'
+import * as dlInterface from '../datalayer/dlInterface'
 
-// get /user #returns all users
 export let users = (req: Request, res: Response) => {
-  dbFunctions.query('SELECT * FROM users', (err, result) => {
+  let dataParams = {
+    action: 'get',
+    table: 'users',
+    selectAll: true
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
       res.status(500).send(err)
     } else {
@@ -18,9 +21,14 @@ export let users = (req: Request, res: Response) => {
   })
 }
 
-// get /user/{1} #returns user with id 1
 export let getuser = (req: Request, res: Response) => {
-  dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.id}'`, (err, result) => {
+  let dataParams = {
+    action: 'get',
+    table: 'users',
+    selectAll: true,
+    filter: [{ field: 'userID', operator: '=', value: req.params.id }]
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
       res.status(500).send(err)
     } else {
@@ -33,7 +41,6 @@ export let getuser = (req: Request, res: Response) => {
   })
 }
 
-// post /user #adds new user to table
 export let adduser = (req: Request, res: Response) => {
   let keys: string = ''
   let vals: string = ''
@@ -47,26 +54,55 @@ export let adduser = (req: Request, res: Response) => {
     if (err) {
       res.status(500).send(err)
     } else {
-      res.send(req.body)
+
+      let dataParams = {
+        action: 'post',
+        table: 'users',
+        parameters: req.body
+      }
+      dlInterface.handleOp(dataParams, (err, result) => {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          res.send('User added')
+        }
+      })
+
     }
   })
+
 }
 
-// delete /user/{1} #removes user with id 1
 export let deluser = (req: Request, res: Response) => {
-    // console.log(req.token);
-  dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.id}'`, (err, result) => {
+  jwt.verify(req.token, 'secret', (err, authData) => {
     if (err) {
       res.status(500).send(err)
     } else {
-      if (result.length === 0) {
-        res.sendStatus(404)
-      } else {
-        dbFunctions.query(`DELETE FROM users where user_id = '${req.params.id}'`, (err, result) => {
-          if (err) {
-            res.status(500).send(err)
+      let dataParams = {
+        action: 'get',
+        table: 'users',
+        selectAll: true,
+        filter: [{ field: 'userID', operator: '=', value: req.params.id }]
+      }
+      dlInterface.handleOp(dataParams, (err, result) => {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          if (result.length === 0) {
+            res.sendStatus(404)
           } else {
-            res.send(`user id: ${req.params.id} deleted`)
+            let delParams = {
+              action: 'delete',
+              table: 'users',
+              filter: [{ field: 'userID', operator: '=', value: req.params.id }]
+            }
+            dlInterface.handleOp(delParams, (err, result) => {
+              if (err) {
+                res.status(500).send(err)
+              } else {
+                res.send(`user id: ${req.params.id} deleted`)
+              }
+            })
           }
         })
       }
@@ -74,7 +110,6 @@ export let deluser = (req: Request, res: Response) => {
   })
 }
 
-// put /user/{1} #updates user with id 1
 export let updateuser = (req: Request, res: Response) => {
   let str: string = ''
   for (let k in req.body) {
@@ -85,15 +120,33 @@ export let updateuser = (req: Request, res: Response) => {
     if (err) {
       res.status(500).send(err)
     } else {
-      dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.id}'`, (err, result) => {
+      let dataParams = {
+        action: 'put',
+        table: 'users',
+        filter: [{ field: 'userID', operator: '=', value: req.params.id }],
+        parameters: req.body
+      }
+      dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
           res.status(500).send(err)
         } else {
-          if (result.length === 0) {
-            res.status(404).send('invalid id requested')
-          } else {
-            res.json(result)
+          let getParams = {
+            action: 'get',
+            table: 'users',
+            filter: [{ field: 'userID', operator: '=', value: req.params.id }],
+            selectAll: true
           }
+          dlInterface.handleOp(getParams, (err, result) => {
+            if (err) {
+              res.status(500).send(err)
+            } else {
+              if (result.length === 0) {
+                res.status(404).send('invalid id requested')
+              } else {
+                res.json(result)
+              }
+            }
+          })
         }
       })
     }

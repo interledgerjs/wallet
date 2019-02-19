@@ -6,7 +6,6 @@ import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
 import * as users from './controllers/users'
-import * as wallet from './controllers/wallet'
 import * as dbFunctions from './db'
 import * as middleware from './middleware'
 import * as jwt from 'jsonwebtoken'
@@ -34,7 +33,7 @@ app.get('/user/:id', user.getuser)
 app.post('/user', middleware.verifyToken, user.adduser)
 app.delete('/user/:id', middleware.verifyToken, user.deluser)
 app.put('/user/:id', middleware.verifyToken, user.updateuser)
-app.get('/users/id/:user_id', users.getUserByUserId)
+app.get('/users/id/:userID', users.getUserByUserId)
 
 app.get('/getToken', jwtController.genToken)
 

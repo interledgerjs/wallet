@@ -26,7 +26,9 @@ export let query = (sqlQuery: string, callback: any) => {
     })
   } else {
     db.all(sqlQuery, (err, result) => {
-      if (err) console.log(err)
+      if (err) {
+        console.log(err)
+      }
       callback(err, result)
     })
   }
@@ -46,25 +48,25 @@ export let initialise = () => {
     serverDB('CREATE DATABASE IF NOT EXISTS my_db', (err) => {
       if (!err) {
         connectDb.query('CREATE TABLE IF NOT EXISTS users (\
-                    user_id INT AUTO_INCREMENT PRIMARY KEY,\
-                    user_name VARCHAR(255),\
-                    date_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
+                    userID INT AUTO_INCREMENT PRIMARY KEY,\
+                    userName VARCHAR(255),\
+                    dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
                     active INT,\
                     password VARCHAR(255));', (err) => {
           if (err) throw err
         })
         connectDb.query('CREATE TABLE IF NOT EXISTS accounts (\
-                    account_id INT AUTO_INCREMENT PRIMARY KEY,\
-                    account_name VARCHAR(255),\
-                    owner_user_id INT,\
+                    accountID INT AUTO_INCREMENT PRIMARY KEY,\
+                    accountName VARCHAR(255),\
+                    ownerUserID INT,\
                     balance INT,\
-                    last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
+                    lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
           if (err) throw err
         })
         connectDb.query('CREATE TABLE IF NOT EXISTS transactions (\
-                    trans_id INT AUTO_INCREMENT PRIMARY KEY,\
-                    dbt_acc_id INT,\
-                    crdt_acc_id INT,\
+                    transID INT AUTO_INCREMENT PRIMARY KEY,\
+                    dbtAccID INT,\
+                    crdtAccID INT,\
                     amount INT,\
                     date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
           if (err) throw err
@@ -75,9 +77,9 @@ export let initialise = () => {
     console.log('sqlite db building')
 
     db.serialize(function () {
-      db.run('CREATE TABLE IF NOT EXISTS users (user_id INT AUTO_INCREMENT PRIMARY KEY, user_name VARCHAR(255), date_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, active INT, password VARCHAR(255))')
-      db.run('CREATE TABLE IF NOT EXISTS accounts (account_id INT AUTO_INCREMENT PRIMARY KEY, account_name VARCHAR(255), owner_user_id INT, balance INT, last_updated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)')
-      db.run('CREATE TABLE IF NOT EXISTS transactions (trans_id INT AUTO_INCREMENT PRIMARY KEY, dbt_acc_id INT, crdt_acc_id INT, amount INT, date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)')
+      db.run('CREATE TABLE IF NOT EXISTS users (userID INTEGER PRIMARY KEY AUTOINCREMENT, userName VARCHAR(255), dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, active INTEGER, password VARCHAR(255))')
+      db.run('CREATE TABLE IF NOT EXISTS accounts (accountID INTEGER PRIMARY KEY AUTOINCREMENT, accountName VARCHAR(255), ownerUserID INTEGER, balance INTEGER, lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)')
+      db.run('CREATE TABLE IF NOT EXISTS transactions (transID INTEGER PRIMARY KEY AUTOINCREMENT, dbtAccID INTEGER, crdtAccID INTEGER, amount INTEGER, date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)')
     })
   }
 }
