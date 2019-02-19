@@ -7,8 +7,8 @@ export let getRates = (req: Request, res: Response) => {
     console.log(response.data)
     res.send(response.data)
   })
-    .catch(error => {
-      console.log(error)
-      res.sendStatus(500)
-    })
+  .catch(error => {
+    console.log(error)
+    res.sendStatus(500)
+  })
 }
