@@ -61,6 +61,10 @@ typings/
 .next
 
 # compiled js files
-dist/
+build/
 
+# it's a mac thing
 .DS_Store
+
+# db files
+accounts
