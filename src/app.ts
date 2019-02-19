@@ -9,6 +9,7 @@ import * as users from './controllers/users'
 import * as wallet from './controllers/wallet'
 import * as dbFunctions from './db'
 import * as middleware from './middleware'
+import * as jwt from "jsonwebtoken";
 
 const app = express()
 app.set('port', 3000)
