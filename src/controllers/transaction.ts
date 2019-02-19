@@ -37,7 +37,7 @@ export let getTransaction = (req: Request, res: Response) => {
     action: 'get',
     table: 'transactions',
     selectAll: true,
-    filter: [{ field: 'trans_id', operator: '=', value: req.params.id }]
+    filter: [{ field: 'transID', operator: '=', value: req.params.id }]
   }
   dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
@@ -86,7 +86,7 @@ export let delTransaction = (req: Request, res: Response) => {
         action: 'get',
         table: 'transactions',
         selectAll: true,
-        filter: [{ field: 'trans_id', operator: '=', value: req.params.id }]
+        filter: [{ field: 'transID', operator: '=', value: req.params.id }]
       }
       dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
@@ -98,7 +98,7 @@ export let delTransaction = (req: Request, res: Response) => {
             let delParams = {
               action: 'delete',
               table: 'transactions',
-              filter: [{ field: 'trans_id', operator: '=', value: req.params.id }]
+              filter: [{ field: 'transID', operator: '=', value: req.params.id }]
             }
             dlInterface.handleOp(delParams, (err, result) => {
               if (err) {
@@ -123,7 +123,7 @@ export let updateTransaction = (req: Request, res: Response) => {
       let dataParams = {
         action: 'put',
         table: 'transactions',
-        filter: [{ field: 'trans_id', operator: '=', value: req.params.id }],
+        filter: [{ field: 'transID', operator: '=', value: req.params.id }],
         parameters: req.body
       }
       dlInterface.handleOp(dataParams, (err, result) => {
@@ -133,7 +133,7 @@ export let updateTransaction = (req: Request, res: Response) => {
           let getParams = {
             action: 'get',
             table: 'transactions',
-            filter: [{ field: 'trans_id', operator: '=', value: req.params.id }],
+            filter: [{ field: 'transID', operator: '=', value: req.params.id }],
             selectAll: true
           }
           dlInterface.handleOp(getParams, (err, result) => {

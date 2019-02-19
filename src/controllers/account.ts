@@ -28,7 +28,7 @@ export let getAccount = (req: Request, res: Response) => {
     action: 'get',
     table: 'accounts',
     selectAll: true,
-    filter: [{ field: 'account_id', operator: '=', value: req.params.id }]
+    filter: [{ field: 'accountID', operator: '=', value: req.params.id }]
   }
   dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
@@ -77,7 +77,7 @@ export let delAccount = (req: Request, res: Response) => {
         action: 'get',
         table: 'accounts',
         selectAll: true,
-        filter: [{ field: 'account_id', operator: '=', value: req.params.id }]
+        filter: [{ field: 'accountID', operator: '=', value: req.params.id }]
       }
       dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
@@ -89,7 +89,7 @@ export let delAccount = (req: Request, res: Response) => {
             let delParams = {
               action: 'delete',
               table: 'accounts',
-              filter: [{ field: 'account_id', operator: '=', value: req.params.id }]
+              filter: [{ field: 'accountID', operator: '=', value: req.params.id }]
             }
             dlInterface.handleOp(delParams, (err, result) => {
               if (err) {
@@ -114,7 +114,7 @@ export let updateAccount = (req: Request, res: Response) => {
       let dataParams = {
         action: 'put',
         table: 'accounts',
-        filter: [{ field: 'account_id', operator: '=', value: req.params.id }],
+        filter: [{ field: 'accountID', operator: '=', value: req.params.id }],
         parameters: req.body
       }
       dlInterface.handleOp(dataParams, (err, result) => {
@@ -124,7 +124,7 @@ export let updateAccount = (req: Request, res: Response) => {
           let getParams = {
             action: 'get',
             table: 'accounts',
-            filter: [{ field: 'account_id', operator: '=', value: req.params.id }],
+            filter: [{ field: 'accountID', operator: '=', value: req.params.id }],
             selectAll: true
           }
           dlInterface.handleOp(getParams, (err, result) => {

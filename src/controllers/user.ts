@@ -26,7 +26,7 @@ export let getuser = (req: Request, res: Response) => {
     action: 'get',
     table: 'users',
     selectAll: true,
-    filter: [{ field: 'user_id', operator: '=', value: req.params.id }]
+    filter: [{ field: 'userID', operator: '=', value: req.params.id }]
   }
   dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
@@ -74,7 +74,7 @@ export let deluser = (req: Request, res: Response) => {
         action: 'get',
         table: 'users',
         selectAll: true,
-        filter: [{ field: 'user_id', operator: '=', value: req.params.id }]
+        filter: [{ field: 'userID', operator: '=', value: req.params.id }]
       }
       dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
@@ -86,7 +86,7 @@ export let deluser = (req: Request, res: Response) => {
             let delParams = {
               action: 'delete',
               table: 'users',
-              filter: [{ field: 'user_id', operator: '=', value: req.params.id }]
+              filter: [{ field: 'userID', operator: '=', value: req.params.id }]
             }
             dlInterface.handleOp(delParams, (err, result) => {
               if (err) {
@@ -110,7 +110,7 @@ export let updateuser = (req: Request, res: Response) => {
       let dataParams = {
         action: 'put',
         table: 'users',
-        filter: [{ field: 'user_id', operator: '=', value: req.params.id }],
+        filter: [{ field: 'userID', operator: '=', value: req.params.id }],
         parameters: req.body
       }
       dlInterface.handleOp(dataParams, (err, result) => {
@@ -120,7 +120,7 @@ export let updateuser = (req: Request, res: Response) => {
           let getParams = {
             action: 'get',
             table: 'users',
-            filter: [{ field: 'user_id', operator: '=', value: req.params.id }],
+            filter: [{ field: 'userID', operator: '=', value: req.params.id }],
             selectAll: true
           }
           dlInterface.handleOp(getParams, (err, result) => {
