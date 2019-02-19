@@ -1,24 +1,14 @@
 const assert = require('assert');
 const expect = require('chai').expect
 const request = require('supertest');
-const app = require('../app')
+const app = require('../build/app')
 
-describe('Unit testing the /home route', function() {
-
+describe('Unit testing the /users route', function() {
     it('should return OK status', function() {
       return request(app)
-        .get('/home')
+        .get('/users/getbyid/1')
         .then(function(response){
             assert.equal(response.status, 200)
         })
     });
-
-    it('should return message on rendering', function() {
-      return request(app)
-        .get('/home')
-        .then(function(response){
-            expect(response.text).to.contain('Welcome Home Dude !!');
-        })
-    });
-
 });
