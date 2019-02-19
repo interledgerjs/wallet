@@ -1,7 +1,7 @@
 import { Request, Response} from "express";
 import * as jwt from "jsonwebtoken";
 
-//verifyToken
+// verifyToken
 export let verifyToken = (req: Request, res: Response, next: any) => {
     const bearerHeader : string = req.headers['authorization'];
     if (bearerHeader) {

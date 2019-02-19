@@ -61,6 +61,6 @@ typings/
 .next
 
 # compiled js files
-dist/
+build/
 
 .DS_Store

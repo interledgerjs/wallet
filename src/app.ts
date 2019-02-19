@@ -1,19 +1,19 @@
-import * as express from "express";
-import * as account from "./controllers/account";
-import * as user from "./controllers/user";
-import * as transaction from "./controllers/transaction"; 
-import * as bodyParser from "body-parser";
-import * as dbFunctions from "./db";
-import * as jwtController from "./controllers/jwtcontroller";
-import * as middleware from "./middleware";
-import * as exchange from "./controllers/exchangeController";
-import * as jwt from "jsonwebtoken";
+import * as bodyParser from 'body-parser'
+import * as express from 'express'
+import * as accounts from './controllers/accounts'
+import * as exchange from './controllers/exchangeController'
+import * as jwtController from './controllers/jwtcontroller'
+import * as transactions from './controllers/transactions'
+import * as users from './controllers/users'
+import * as wallet from './controllers/wallet'
+import * as dbFunctions from './db'
+import * as middleware from './middleware'
 
-const app = express();
-app.set("port", 3000);
-app.use(bodyParser.json());
+const app = express()
+app.set('port', 3000)
+app.use(bodyParser.json())
 
-dbFunctions.initialise();
+dbFunctions.initialise()
 
 app.get("/transactions", transaction.transactions);
 app.get("/transaction/:id/", transaction.getTransaction);
@@ -21,6 +21,7 @@ app.post("/transaction", middleware.verifyToken, transaction.addTransaction);
 app.delete("/transaction/:id", middleware.verifyToken, transaction.delTransaction);
 app.put("/transaction/:id", middleware.verifyToken, transaction.updateTransaction);
 
+app.get('/users/id/:user_id', users.getUserByUserId)
 app.get("/accounts", account.accounts);
 app.get("/account/:id", account.getAccount);
 app.post("/account", middleware.verifyToken, account.addAccount);
@@ -35,13 +36,14 @@ app.put("/user/:id", middleware.verifyToken, user.updateuser);
 
 app.get("/getToken", jwtController.genToken);
 
-app.get("/transactions", transactions.transactions);
-app.get("/transaction/:id/", transactions.getTransaction);
-app.post("/transactions", middleware.verifyToken, transactions.addTransaction);
-app.put("/transactions/:id/:execute*?", middleware.verifyToken, transactions.updateTransaction); //this will be refined at a later stage
+app.get('/exchange', exchange.getRates)
 
-app.get("/exchange", exchange.getRates);
-
+if (!module.parent) {
+  app.listen(app.get('port'), () => {
+    console.log('server running on port %d', app.get('port'))
+  })
+}
+module.exports = app
 // test for tokens
 app.post('/test/posts', middleware.verifyToken,(req, res) => {
     res.json({
@@ -64,7 +66,3 @@ app.post('/login', (req, res) => {
     });
 });
 
-
-app.listen(app.get("port"), () => {
-    console.log("server running on port %d", app.get("port"));
-});
