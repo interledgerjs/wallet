@@ -67,7 +67,7 @@ export let addTransaction = (req: Request, res: Response) => {
         if (err) {
           res.status(500).send(err)
         } else {
-          res.send('Ttransaction added')
+          res.send('Transaction added')
         }
       })
     }
@@ -104,7 +104,7 @@ export let delTransaction = (req: Request, res: Response) => {
               if (err) {
                 res.status(500).send(err)
               } else {
-                res.send(`user id: ${req.params.id} deleted`)
+                res.send(`Transaction id: ${req.params.id} deleted`)
               }
             })
           }
