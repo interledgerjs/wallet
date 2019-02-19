@@ -63,4 +63,8 @@ typings/
 # compiled js files
 build/
 
+# it's a mac thing
 .DS_Store
+
+# db files
+accounts
