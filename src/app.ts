@@ -1,9 +1,10 @@
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
-import * as accounts from './controllers/accounts'
+import * as account from './controllers/account'
 import * as exchange from './controllers/exchangeController'
 import * as jwtController from './controllers/jwtcontroller'
-import * as transactions from './controllers/transactions'
+import * as transaction from './controllers/transaction'
+import * as user from './controllers/user'
 import * as users from './controllers/users'
 import * as wallet from './controllers/wallet'
 import * as dbFunctions from './db'
@@ -21,7 +22,6 @@ app.post("/transaction", middleware.verifyToken, transaction.addTransaction);
 app.delete("/transaction/:id", middleware.verifyToken, transaction.delTransaction);
 app.put("/transaction/:id", middleware.verifyToken, transaction.updateTransaction);
 
-app.get('/users/id/:user_id', users.getUserByUserId)
 app.get("/accounts", account.accounts);
 app.get("/account/:id", account.getAccount);
 app.post("/account", middleware.verifyToken, account.addAccount);
@@ -33,6 +33,7 @@ app.get("/user/:id", user.getuser);
 app.post("/user", middleware.verifyToken, user.adduser);
 app.delete("/user/:id", middleware.verifyToken, user.deluser);
 app.put("/user/:id", middleware.verifyToken, user.updateuser);
+app.get('/users/id/:user_id', users.getUserByUserId)
 
 app.get("/getToken", jwtController.genToken);
 

@@ -3,18 +3,18 @@ import * as sqlite3 from 'sqlite3'
 // const sqlite3:any = require('sqlite3');
 
 let connectServer = (mysql.createConnection({
-        host		: '127.0.0.1',
-		user		: 'root',
-        password	: 'password',
-        insecureAuth : true
-    }));
+  host		: '127.0.0.1',
+  user		: 'root',
+  password	: 'password',
+  insecureAuth : true
+}))
 
 let connectDb = (mysql.createConnection({
-        host		: '127.0.0.1',
-        user		: 'root',
-        database    : 'my_db'
-    }));
-        password	: 'wethinkcoil',
+  host		: '127.0.0.1',
+  user		: 'root',
+  password	: 'password',
+  database    : 'my_db'
+}))
 
 const db: any = new sqlite3.Database('accounts')
 
