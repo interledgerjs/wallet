@@ -1,13 +1,13 @@
-import * as bodyParser      from "body-parser";
-import * as express         from "express";
-import * as accounts        from "./controllers/accounts";
-import * as exchange        from "./controllers/exchangeController";
-import * as jwtController   from "./controllers/jwtcontroller";
-import * as transactions    from "./controllers/transactions"; 
-import * as users           from "./controllers/users";
-import * as wallet          from "./controllers/wallet";
-import * as dbFunctions     from "./db";
-import * as middleware      from "./middleware";
+import * as express from "express";
+import * as account from "./controllers/account";
+import * as user from "./controllers/user";
+import * as transaction from "./controllers/transaction"; 
+import * as bodyParser from "body-parser";
+import * as dbFunctions from "./db";
+import * as jwtController from "./controllers/jwtcontroller";
+import * as middleware from "./middleware";
+import * as exchange from "./controllers/exchangeController";
+import * as jwt from "jsonwebtoken";
 
 const app = express();
 app.set("port", 3000);
@@ -15,19 +15,25 @@ app.use(bodyParser.json());
 
 dbFunctions.initialise();
 
+app.get("/transactions", transaction.transactions);
+app.get("/transaction/:id/", transaction.getTransaction);
+app.post("/transaction", middleware.verifyToken, transaction.addTransaction);
+app.delete("/transaction/:id", middleware.verifyToken, transaction.delTransaction);
+app.put("/transaction/:id", middleware.verifyToken, transaction.updateTransaction);
+
+app.get("/accounts", account.accounts);
+app.get("/account/:id", account.getAccount);
+app.post("/account", middleware.verifyToken, account.addAccount);
+app.delete("/account/:id", middleware.verifyToken, account.delAccount);
+app.put("/account/:id", middleware.verifyToken, account.updateAccount);
+
+app.get("/users", user.users);
+app.get("/user/:id", user.getuser);
+app.post("/user", middleware.verifyToken, user.adduser);
+app.delete("/user/:id", middleware.verifyToken, user.deluser);
+app.put("/user/:id", middleware.verifyToken, user.updateuser);
+
 app.get("/getToken", jwtController.genToken);
-
-//USERS ENDPOINTS ARE UNTESTED
-app.get ('/users/:user_id', users.get_user_by_user_id);
-app.get ('/users/:user_name', users.get_user_by_user_name);
-app.post('/users/:user_name', users.create_new_user);
-app.put ('/users/:user_id/status', users.deactivate_status_of_user_id); //is this route name ok? refer to staff
-
-app.get ('/accounts/:owner_user_id', accounts.get_accs_by_owner_user_id); 
-app.get ('/accounts/:account_id', accounts.get_acc_by_account_id);
-app.post('/accounts', accounts.create_new_acc);
-app.put ('/accounts', accounts.update_acc);
-    //json fields: account_id, amount
 
 app.get("/transactions", transactions.transactions);
 app.get("/transaction/:id/", transactions.getTransaction);
@@ -35,6 +41,29 @@ app.post("/transactions", middleware.verifyToken, transactions.addTransaction);
 app.put("/transactions/:id/:execute*?", middleware.verifyToken, transactions.updateTransaction); //this will be refined at a later stage
 
 app.get("/exchange", exchange.getRates);
+
+// test for tokens
+app.post('/test/posts', middleware.verifyToken,(req, res) => {
+    res.json({
+        message: 'Post created...'
+    });
+});
+
+// a prototype login function to be replaced
+app.post('/login', (req, res) => {
+    //mock user
+    const user = {
+        id: 1,
+        username: 'john',
+        email: 'john@foo.com'
+    };
+    jwt.sign({user}, 'secret',{ expiresIn: '1d' }, (err, token) => {
+        console.log(`Token generated for ${user.username}`);
+        
+        res.json({token});
+    });
+});
+
 
 app.listen(app.get("port"), () => {
     console.log("server running on port %d", app.get("port"));
