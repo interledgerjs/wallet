@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-=======
-import { Request, Response} from "express";
-import * as jwt from "jsonwebtoken";
->>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7
 
 // verifyToken
 export let verifyToken = (req: Request, res: Response, next: any) => {

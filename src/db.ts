@@ -35,7 +35,6 @@ export let query = (sqlQuery: string, callback: any) => {
 }
 
 export let initialise = () => {
-<<<<<<< HEAD
   if (process.argv.length > 2 && process.argv[2] === '-mysql') {
 
     let serverDB = (sqlQuery: string, callback) => {
@@ -49,21 +48,6 @@ export let initialise = () => {
     serverDB('CREATE DATABASE IF NOT EXISTS my_db', (err) => {
       if (!err) {
         connectDb.query('CREATE TABLE IF NOT EXISTS users (\
-=======
-    if (process.argv.length > 2 && process.argv[2] == "-mysql") {
-
-        let serverDB = (sqlQuery: string, callback) => {
-            connectServer.query(sqlQuery, (err) => {
-                if (err) throw err;
-                callback(err);
-            });
-        }
-
-        console.log('mysql db building');
-        serverDB("CREATE DATABASE IF NOT EXISTS my_db", (err) => {
-            if (!err) {
-                connectDb.query("CREATE TABLE IF NOT EXISTS users (\
->>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7
                     user_id INT AUTO_INCREMENT PRIMARY KEY,\
                     user_name VARCHAR(255),\
                     date_created datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\

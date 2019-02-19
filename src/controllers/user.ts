@@ -54,30 +54,9 @@ export let adduser = (req: Request, res: Response) => {
       }
       dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
-<<<<<<< HEAD
           res.status(500).send(err)
         } else {
           res.send('User added')
-=======
-            res.status(403).send(err.message);
-        }
-        else {
-                let keys: string = "";
-                let vals: string = "";
-                for (var k in req.body) {
-                    keys += `${k},`;
-                    vals += `'${req.body[k]}',`
-                }
-                if (keys.length > 0) keys = keys.slice(0, -1);
-                if (vals.length > 0) vals = vals.slice(0, -1);
-                dbFunctions.query(`INSERT INTO users (${keys}) VALUES (${vals})`, (err) => {
-                    if (err)
-                        res.status(500).send(err);
-                    else
-                        res.send(req.body);
-                });
-            
->>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7
         }
       })
 
