@@ -1,162 +1,141 @@
-import { Request, Response } from "express";
-import * as dbFunctions from "../db";
-import * as Joi from "joi";
-import * as jwt from "jsonwebtoken";
-import * as userDL from "../datalayer/userDL";
-
-// get /user #returns all users
-// export let users = (req: Request, res: Response) => {
-//     dbFunctions.query("SELECT * FROM users", (err, result) => {
-//         if (err)
-//             res.status(500).send(err);
-//         else {
-//             if (result.length == 0) {
-//                 res.sendStatus(404);
-//             }
-//             else
-//                 res.json(result);
-//         }
-//     });
-// }
+import { Request, Response } from 'express'
+import * as jwt from 'jsonwebtoken'
+import * as dlInterface from '../datalayer/dlInterface'
 
 export let users = (req: Request, res: Response) => {
-    let dataParams = {
-        action: "get",
-        table: "users",
-        parameters: {selectAll: true}
+  let dataParams = {
+    action: 'get',
+    table: 'users',
+    selectAll: true
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      if (result.length === 0) {
+        res.sendStatus(404)
+      } else {
+        res.json(result)
+      }
     }
-    userDL.userInterface(dataParams, (err, result) => {
-        if (err)
-            res.status(500).send(err);
-        else {
-            if (result.length == 0) {
-                res.sendStatus(404);
-            }
-            else
-                res.json(result);
-        }
-    });
+  })
 }
-
-//get /user/{1} #returns user with id 1
-// export let getuser = (req: Request, res: Response) => {
-//     dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.id}'`, (err, result) => {
-//         if (err)
-//             res.status(500).send(err);
-//         else {
-//             if (result.length == 0) {
-//                 res.sendStatus(404);
-//             }
-//             else
-//                 res.json(result);
-//         }
-//     });
-// }
 
 export let getuser = (req: Request, res: Response) => {
-    let dataParams = {
-        action: "get",
-        table: "users",
-        parameters: {selectAll: true},
-        filter: [{field: "user_id", operator: "=", value: req.params.id}]
+  let dataParams = {
+    action: 'get',
+    table: 'users',
+    selectAll: true,
+    filter: [{ field: 'user_id', operator: '=', value: req.params.id }]
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      if (result.length === 0) {
+        res.sendStatus(404)
+      } else {
+        res.json(result)
+      }
     }
-    userDL.userInterface(dataParams, (err, result) => {
-        if (err)
-            res.status(500).send(err);
-        else {
-            if (result.length == 0) {
-                res.sendStatus(404);
+  })
+}
+
+export let adduser = (req: Request, res: Response) => {
+  jwt.verify(req.token, 'secret', (err, authData) => {
+    if (err) {
+      res.status(403).send(err.message)
+    } else {
+
+      let dataParams = {
+        action: 'post',
+        table: 'users',
+        parameters: req.body
+      }
+      dlInterface.handleOp(dataParams, (err, result) => {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          res.send('User added')
+        }
+      })
+
+    }
+  })
+
+}
+
+export let deluser = (req: Request, res: Response) => {
+  jwt.verify(req.token, 'secret', (err, authData) => {
+    if (err) {
+      res.status(403).send(err.message)
+    } else {
+      let dataParams = {
+        action: 'get',
+        table: 'users',
+        selectAll: true,
+        filter: [{ field: 'user_id', operator: '=', value: req.params.id }]
+      }
+      dlInterface.handleOp(dataParams, (err, result) => {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          if (result.length === 0) {
+            res.sendStatus(404)
+          } else {
+            let delParams = {
+              action: 'delete',
+              table: 'users',
+              filter: [{ field: 'user_id', operator: '=', value: req.params.id }]
             }
-            else
-                res.json(result);
+            dlInterface.handleOp(delParams, (err, result) => {
+              if (err) {
+                res.status(500).send(err)
+              } else {
+                res.send(`user id: ${req.params.id} deleted`)
+              }
+            })
+          }
         }
-    });
+      })
+    }
+  })
 }
 
-//post /user #adds new user to table
-export let adduser = (req : Request, res: Response) => {
-    jwt.verify(req.token, "secret", (err, authData) => {
+export let updateuser = (req: Request, res: Response) => {
+  jwt.verify(req.token, 'secret', (err, authData) => {
+    if (err) {
+      res.status(403).send(err.message)
+    } else {
+      let dataParams = {
+        action: 'put',
+        table: 'users',
+        filter: [{ field: 'user_id', operator: '=', value: req.params.id }],
+        parameters: req.body
+      }
+      dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
-            res.status(403).send(err.message);
+          res.status(500).send(err)
+        } else {
+          let getParams = {
+            action: 'get',
+            table: 'users',
+            filter: [{ field: 'user_id', operator: '=', value: req.params.id }],
+            selectAll: true
+          }
+          dlInterface.handleOp(getParams, (err, result) => {
+            if (err) {
+              res.status(500).send(err)
+            } else {
+              if (result.length === 0) {
+                res.status(404).send('invalid id requested')
+              } else {
+                res.json(result)
+              }
+            }
+          })
         }
-        else {
-                let keys: string = "";
-                let vals: string = "";
-                for (var k in req.body) {
-                    keys += `${k},`;
-                    vals += `'${req.body[k]}',`
-                }
-                if (keys.length > 0) keys = keys.slice(0, -1);
-                if (vals.length > 0) vals = vals.slice(0, -1);
-                dbFunctions.query(`INSERT INTO users (${keys}) VALUES (${vals})`, (err) => {
-                    if (err)
-                        res.status(500).send(err);
-                    else
-                        res.send(JSON.stringify(req.body));
-                });
-            
-        }
-    });
-    
-}
-
-//delete /user/{1} #removes user with id 1
-export let deluser = (req : Request, res: Response) => {
-    // console.log(req.token);
-    jwt.verify(req.token, "secret", (err, authData) => {
-        if (err) {
-            res.status(403).send(err.message);
-        }
-        else {
-            dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.id}'`, (err, result) => {
-                if (err)
-                    res.status(500).send(err);
-                else {
-                    if (result.length == 0) {
-                        res.sendStatus(404);
-                    }
-                    else {
-                        dbFunctions.query(`DELETE FROM users where user_id = '${req.params.id}'`, (err, result) => {
-                            if (err)
-                                res.status(500).send(err);
-                            else
-                                res.send(`user id: ${req.params.id} deleted`);
-                        });
-                    }
-                }  
-            });
-        }
-    });
-}
-
-//put /user/{1} #updates user with id 1
-export let updateuser = (req : Request, res: Response) => {
-    jwt.verify(req.token, "secret", (err, authData) => {
-        if (err) {
-            res.status(403).send(err.message);
-        }
-        else {
-                let str: string = "";
-                for (var k in req.body) {
-                    str += `${k}='${req.body[k]}',`;
-                }
-                if (str.length > 0) str = str.slice(0, -1);
-                dbFunctions.query(`UPDATE users SET ${str} WHERE user_id = '${req.params.id}'`, (err) => {
-                    if (err)
-                        res.status(500).send(err);
-                    else {
-                        dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.id}'`, (err, result) => {
-                            if (err)
-                                res.status(500).send(err);
-                            else {
-                                if (result.length == 0)
-                                    res.status(404).send("invalid id requested");
-                                else
-                                    res.json(result);
-                            }
-                        });
-                    }
-                });   
-        }
-    });
+      })
+    }
+  })
 }
