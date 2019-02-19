@@ -61,10 +61,17 @@ typings/
 .next
 
 # compiled js files
+<<<<<<< HEAD
 build/
+=======
+dist/
+>>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7
 
 # it's a mac thing
 .DS_Store
+<<<<<<< HEAD
 
 # db files
 accounts
+=======
+>>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7

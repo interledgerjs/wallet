@@ -28,6 +28,7 @@ app.post('/account', middleware.verifyToken, account.addAccount)
 app.delete('/account/:id', middleware.verifyToken, account.delAccount)
 app.put('/account/:id', middleware.verifyToken, account.updateAccount)
 
+<<<<<<< HEAD
 app.get('/users', user.users)
 app.get('/user/:id', user.getuser)
 app.post('/user', middleware.verifyToken, user.adduser)
@@ -36,6 +37,15 @@ app.put('/user/:id', middleware.verifyToken, user.updateuser)
 app.get('/users/id/:user_id', users.getUserByUserId)
 
 app.get('/getToken', jwtController.genToken)
+=======
+app.get("/users", user.users);
+app.get("/user/:id", user.getuser);
+app.post("/user", middleware.verifyToken, user.adduser);
+app.delete("/user/:id", middleware.verifyToken, user.deluser);
+app.put("/user/:id", middleware.verifyToken, user.updateuser);
+
+app.get("/getToken", jwtController.genToken);
+>>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7
 
 app.get('/exchange', exchange.getRates)
 

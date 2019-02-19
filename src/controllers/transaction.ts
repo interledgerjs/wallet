@@ -128,6 +128,7 @@ export let updateTransaction = (req: Request, res: Response) => {
       }
       dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
+<<<<<<< HEAD
           res.status(500).send(err)
         } else {
           let getParams = {
@@ -145,6 +146,42 @@ export let updateTransaction = (req: Request, res: Response) => {
               } else {
                 res.json(result)
               }
+=======
+            res.status(403).send(err.message);
+        }
+        else {
+            const schema = Joi.object().keys({
+                dbt_acc_id: Joi.number(),
+                crdt_acc_id: Joi.number(),
+                amount: Joi.number()
+            }).or('dbt_acc_id', 'crdt_acc_id', 'amount');
+            const result = Joi.validate(req.body, schema);
+            if (result.error) {
+                res.send(result.error.name).status(400)
+            }
+            else {
+                let str: string = "";
+                for (var k in req.body) {
+                    str += `${k}='${req.body[k]}',`;
+                }
+                if (str.length > 0) str = str.slice(0, -1);
+                dbFunctions.query(`UPDATE transactions SET ${str} WHERE trans_id = '${req.params.id}'`, (err) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else {
+                        dbFunctions.query(`SELECT * FROM transactions WHERE trans_id = '${req.params.id}'`, (err, result) => {
+                            if (err)
+                                res.status(500).send(err);
+                            else {
+                                if (result.length == 0)
+                                    res.status(404).send("invalid id requested");
+                                else
+                                    res.json(result);
+                            }
+                        });
+                    }
+                });   
+>>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7
             }
           })
         }

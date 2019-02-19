@@ -57,9 +57,41 @@ export let addAccount = (req: Request, res: Response) => {
       }
       dlInterface.handleOp(dataParams, (err, result) => {
         if (err) {
+<<<<<<< HEAD
           res.status(500).send(err)
         } else {
           res.send('Account added')
+=======
+            res.status(403).send(err.message);
+        }
+        else {
+            const schema = Joi.object().keys({
+                account_name:Joi.string().required(),
+                owner_user_id: Joi.number().required(),
+                balance: Joi.number().required()
+            });
+            const result = Joi.validate(req.body, schema);
+        //    console.log(result);
+            if (result.error) {
+                res.sendStatus(400);
+            }
+            else {
+                let keys: string = "";
+                let vals: string = "";
+                for (var k in req.body) {
+                    keys += `${k},`;
+                    vals += `'${req.body[k]}',`
+                }
+                if (keys.length > 0) keys = keys.slice(0, -1);
+                if (vals.length > 0) vals = vals.slice(0, -1);
+                dbFunctions.query(`INSERT INTO accounts (${keys}) VALUES (${vals})`, (err) => {
+                    if (err)
+                        res.status(500).send(err);
+                    else 
+                        res.send(req.body);
+                });
+            }
+>>>>>>> d2e9b442ee2ad70954e444f6aab2e0205b7b08f7
         }
       })
 
