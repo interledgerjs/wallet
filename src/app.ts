@@ -18,17 +18,19 @@ dbFunctions.initialise()
 app.get('/getToken', jwtController.genToken)
 
 // USERS ENDPOINTS ARE UNTESTED
-app.get('/users/:user_id', users.getUserByUserId)
-app.get('/users/:user_name', users.getUserByUserName)
+app.get('/users/id/:user_id', users.getUserByUserId)
+app.get('/users/name/:user_name', users.getUserByUserName)
 app.post('/users/:user_name', users.createNewUser)
 app.put('/users/:user_id/status', users.deactivateStatusOfUserId) // is this route name ok? refer to staff
 
+// ACCOUNTS ENDPOINTS ARE UNTESTED
 app.get('/accounts/:owner_user_id', accounts.getAccsByOwnerUserId)
 app.get('/accounts/:account_id', accounts.getAccByAccountId)
 app.post('/accounts', accounts.createNewAcc)
 app.put('/accounts', accounts.updateAcc)
     // json fields: account_id, amount
 
+// TRANSACTIONS ENDPOINTS ARE UNTESTED
 app.get('/transactions', transactions.transactions)
 app.get('/transaction/:id/', transactions.getTransaction)
 app.post('/transactions', middleware.verifyToken, transactions.addTransaction)
@@ -36,6 +38,13 @@ app.put('/transactions/:id/:execute*?', middleware.verifyToken, transactions.upd
 
 app.get('/exchange', exchange.getRates)
 
-app.listen(app.get('port'), () => {
-  console.log('server running on port %d', app.get('port'))
-})
+if (!module.parent) {
+  app.listen(app.get('port'), () => {
+    console.log('server running on port %d', app.get('port'))
+  })
+}
+// app.listen(app.get('port'), () => {
+//   console.log('server running on port %d', app.get('port'))
+// })
+
+module.exports = app
