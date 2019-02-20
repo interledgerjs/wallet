@@ -16,10 +16,10 @@ export let verifyToken = (req: Request, res: Response, next: any) => {
         res.sendStatus(403)
       } else {
                 // console.log('Token Verified');
+        req.authData = authData
         next()
       }
     })
-
   } else {
     res.sendStatus(403)
   }

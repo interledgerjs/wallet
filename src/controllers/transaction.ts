@@ -54,99 +54,81 @@ export let getTransaction = (req: Request, res: Response) => {
 
 // post /transaction #adds new transaction to table
 export let addTransaction = (req: Request, res: Response) => {
-  jwt.verify(req.token, 'secret', (err, authData) => {
+  let dataParams = {
+    action: 'post',
+    table: 'transactions',
+    parameters: req.body
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
-      res.status(403).send(err.message)
+      res.status(500).send(err)
     } else {
-      let dataParams = {
-        action: 'post',
-        table: 'transactions',
-        parameters: req.body
-      }
-      dlInterface.handleOp(dataParams, (err, result) => {
-        if (err) {
-          res.status(500).send(err)
-        } else {
-          res.send('Transaction added')
-        }
-      })
+      res.send('Transaction added')
     }
   })
-
 }
 
 // delete /transaction/{1} #removes transaction with id 1
 export let delTransaction = (req: Request, res: Response) => {
   // console.log(req.token)
-  jwt.verify(req.token, 'secret', (err, authData) => {
+  let dataParams = {
+    action: 'get',
+    table: 'transactions',
+    selectAll: true,
+    filter: [{ field: 'transID', operator: '=', value: req.params.id }]
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
-      res.status(403).send(err.message)
+      res.status(500).send(err)
     } else {
-      let dataParams = {
-        action: 'get',
-        table: 'transactions',
-        selectAll: true,
-        filter: [{ field: 'transID', operator: '=', value: req.params.id }]
-      }
-      dlInterface.handleOp(dataParams, (err, result) => {
-        if (err) {
-          res.status(500).send(err)
-        } else {
-          if (result.length === 0) {
-            res.sendStatus(404)
-          } else {
-            let delParams = {
-              action: 'delete',
-              table: 'transactions',
-              filter: [{ field: 'transID', operator: '=', value: req.params.id }]
-            }
-            dlInterface.handleOp(delParams, (err, result) => {
-              if (err) {
-                res.status(500).send(err)
-              } else {
-                res.send(`Transaction id: ${req.params.id} deleted`)
-              }
-            })
-          }
+      if (result.length === 0) {
+        res.sendStatus(404)
+      } else {
+        let delParams = {
+          action: 'delete',
+          table: 'transactions',
+          filter: [{ field: 'transID', operator: '=', value: req.params.id }]
         }
-      })
+        dlInterface.handleOp(delParams, (err, result) => {
+          if (err) {
+            res.status(500).send(err)
+          } else {
+            res.send(`Transaction id: ${req.params.id} deleted`)
+          }
+        })
+      }
     }
   })
+
 }
 
 // put /transaction/{1} #updates transaction with id 1
 export let updateTransaction = (req: Request, res: Response) => {
-  jwt.verify(req.token, 'secret', (err, authData) => {
+  let dataParams = {
+    action: 'put',
+    table: 'transactions',
+    filter: [{ field: 'transID', operator: '=', value: req.params.id }],
+    parameters: req.body
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
-      res.status(403).send(err.message)
+      res.status(500).send(err)
     } else {
-      let dataParams = {
-        action: 'put',
+      let getParams = {
+        action: 'get',
         table: 'transactions',
         filter: [{ field: 'transID', operator: '=', value: req.params.id }],
-        parameters: req.body
+        selectAll: true
       }
-      dlInterface.handleOp(dataParams, (err, result) => {
+      dlInterface.handleOp(getParams, (err, result) => {
         if (err) {
           res.status(500).send(err)
         } else {
-          let getParams = {
-            action: 'get',
-            table: 'transactions',
-            filter: [{ field: 'transID', operator: '=', value: req.params.id }],
-            selectAll: true
+          if (result.length === 0) {
+            res.status(404).send('invalid id requested')
+          } else {
+            res.json(result)
           }
-          dlInterface.handleOp(getParams, (err, result) => {
-            if (err) {
-              res.status(500).send(err)
-            } else {
-              if (result.length === 0) {
-                res.status(404).send('invalid id requested')
-              } else {
-                res.json(result)
-              }
-            }
-          })
         }
       })
     }

@@ -47,6 +47,7 @@ if (!module.parent) {
 module.exports = app
 // test for tokens
 app.post('/test/posts', middleware.verifyToken,(req, res) => {
+    // console.log(req.authData);
   res.json({
     message: 'Post created...'
   })
