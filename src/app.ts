@@ -46,24 +46,3 @@ if (!module.parent) {
   })
 }
 module.exports = app
-// test for tokens
-app.post('/test/posts', middleware.verifyToken,(req, res) => {
-    // console.log(req.authData);
-  res.json({
-    message: 'Post created...'
-  })
-})
-
-// a prototype login function to be replaced
-app.post('/login', (req, res) => {
-    // mock user
-  const user = {
-    id: 1,
-    username: 'john',
-    email: 'john@foo.com'
-  }
-  jwt.sign({ user }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
-    console.log(`Token generated for ${user.username}`)
-    res.json({ token })
-  })
-})
