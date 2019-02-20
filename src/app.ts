@@ -21,7 +21,6 @@ import * as tempuser from './password'
 app.get('/login/:userName/:password', tempuser.login)
 // creates a user and hashes user password
 app.post('/users', tempuser.addUser)
-//
 
 app.get('/transactions', transaction.transactions)
 app.get('/transaction/:id/', transaction.getTransaction)
@@ -40,7 +39,6 @@ app.get('/user/:id', user.getuser)
 app.post('/user', middleware.verifyToken, user.adduser)
 app.delete('/user/:id', middleware.verifyToken, user.deluser)
 app.put('/user/:id', middleware.verifyToken, user.updateuser)
-// app.get('/users/id/:userID', users.getUserByUserId)
 
 app.get('/getToken', jwtController.genToken)
 
