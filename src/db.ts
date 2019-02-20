@@ -77,9 +77,23 @@ export let initialise = () => {
     console.log('sqlite db building')
 
     db.serialize(function () {
-      db.run('CREATE TABLE IF NOT EXISTS users (userID INTEGER PRIMARY KEY AUTOINCREMENT, userName VARCHAR(255), dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, active INTEGER, password VARCHAR(255))')
-      db.run('CREATE TABLE IF NOT EXISTS accounts (accountID INTEGER PRIMARY KEY AUTOINCREMENT, accountName VARCHAR(255), ownerUserID INTEGER, balance INTEGER, lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)')
-      db.run('CREATE TABLE IF NOT EXISTS transactions (transID INTEGER PRIMARY KEY AUTOINCREMENT, dbtAccID INTEGER, crdtAccID INTEGER, amount INTEGER, date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP)')
+      db.run('CREATE TABLE IF NOT EXISTS users (\
+        userID INTEGER PRIMARY KEY AUTOINCREMENT,\
+        userName VARCHAR(255),\
+        dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
+        active INTEGER,\
+        password VARCHAR(255));')
+      db.run('CREATE TABLE IF NOT EXISTS accounts (\
+        accountID INTEGER PRIMARY KEY AUTOINCREMENT,\
+        accountName VARCHAR(255),\
+        ownerUserID INT, balance INT,\
+        lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
+      db.run('CREATE TABLE IF NOT EXISTS transactions (\
+        transID INTEGER PRIMARY KEY AUTOINCREMENT,\
+        dbtAccID INTEGER,\
+        crdtAccID INT,\
+        amount INTEGER,\
+        date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
     })
   }
 }
