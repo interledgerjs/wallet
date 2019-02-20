@@ -4,7 +4,7 @@ import * as Joi from 'joi'
 import * as jwt from 'jsonwebtoken'
 
 export let getUserByUserId = (req: Request, res: Response) => {
-  dbFunctions.query(`SELECT * FROM users WHERE user_id = '${req.params.user_id}'`, (err, result) => {
+  dbFunctions.query(`SELECT * FROM users WHERE userID = '${req.params.userID}'`, (err, result) => {
     if (err) {
       res.status(500).json(err)
     } else {
@@ -14,7 +14,7 @@ export let getUserByUserId = (req: Request, res: Response) => {
 }
 
 export let getUserByUserName = (req: Request, res: Response) => {
-  dbFunctions.query(`SELECT * FROM users WHERE user_name = '${req.params.user_name}'`, (err, result) => {
+  dbFunctions.query(`SELECT * FROM users WHERE userName = '${req.params.userName}'`, (err, result) => {
     if (err) {
       res.status(500).json(err)
     } else {
@@ -24,7 +24,7 @@ export let getUserByUserName = (req: Request, res: Response) => {
 }
 
 export let createNewUser = (req: Request, res: Response) => {
-  dbFunctions.query(`INSERT INTO users (user_name, date_created, active) VALUES ('${req.params.user_name}', DEFAULT, 1)`, (err, result) => {
+  dbFunctions.query(`INSERT INTO users (userName, dateCreated, active) VALUES ('${req.params.userName}', DEFAULT, 1)`, (err, result) => {
     if (err) {
       res.status(500).json(err)
     } else {
@@ -34,7 +34,7 @@ export let createNewUser = (req: Request, res: Response) => {
 }
 
 export let deactivateStatusOfUserId = (req: Request, res: Response) => {
-  dbFunctions.query(`UPDATE users SET active = 0 WHERE user_id = '${req.params.user_id}'`, (err, result) => {
+  dbFunctions.query(`UPDATE users SET active = 0 WHERE userID = '${req.params.userID}'`, (err, result) => {
     if (err) {
       res.status(500).json(err)
     } else {
