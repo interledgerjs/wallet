@@ -26,7 +26,9 @@ export let query = (sqlQuery: string, callback: any) => {
     })
   } else {
     db.all(sqlQuery, (err, result) => {
-      if (err) console.log(err)
+      if (err) {
+        console.log(err)
+      }
       callback(err, result)
     })
   }
@@ -43,7 +45,7 @@ export let initialise = () => {
     }
 
     console.log('mysql db building')
-    serverDB('CREATE DATABASE IF NOT EXISTS myDB', (err) => {
+    serverDB('CREATE DATABASE IF NOT EXISTS my_db', (err) => {
       if (!err) {
         connectDb.query('CREATE TABLE IF NOT EXISTS users (\
                     userID INT AUTO_INCREMENT PRIMARY KEY,\
