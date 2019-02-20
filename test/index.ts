@@ -8,6 +8,7 @@ describe('Unit testing the /users route', function() {
       return request(app)
         .get('/users/id/1')
         .then(function(response){
+            console.log(response)
             assert.equal(response.status, 200)
         })
     });
