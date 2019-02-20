@@ -35,10 +35,15 @@ app.delete('/account/:id', middleware.verifyToken, account.delAccount)
 app.put('/account/:id', middleware.verifyToken, account.updateAccount)
 
 app.get('/users', user.users)
+  // no required input
 app.get('/user/:id', user.getuser)
+  // id as param
 app.post('/user', middleware.verifyToken, user.adduser)
+  // body.userName?, body.password?, body.active?
 app.delete('/user/:id', middleware.verifyToken, user.deluser)
+  // id as param
 app.put('/user/:id', middleware.verifyToken, user.updateuser)
+  // id as param, body.userName?, body.active?, body.password?
 
 app.get('/getToken', jwtController.genToken)
 
