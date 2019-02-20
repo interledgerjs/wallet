@@ -16,14 +16,6 @@ app.use(bodyParser.json())
 
 dbFunctions.initialise()
 
-// temporary user endpoints
-import * as tempuser from './password'
-// temporary user login
-app.get('/login/:userName/:password', tempuser.login)
-// creates a user and hashes user password
-app.post('/users', tempuser.addUser)
-//
-
 app.get('/transactions', transaction.transactions)
 app.get('/transaction/:id/', transaction.getTransaction)
 app.post('/transaction', middleware.verifyToken, transaction.addTransaction)
@@ -42,6 +34,7 @@ app.post('/user', middleware.verifyToken, user.adduser)
 app.delete('/user/:id', middleware.verifyToken, user.deluser)
 app.put('/user/:id', middleware.verifyToken, user.updateuser)
 app.get('/users/id/:userID', users.getUserByUserId)
+app.get('/login/:userName', user.login)
 
 app.get('/getToken', jwtController.genToken)
 
@@ -53,24 +46,3 @@ if (!module.parent) {
   })
 }
 module.exports = app
-// test for tokens
-app.post('/test/posts', middleware.verifyToken,(req, res) => {
-    // console.log(req.authData);
-  res.json({
-    message: 'Post created...'
-  })
-})
-
-// a prototype login function to be replaced
-app.post('/login', (req, res) => {
-    // mock user
-  const user = {
-    id: 1,
-    username: 'john',
-    email: 'john@foo.com'
-  }
-  jwt.sign({ user }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
-    console.log(`Token generated for ${user.username}`)
-    res.json({ token })
-  })
-})
