@@ -161,7 +161,7 @@ export let login = (req: Request, res: Response) => {
             res.json({ token })
           })
         } else {
-          res.json('fail')
+          res.json('Invalid password.')
         }
       })
     }
