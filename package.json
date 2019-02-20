@@ -6,8 +6,6 @@
   "scripts": {
     "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "build": "tsc",
-    "watch-ts": "tsc -w",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "lint": "tslint --project .",
     "pretest": "tsc --build",
     "test": "nyc mocha --require ts-node/register --ui mocha-typescript --require source-map-support/register test/**/*.ts",
@@ -28,7 +26,6 @@
     "@types/node": "^10.12.24",
     "axios": "^0.18.0",
     "bcrypt": "^3.0.4",
-    "concurrently": "^4.1.0",
     "express": "^4.16.4",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.4.0",
