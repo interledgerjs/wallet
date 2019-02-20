@@ -137,7 +137,7 @@ export let updateuser = (req: Request, res: Response) => {
 }
 
 export let login = (req: Request, res: Response) => {
-  let password = req.params.password
+  let password = req.body.password
   let dataParams = {
     action: 'get',
     table: 'users',
