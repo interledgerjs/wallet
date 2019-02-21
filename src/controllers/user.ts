@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import * as dlInterface from '../datalayer/dlInterface'
+import * as bcrypt from 'bcrypt'
+const saltRounds = 3
 
 export let users = (req: Request, res: Response) => {
   let dataParams = {
@@ -42,19 +44,33 @@ export let getuser = (req: Request, res: Response) => {
 }
 
 export let adduser = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'post',
-    table: 'users',
-    parameters: req.body
-  }
-  dlInterface.handleOp(dataParams, (err, result) => {
+  const pass = req.body.password
+  bcrypt.genSalt(saltRounds, function (err: any, salt: any) {
     if (err) {
-      res.status(500).send(err)
+      throw err
     } else {
-      res.send('User added')
+      bcrypt.hash(pass, salt, function (err: any, hash: any) {
+        if (err) {
+          throw err
+        } else {
+          req.body.password = hash
+          let dataParams = {
+            action: 'post',
+            table: 'users',
+            parameters: req.body
+          }
+          dlInterface.handleOp(dataParams, (err, result) => {
+            if (err) {
+              res.status(500).send(err)
+            } else {
+              res.send('User added')
+            }
+          })
+
+        }
+      })
     }
   })
-
 }
 
 export let deluser = (req: Request, res: Response) => {
@@ -114,6 +130,38 @@ export let updateuser = (req: Request, res: Response) => {
           } else {
             res.json(result)
           }
+        }
+      })
+    }
+  })
+}
+
+export let login = (req: Request, res: Response) => {
+  let password = req.body.password
+  let dataParams = {
+    action: 'get',
+    table: 'users',
+    selectAll: true,
+    filter: [{ field: 'userName', operator: '=', value: `'${req.params.userName}'` }]
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      bcrypt.compare(password, result[0].password, function (err: any, answer: any) {
+        if (err) {
+          throw err
+        }
+        if (answer) {
+          const user = {
+            userID: result[0].userID,
+            userName: result[0].userName
+          }
+          jwt.sign({ user }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
+            res.json({ token })
+          })
+        } else {
+          res.json('Invalid password.')
         }
       })
     }
