@@ -4,15 +4,18 @@
   "description": "> **This project is being built by the interns at Coil and is NOT ready to use. We'll make a release as soon as it is.**",
   "main": "./build/app.js",
   "scripts": {
-    "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "build": "tsc",
-    "lint": "tslint --project .",
-    "pretest": "tsc --build",
-    "test": "nyc mocha --require ts-node/register --ui mocha-typescript --require source-map-support/register test/**/*.ts",
-    "doc": "typedoc --options typedoc.js src/index.ts",
+    "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "codecov": "codecov",
+    "doc": "typedoc --options typedoc.js src/index.ts",
+    "watch-node": "nodemon app.js",
+    "lint": "tslint --project .",
+    "prepublishOnly": "npm run lint && npm test && npm run doc",
+    "pretest": "tsc --build",
     "preversion": "npm run lint && npm test",
-    "prepublishOnly": "npm run lint && npm test && npm run doc"
+    "test": "nyc mocha --require ts-node/register --ui mocha-typescript --require source-map-support/register test/**/*.ts",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "watch-ts": "tsc -w"
   },
   "author": "",
   "license": "ISC",
@@ -54,7 +57,7 @@
     "tslint": "^5.11.0",
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.13.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.3.3"
   },
   "repository": {
     "type": "git",
