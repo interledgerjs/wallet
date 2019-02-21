@@ -15,13 +15,6 @@ app.use(bodyParser.json())
 
 dbFunctions.initialise()
 
-// temporary user endpoints
-import * as tempuser from './password'
-// temporary user login
-app.get('/login/:userName/:password', tempuser.login)
-// creates a user and hashes user password
-app.post('/users', tempuser.addUser)
-
 app.get('/transactions', transaction.transactions)
   // no required input
 app.get('/transaction/:id/', transaction.getTransaction)
