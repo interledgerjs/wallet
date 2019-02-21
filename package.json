@@ -8,6 +8,7 @@
     "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "codecov": "codecov",
     "doc": "typedoc --options typedoc.js src/index.ts",
+    "watch-node": "nodemon app.js",
     "lint": "tslint --project .",
     "prepublishOnly": "npm run lint && npm test && npm run doc",
     "pretest": "tsc --build",
@@ -57,7 +58,7 @@
     "tslint": "^5.11.0",
     "tslint-config-standard": "^8.0.1",
     "typedoc": "^0.13.0",
-    "typescript": "^3.1.6"
+    "typescript": "^3.3.3"
   },
   "repository": {
     "type": "git",

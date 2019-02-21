@@ -23,16 +23,26 @@ app.get('/login/:userName/:password', tempuser.login)
 app.post('/users', tempuser.addUser)
 
 app.get('/transactions', transaction.transactions)
+  // no required input
 app.get('/transaction/:id/', transaction.getTransaction)
+  // id as param
 app.post('/transaction', middleware.verifyToken, transaction.addTransaction)
+  // body.transID, body.dbtAccID, body.crdtAccID, body.amount
 app.delete('/transaction/:id', middleware.verifyToken, transaction.delTransaction)
+  // id as param
 app.put('/transaction/:id', middleware.verifyToken, transaction.updateTransaction)
+  // id as param, body.dbtAccID, body.crdtAccID, body.amount
 
 app.get('/accounts', account.accounts)
+  // no required input
 app.get('/account/:id', account.getAccount)
+  // id as param
 app.post('/account', middleware.verifyToken, account.addAccount)
+  // body.accountID?, body.accountName?, body.ownerUserID?
 app.delete('/account/:id', middleware.verifyToken, account.delAccount)
+  // id as param
 app.put('/account/:id', middleware.verifyToken, account.updateAccount)
+  // id as param, body.accountName, body.ownerUserID?
 
 app.get('/users', user.users)
   // no required input
