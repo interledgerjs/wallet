@@ -8,7 +8,7 @@
     "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "codecov": "codecov",
     "doc": "typedoc --options typedoc.js src/index.ts",
-    "watch-node": "nodemon app.js",
+    "watch-node": "nodemon app.js --ignore ./test/",
     "lint": "tslint --project .",
     "prepublishOnly": "npm run lint && npm test && npm run doc",
     "pretest": "tsc --build",
