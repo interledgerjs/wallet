@@ -68,7 +68,7 @@ describe('Test to get a user by id', function() {
 // update a user
 describe('Test to update a user', function() {
     let data = {
-        "password": "test_user3",
+        "userName": "testuser3",
     }
     it('should return OK status', function() {
         return request(app)
@@ -80,6 +80,19 @@ describe('Test to update a user', function() {
             assert.equal(response.status, 200)
         })
     });
+});
+
+// user login
+describe('Test to log a user in', function() {
+  it('should return OK status', function() {
+    return request(app)
+      .get('/login/testuser3')
+      .send({"password": "test_user"})
+      .then(function(response){
+          //console.log(response)
+          assert.equal(response.status, 200)
+      })
+  });
 });
 
 // add account
@@ -243,4 +256,17 @@ describe('Test to delete a user', function() {
             assert.equal(response.status, 200)
         })
     });
+});
+
+// get exchange rates
+describe('Test to get exchange rates', function() {
+  it('should return OK status', function() {
+    return request(app)
+      .get('/exchange')
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function(response){
+          //console.log(response)
+          assert.equal(response.status, 200)
+      })
+  });
 });
