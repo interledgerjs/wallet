@@ -1,5 +1,7 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
+import * as checkInput from './checkInput'
+import * as Joi from 'joi'
 
 // verifyToken
 export let verifyToken = (req: Request, res: Response, next: any) => {
@@ -22,5 +24,52 @@ export let verifyToken = (req: Request, res: Response, next: any) => {
     })
   } else {
     res.sendStatus(403)
+  }
+}
+
+// validateData
+export let validateData = (req: Request, res: Response, next: any) => {
+  const method: string = req.method
+  const path: string = req.path.split('/')[1]
+
+  switch (path) {
+    case ('user'):
+      checkInput.valUser(req, (err) => {
+        if (err) {
+          res.status(400).send(err.details[0].message)
+        } else {
+          next()
+        }
+      })
+      break
+    case ('transaction'):
+      checkInput.valTrans(req, (err) => {
+        if (err) {
+          res.status(400).send(err.details[0].message)
+        } else {
+          next()
+        }
+      })
+      break
+    case ('account'):
+      checkInput.valAcc(req, (err) => {
+        if (err) {
+          res.status(400).send(err.details[0].message)
+        } else {
+          next()
+        }
+      })
+      break
+    case ('login'):
+      checkInput.valLogin(req, (err) => {
+        if (err) {
+          res.status(400).send(err.details[0].message)
+        } else {
+          next()
+        }
+      })
+      break
+    case (path):
+      next()
   }
 }
