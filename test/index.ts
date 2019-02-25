@@ -8,20 +8,6 @@ const expect = require('chai').expect
 
 let token
 
-//         .get('/getToken')
-
-describe('Test to get get a bearer token', function() {
-    it('should return OK status', function() {
-      return request(app)
-        .get('/getToken')
-        .then(function(response){
-            assert.equal(response.status, 200)
-            token = response.body.token
-            // console.log(token)
-        })
-    });
-});
-
 // .post('/user')
 describe('Test to create a new user', function() { 
     let data = {
@@ -257,6 +243,19 @@ describe('Test to delete a user', function() {
             assert.equal(response.status, 200)
         })
     });
+});
+
+// .get('/getToken')
+describe('Test to get get a bearer token', function() {
+  it('should return OK status', function() {
+    return request(app)
+      .get('/getToken')
+      .then(function(response){
+          assert.equal(response.status, 200)
+          token = response.body.token
+          // console.log(token)
+      })
+  });
 });
 
 // .get('/exchange')
