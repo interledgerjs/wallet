@@ -14,8 +14,7 @@ export let valTrans = (req, callback) => {
       })
       break
     case ('PUT'):
-      schema.or('dbtAccID', 'crdtAccID', 'amount')
-      Joi.validate(req.body, schema, (error) => {
+      Joi.validate(req.body, schema.or('dbtAccID', 'crdtAccID', 'amount'), (error) => {
         callback(error)
       })
       break
@@ -38,8 +37,7 @@ export let valUser = (req, callback) => {
       })
       break
     case ('PUT'):
-      schema.or('userName', 'active', 'password')
-      Joi.validate(req.body, schema, (error) => {
+      Joi.validate(req.body, schema.or('userName', 'active', 'password'), (error) => {
         callback(error)
       })
       break
@@ -61,8 +59,7 @@ export let valAcc = (req, callback) => {
       })
       break
     case ('PUT'):
-      schema.or('accountName', 'ownerUserID')
-      Joi.validate(req.body, schema, (error) => {
+      Joi.validate(req.body, schema.or('accountName', 'ownerUserID'), (error) => {
         callback(error)
       })
       break
@@ -75,15 +72,16 @@ export let valLogin = (req, callback) => {
   let schema = Joi.object().keys({
     password: Joi.string()
   })
+  let schema2 = Joi.object().keys({
+    username: Joi.string()
+  })
   switch (req.method) {
     case ('GET'):
       Joi.validate(req.body, schema, { presence: 'required' }, (error) => {
         if (error) {
           callback(error)
         } else {
-          Joi.validate(req.params, Joi.object().keys({
-            username: Joi.string()
-          }).required(), (error) => {
+          Joi.validate(req.params, schema2, { presence: 'required' }, (error) => {
             callback(error)
           })
         }
