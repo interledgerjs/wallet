@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import * as checkInput from './checkInput'
-import * as Joi from 'joi'
 
 // verifyToken
 export let verifyToken = (req: Request, res: Response, next: any) => {
