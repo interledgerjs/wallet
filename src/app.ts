@@ -59,4 +59,5 @@ if (!module.parent) {
     console.log('server running on port %d', app.get('port'))
   })
 }
+
 module.exports = app

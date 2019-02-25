@@ -1,7 +1,7 @@
-const assert = require('assert');
-const expect = require('chai').expect
-const request = require('supertest');
-const app = require('../build/app')
+import {assert} from 'chai';
+import { expect } from 'chai'
+import * as request from 'supertest';
+import * as app from '../build/app';
 
 // this test uses a preset ID's
 // change the test to use whichever ID is assigned by the database
