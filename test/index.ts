@@ -1,14 +1,15 @@
-const assert = require('assert');
+import assert from 'assert';
+import request from 'supertest';
+import app from '../build/app';
 const expect = require('chai').expect
-const request = require('supertest');
-const app = require('../build/app')
 
 // this test uses a preset ID's
 // change the test to use whichever ID is assigned by the database
 
 let token
 
-// get token
+//         .get('/getToken')
+
 describe('Test to get get a bearer token', function() {
     it('should return OK status', function() {
       return request(app)
@@ -21,7 +22,7 @@ describe('Test to get get a bearer token', function() {
     });
 });
 
-// create a new user
+// .post('/user')
 describe('Test to create a new user', function() { 
     let data = {
         "userID": 605,
@@ -41,7 +42,7 @@ describe('Test to create a new user', function() {
     });
 });
 
-// get all users
+// .get('/users')
 describe('Test to get all users', function() {
     it('should return OK status', function() {
       return request(app)
@@ -53,7 +54,7 @@ describe('Test to get all users', function() {
     });
 });
 
-// get user by id
+// .get('/user/:id')
 describe('Test to get a user by id', function() {
     it('should return OK status', function() {
       return request(app)
@@ -65,7 +66,7 @@ describe('Test to get a user by id', function() {
     });
 });
 
-// update a user
+// .put('/user/:id')
 describe('Test to update a user', function() {
     let data = {
         "userName": "testuser3",
@@ -82,7 +83,7 @@ describe('Test to update a user', function() {
     });
 });
 
-// user login
+// .get('/login/:userName')
 describe('Test to log a user in', function() {
   it('should return OK status', function() {
     return request(app)
@@ -95,7 +96,7 @@ describe('Test to log a user in', function() {
   });
 });
 
-// add account
+// .post('/account')
 describe('Test to create a new account', function() { 
     let data = {
         "accountID": 605,
@@ -114,7 +115,7 @@ describe('Test to create a new account', function() {
     });
 });
 
-// get all accounts
+// .get('/accounts')
 describe('Test to get all accounts', function() {
     it('should return OK status', function() {
       return request(app)
@@ -126,7 +127,7 @@ describe('Test to get all accounts', function() {
     });
 });
 
-// get account by id
+// .get('/account/:id')
 describe('Test to get an account by id', function() {
     it('should return OK status', function() {
       return request(app)
@@ -138,7 +139,7 @@ describe('Test to get an account by id', function() {
     });
 });
 
-// update account
+// .put('/account/:id')
 describe('Test to update an account', function() {
     let data = {
         "accountName": "test_account3",
@@ -156,7 +157,7 @@ describe('Test to update an account', function() {
     });
 });
 
-// add transaction
+// .post('/transaction')
 describe('Test to create a new transaction', function() { 
     let data = {
         "transID": 605,
@@ -176,7 +177,7 @@ describe('Test to create a new transaction', function() {
     });
 });
 
-// get all transactions
+// .get('/transactions')
 describe('Test to get all transactions', function() {
     it('should return OK status', function() {
       return request(app)
@@ -188,7 +189,7 @@ describe('Test to get all transactions', function() {
     });
 });
 
-// get transaction by id
+// .get('/transaction/:id')
 describe('Test to get a transaction by id', function() {
     it('should return OK status', function() {
       return request(app)
@@ -200,7 +201,7 @@ describe('Test to get a transaction by id', function() {
     });
 });
 
-// update transaction
+// .put('/transaction/:id')
 describe('Test to update a transaction', function() {
     let data = {
         "dbtAccID": 706,
@@ -219,7 +220,7 @@ describe('Test to update a transaction', function() {
     });
 });
 
-// delete transaction
+// .delete('/transaction/:id')
 describe('Test to delete a transaction', function() {
     it('should return OK status', function() {
       return request(app)
@@ -232,7 +233,7 @@ describe('Test to delete a transaction', function() {
     });
 });
 
-// delete account
+// .delete('/account/:id')
 describe('Test to delete an account', function() {
     it('should return OK status', function() {
       return request(app)
@@ -245,7 +246,7 @@ describe('Test to delete an account', function() {
     });
 });
 
-// delete a user
+// .delete('/user/:id')
 describe('Test to delete a user', function() {
     it('should return OK status', function() {
       return request(app)
@@ -258,7 +259,7 @@ describe('Test to delete a user', function() {
     });
 });
 
-// get exchange rates
+// .get('/exchange')
 describe('Test to get exchange rates', function() {
   it('should return OK status', function() {
     return request(app)
