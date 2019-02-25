@@ -1,3 +1,4 @@
+import * as dotenv from 'dotenv'
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import * as account from './controllers/account'
@@ -8,6 +9,7 @@ import * as dbFunctions from './db'
 import * as middleware from './middleware'
 import * as jwt from 'jsonwebtoken'
 
+dotenv.config()
 const app = express()
 app.set('port', 3000)
 app.use(bodyParser.json())
@@ -60,3 +62,5 @@ if (!module.parent) {
   })
 }
 module.exports = app
+
+console.log(process.env.SECRETKEY)

@@ -157,7 +157,7 @@ export let login = (req: Request, res: Response) => {
             userID: result[0].userID,
             userName: result[0].userName
           }
-          jwt.sign({ user }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
+          jwt.sign({ user }, process.env.SECRETKEY,{ expiresIn: '1d' }, (_err, token) => {
             res.json({ token })
           })
         } else {
