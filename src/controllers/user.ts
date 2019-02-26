@@ -179,11 +179,7 @@ export let login = (req: Request, res: Response) => {
     action: 'get',
     table: 'users',
     selectAll: true,
-<<<<<<< HEAD
-    filter: [{ field: 'userName', operator: '=', value: `${req.params.userName}` }]
-=======
     filter: [{ field: 'userName', operator: '=', value: req.params.userName }]
->>>>>>> upstream
   }
   dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
