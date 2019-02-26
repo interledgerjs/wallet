@@ -43,32 +43,69 @@ export let getuser = (req: Request, res: Response) => {
   })
 }
 
-export let adduser = (req: Request, res: Response) => {
-  const pass = req.body.password
-  bcrypt.genSalt(saltRounds, function (err: any, salt: any) {
+export let getUserByUserName = (req: Request, res: Response) => {
+  let dataParams = {
+    action: 'get',
+    table: 'users',
+    selectAll: true,
+    filter: [{ field: 'userName', operator: '=', value: req.params.userName }]
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
-      throw err
+      res.status(500).send(err)
     } else {
-      bcrypt.hash(pass, salt, function (err: any, hash: any) {
-        if (err) {
-          throw err
-        } else {
-          req.body.password = hash
-          let dataParams = {
-            action: 'post',
-            table: 'users',
-            parameters: req.body
-          }
-          dlInterface.handleOp(dataParams, (err, result) => {
-            if (err) {
-              res.status(500).send(err)
-            } else {
-              res.send('User added')
-            }
-          })
+      if (result.length === 0) {
+        res.sendStatus(404)
+      } else {
+        res.json(result)
+      }
+    }
+  })
+}
 
-        }
-      })
+export let addUser = (req: Request, res: Response) => {
+  // check if userName already exists
+  let dataParams = {
+    action: 'get',
+    table: 'users',
+    selectAll: true,
+    filter: [{ field: 'userName', operator: '=', value: req.body.userName }]
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      if (result.length === 0) {
+        const pass = req.body.password
+        bcrypt.genSalt(saltRounds, function (err: any, salt: any) {
+          if (err) {
+            throw err
+          } else {
+            bcrypt.hash(pass, salt, function (err: any, hash: any) {
+              if (err) {
+                throw err
+              } else {
+                req.body.password = hash
+                let dataParams = {
+                  action: 'post',
+                  table: 'users',
+                  parameters: req.body
+                }
+                dlInterface.handleOp(dataParams, (err, result) => {
+                  if (err) {
+                    res.status(500).send(err)
+                  } else {
+                    res.send('User added')
+                  }
+                })
+
+              }
+            })
+          }
+        })
+      } else {
+        res.json('userName alredy exists')
+      }
     }
   })
 }
@@ -142,7 +179,11 @@ export let login = (req: Request, res: Response) => {
     action: 'get',
     table: 'users',
     selectAll: true,
+<<<<<<< HEAD
     filter: [{ field: 'userName', operator: '=', value: `${req.params.userName}` }]
+=======
+    filter: [{ field: 'userName', operator: '=', value: req.params.userName }]
+>>>>>>> upstream
   }
   dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
