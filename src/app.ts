@@ -37,7 +37,7 @@ app.put('/account/:id', middleware.verifyToken, account.updateAccount)
 app.delete('/account/:id', middleware.verifyToken, account.delAccount)
   // id as param
 
-app.post('/user', middleware.verifyToken, user.adduser)
+app.post('/user', middleware.verifyToken, user.addUser)
   // body.userName?, body.password?, body.active?
 app.get('/users', user.users)
   // no required input
@@ -49,6 +49,8 @@ app.put('/user/:id', middleware.verifyToken, user.updateuser)
   // id as param, body.userName?, body.active?, body.password?
 app.delete('/user/:id', middleware.verifyToken, user.deluser)
   // id as param
+app.get('/user/userName/:userName', middleware.validateData, user.getUserByUserName)
+// userName as param
 
 app.get('/getToken', jwtController.genToken)
 
