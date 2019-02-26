@@ -257,16 +257,3 @@ describe('Test to delete a user', function() {
         })
     });
 });
-
-// .get('/exchange')
-describe('Test to get exchange rates', function() {
-  it('should return OK status', function() {
-    return request(app)
-      .get('/exchange')
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function(response){
-          //console.log(response)
-          assert.equal(response.status, 200)
-      })
-  });
-});
