@@ -10,6 +10,7 @@ import * as middleware from './middleware'
 import * as jwt from 'jsonwebtoken'
 
 const app = express()
+module.exports = app
 app.set('port', 3000)
 app.use(bodyParser.json())
 
@@ -59,5 +60,3 @@ if (!module.parent) {
     console.log('server running on port %d', app.get('port'))
   })
 }
-
-module.exports = app

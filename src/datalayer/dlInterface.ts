@@ -42,6 +42,10 @@ let ftHandleDelete = (options) => {
   return(`DELETE FROM ${options.table}`)
 }
 
+module.exports ={
+  ftHandleDelete: ftHandleDelete
+}
+
 let ftHandlePut = (options) => {
   let str: string = ''
   for (let k in options.parameters) {
