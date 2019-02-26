@@ -13,7 +13,7 @@
     "prepublishOnly": "npm run lint && npm test && npm run doc",
     "pretest": "tsc --build",
     "preversion": "npm run lint && npm test",
-    "test": "nyc mocha --require ts-node/register --ui mocha-typescript --require source-map-support/register 'test/**/*.spec.ts'",
+    "test": "nyc mocha --require ts-node/register --ui mocha-typescript --require source-map-support/register 'test/**/middleware.spec.ts'",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-ts": "tsc -w"
   },
