@@ -70,9 +70,9 @@ export let handleOp = (options, callback) => {
     let conditions: string = ''
     options.filter.forEach(el => {
       if (el.boolOp) {
-        conditions += ` ${el.boolOp} ${el.field} ${el.operator} ${el.value}`
+        conditions += ` ${el.boolOp} ${el.field} ${el.operator} '${el.value}'`
       } else {
-        conditions += ` ${el.field} ${el.operator} ${el.value}`
+        conditions += ` ${el.field} ${el.operator} '${el.value}'`
       }
     })
     sqlString += ` WHERE${conditions}`

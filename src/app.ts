@@ -1,7 +1,6 @@
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import * as account from './controllers/account'
-import * as exchange from './controllers/exchangeController'
 import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
@@ -20,7 +19,7 @@ app.post('/transaction', middleware.verifyToken, transaction.addTransaction)
   // body.transID, body.dbtAccID, body.crdtAccID, body.amount
 app.get('/transactions', transaction.transactions)
   // no required input
-app.get('/transaction/:id/', transaction.getTransaction)
+app.get('/transaction/:id/', middleware.validateData, transaction.getTransaction)
   // id as param
 app.put('/transaction/:id', middleware.verifyToken, transaction.updateTransaction)
   // id as param, body.dbtAccID, body.crdtAccID, body.amount
@@ -31,7 +30,7 @@ app.post('/account', middleware.verifyToken, account.addAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
 app.get('/accounts', account.accounts)
   // no required input
-app.get('/account/:id', account.getAccount)
+app.get('/account/:id', middleware.validateData, account.getAccount)
   // id as param
 app.put('/account/:id', middleware.verifyToken, account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
@@ -42,7 +41,7 @@ app.post('/user', middleware.verifyToken, user.adduser)
   // body.userName?, body.password?, body.active?
 app.get('/users', user.users)
   // no required input
-app.get('/user/:id', user.getuser)
+app.get('/user/:id', middleware.validateData, user.getuser)
   // id as param
 app.get('/login/:userName', user.login)
   // userName as param, body.password
@@ -53,7 +52,9 @@ app.delete('/user/:id', middleware.verifyToken, user.deluser)
 
 app.get('/getToken', jwtController.genToken)
 
-app.get('/exchange', exchange.getRates)
+app.all('*', (req, res) => {
+  res.sendStatus(404)
+})
 
 if (!module.parent) {
   app.listen(app.get('port'), () => {
