@@ -73,7 +73,7 @@ export let valLogin = (req, callback) => {
     password: Joi.string()
   })
   let schema2 = Joi.object().keys({
-    username: Joi.string()
+    userName: Joi.string()
   })
   switch (req.method) {
     case ('GET'):

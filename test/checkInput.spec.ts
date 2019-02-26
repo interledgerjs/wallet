@@ -226,7 +226,7 @@ describe('valLogin', function () {
         password: 'password'
       },
       params: {
-        username: 'name'
+        userName: 'name'
       }
     }
     checkInput.valLogin(req, function(err) {
