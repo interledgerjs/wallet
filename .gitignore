@@ -68,3 +68,5 @@ build/
 
 # db files
 accounts
+.vscode/launch.json
+.vscode/settings.json
