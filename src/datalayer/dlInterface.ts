@@ -38,7 +38,7 @@ let ftHandlePost = (options) => {
   return(`INSERT INTO ${options.table} (${keys}) VALUES (${vals})`)
 }
 
-let ftHandleDelete = (options) => {
+export let ftHandleDelete = (options) => {
   return(`DELETE FROM ${options.table}`)
 }
 
@@ -77,7 +77,7 @@ export let handleOp = (options, callback) => {
     })
     sqlString += ` WHERE${conditions}`
   }
-  console.log(sqlString)
+  // console.log(sqlString)
   dbFunctions.query(sqlString, (err, result) => {
     if (err) {
       console.log(err)
