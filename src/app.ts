@@ -11,7 +11,6 @@ import * as jwt from 'jsonwebtoken'
 
 dotenv.config()
 const app = express()
-app.set('port', 3000)
 app.use(bodyParser.json())
 
 dbFunctions.initialise()
@@ -57,10 +56,8 @@ app.all('*', (req, res) => {
 })
 
 if (!module.parent) {
-  app.listen(app.get('port'), () => {
-    console.log('server running on port %d', app.get('port'))
+  app.listen(process.env.PORT, () => {
+    console.log('server running on port %d', process.env.PORT)
   })
 }
 module.exports = app
-
-console.log(process.env.SECRETKEY)
