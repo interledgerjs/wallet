@@ -13,17 +13,16 @@ export let query = (sqlQuery: string, callback: any) => {
     }))
 
     connectDb.query(sqlQuery, (err, result) => {
-      if (err) console.log(err)
+      // if (err) console.log(err)
       connectDb.end()
       callback(err, result)
     })
 
   } else {
-    const db: any = new sqlite3.Database('accounts')
-
+    const db: any = new sqlite3.Database(process.env.DBNAME)
     db.all(sqlQuery, (err, result) => {
       if (err) {
-        console.log(err)
+        // console.log(err)
       }
       callback(err, result)
     })

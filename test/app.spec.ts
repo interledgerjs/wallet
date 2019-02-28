@@ -257,3 +257,16 @@ describe('Test to delete a user', function() {
         })
     });
 });
+
+// catch all
+describe('Test for catching unrecognised endpoint', function() {
+  it('should return 404 status', function() {
+    return request(app)
+      .delete('/apple')
+      .set('Authorization', 'Bearer ' + token)
+      .then(function(response){
+          //console.log(response)
+          assert.equal(response.status, 404)
+      })
+  });
+});
