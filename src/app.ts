@@ -4,16 +4,14 @@ import * as account from './controllers/account'
 import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
-import * as dbFunctions from './db'
 import * as middleware from './middleware'
-import * as jwt from 'jsonwebtoken'
+import * as dotenv from 'dotenv'
 
+dotenv.config()
 const app = express()
 module.exports = app
 app.set('port', 3000)
 app.use(bodyParser.json())
-
-dbFunctions.initialise()
 
 app.post('/transaction', middleware.verifyToken, transaction.addTransaction)
   // body.transID, body.dbtAccID, body.crdtAccID, body.amount
