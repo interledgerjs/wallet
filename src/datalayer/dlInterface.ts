@@ -9,7 +9,7 @@ import * as dbFunctions from '../db'
 //  'selectAll': true #set selectAll property to true to select all fields
 // }
 
-let ftHandleGet = (options) => {
+export let ftHandleGet = (options) => {
   let str: string = ''
 
   if (options.selectAll) {
@@ -25,7 +25,7 @@ let ftHandleGet = (options) => {
   return(`SELECT ${str} FROM ${options.table}`)
 }
 
-let ftHandlePost = (options) => {
+export let ftHandlePost = (options) => {
   let keys: string = ''
   let vals: string = ''
 
@@ -42,7 +42,7 @@ export let ftHandleDelete = (options) => {
   return(`DELETE FROM ${options.table}`)
 }
 
-let ftHandlePut = (options) => {
+export let ftHandlePut = (options) => {
   let str: string = ''
   for (let k in options.parameters) {
     str += `${k} = '${options.parameters[k]}',`
