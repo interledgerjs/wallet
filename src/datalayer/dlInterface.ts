@@ -38,7 +38,7 @@ let ftHandlePost = (options) => {
   return(`INSERT INTO ${options.table} (${keys}) VALUES (${vals})`)
 }
 
-let ftHandleDelete = (options) => {
+export let ftHandleDelete = (options) => {
   return(`DELETE FROM ${options.table}`)
 }
 
@@ -70,14 +70,14 @@ export let handleOp = (options, callback) => {
     let conditions: string = ''
     options.filter.forEach(el => {
       if (el.boolOp) {
-        conditions += ` ${el.boolOp} ${el.field} ${el.operator} ${el.value}`
+        conditions += ` ${el.boolOp} ${el.field} ${el.operator} '${el.value}'`
       } else {
-        conditions += ` ${el.field} ${el.operator} ${el.value}`
+        conditions += ` ${el.field} ${el.operator} '${el.value}'`
       }
     })
     sqlString += ` WHERE${conditions}`
   }
-  console.log(sqlString)
+  // console.log(sqlString)
   dbFunctions.query(sqlString, (err, result) => {
     if (err) {
       console.log(err)
