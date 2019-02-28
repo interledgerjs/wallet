@@ -70,3 +70,5 @@ build/
 accounts
 .vscode/launch.json
 .vscode/settings.json
+my_db
+package.json
