@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken'
 import * as dlInterface from '../datalayer/dlInterface'
 
 // post /account #adds new account to table
-export let createAccount = (req: Request, res: Response) => {
+export const createAccount = (req: Request, res: Response) => {
   let dataParams = {
     action: 'post',
     table: 'accounts',
@@ -20,7 +20,7 @@ export let createAccount = (req: Request, res: Response) => {
 }
 
 // get /account #returns all accounts
-export let readAllAccount = (req: Request, res: Response) => {
+export const readAllAccount = (req: Request, res: Response) => {
   let dataParams = {
     action: 'get',
     table: 'accounts',
@@ -39,7 +39,7 @@ export let readAllAccount = (req: Request, res: Response) => {
   })
 }
 
-export let readAllAccountByUserId = () => {
+export const readAllAccountByUserId = () => {
   const placeholder = 1
   console.log(placeholder)
 }
@@ -66,7 +66,7 @@ export let readAccount = (req: Request, res: Response) => {
 }
 
 // put /account/{1} #updates account with id 1
-export let updateAccount = (req: Request, res: Response) => {
+export const updateAccount = (req: Request, res: Response) => {
   let dataParams = {
     action: 'put',
     table: 'accounts',
@@ -99,7 +99,7 @@ export let updateAccount = (req: Request, res: Response) => {
 }
 
 // delete /account/{1} #removes account with id 1
-export let deleteAccount = (req: Request, res: Response) => {
+export const deleteAccount = (req: Request, res: Response) => {
   let dataParams = {
     action: 'get',
     table: 'accounts',
