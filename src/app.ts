@@ -28,7 +28,7 @@ app.post('/user/:id/account', middleware.verifyToken, account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
 app.get('/user/account', account.readAllAccount)
   // no required input
-app.get('/user/:id/account', account.ReadAllAccountByUserId)
+app.get('/user/:id/account', account.readAllAccountByUserId)
 
 app.get('/user/:id/account/:id', middleware.validateData, account.readAccount)
   // id as param

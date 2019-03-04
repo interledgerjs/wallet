@@ -22,7 +22,7 @@ export let readAllAccount = (req: Request, res: Response) => {
   })
 }
 
-export let ReadAllAccountByUserId = () => {
+export let readAllAccountByUserId = () => {
   const placeholder = 1
   console.log(placeholder)
 }
