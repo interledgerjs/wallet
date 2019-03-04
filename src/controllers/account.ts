@@ -2,6 +2,23 @@ import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import * as dlInterface from '../datalayer/dlInterface'
 
+// post /account #adds new account to table
+export let createAccount = (req: Request, res: Response) => {
+  let dataParams = {
+    action: 'post',
+    table: 'accounts',
+    parameters: req.body
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      res.send('Account added')
+    }
+  })
+
+}
+
 // get /account #returns all accounts
 export let readAllAccount = (req: Request, res: Response) => {
   let dataParams = {
@@ -48,21 +65,37 @@ export let readAccount = (req: Request, res: Response) => {
   })
 }
 
-// post /account #adds new account to table
-export let createAccount = (req: Request, res: Response) => {
+// put /account/{1} #updates account with id 1
+export let updateAccount = (req: Request, res: Response) => {
   let dataParams = {
-    action: 'post',
+    action: 'put',
     table: 'accounts',
+    filter: [{ field: 'accountID', operator: '=', value: req.params.id }],
     parameters: req.body
   }
   dlInterface.handleOp(dataParams, (err, result) => {
     if (err) {
       res.status(500).send(err)
     } else {
-      res.send('Account added')
+      let getParams = {
+        action: 'get',
+        table: 'accounts',
+        filter: [{ field: 'accountID', operator: '=', value: req.params.id }],
+        selectAll: true
+      }
+      dlInterface.handleOp(getParams, (err, result) => {
+        if (err) {
+          res.status(500).send(err)
+        } else {
+          if (result.length === 0) {
+            res.status(404).send('invalid id requested')
+          } else {
+            res.json(result)
+          }
+        }
+      })
     }
   })
-
 }
 
 // delete /account/{1} #removes account with id 1
@@ -93,39 +126,6 @@ export let deleteAccount = (req: Request, res: Response) => {
           }
         })
       }
-    }
-  })
-}
-
-// put /account/{1} #updates account with id 1
-export let updateAccount = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'put',
-    table: 'accounts',
-    filter: [{ field: 'accountID', operator: '=', value: req.params.id }],
-    parameters: req.body
-  }
-  dlInterface.handleOp(dataParams, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      let getParams = {
-        action: 'get',
-        table: 'accounts',
-        filter: [{ field: 'accountID', operator: '=', value: req.params.id }],
-        selectAll: true
-      }
-      dlInterface.handleOp(getParams, (err, result) => {
-        if (err) {
-          res.status(500).send(err)
-        } else {
-          if (result.length === 0) {
-            res.status(404).send('invalid id requested')
-          } else {
-            res.json(result)
-          }
-        }
-      })
     }
   })
 }
