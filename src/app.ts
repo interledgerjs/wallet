@@ -1,11 +1,11 @@
 import * as bodyParser from 'body-parser'
+import * as dotenv from 'dotenv'
 import * as express from 'express'
 import * as account from './controllers/account'
 import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
 import * as middleware from './middleware'
-import * as dotenv from 'dotenv'
 
 dotenv.config()
 const app = express()
@@ -24,15 +24,17 @@ app.put('/transaction/:id', middleware.verifyToken, transaction.updateTransactio
 app.delete('/transaction/:id', middleware.verifyToken, transaction.delTransaction)
   // id as param
 
-app.post('/account', middleware.verifyToken, account.addAccount)
+app.post('/user/:id/account', middleware.verifyToken, account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
-app.get('/accounts', account.accounts)
+app.get('/user/account', account.readAllAccount)
   // no required input
-app.get('/account/:id', middleware.validateData, account.getAccount)
+app.get('/user/:id/account', account.ReadAllAccountByUserId)
+
+app.get('/user/:id/account/:id', middleware.validateData, account.readAccount)
   // id as param
-app.put('/account/:id', middleware.verifyToken, account.updateAccount)
+app.put('/user/:id/account/:id', middleware.verifyToken, account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
-app.delete('/account/:id', middleware.verifyToken, account.delAccount)
+app.delete('/user/:id/account/:id', middleware.verifyToken, account.deleteAccount)
   // id as param
 
 app.post('/user', middleware.verifyToken, user.addUser)
