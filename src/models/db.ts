@@ -21,11 +21,14 @@ export function query (sqlQuery: string, callback: any) {
     })
 
   } else {
-    const db: any = new sqlite3.Database(process.env.DBNAME)
+    let db: any
+    if (typeof process.env.DBNAME === 'string') {
+      db = new sqlite3.Database(process.env.DBNAME)
+    }
 
     // sqlQuery = sqlite3.escape(sqlQuery)
 
-    db.all(sqlQuery, (err, result) => {
+    db.all(sqlQuery, (err: Error, result: object) => {
       if (err) {
         console.log(err)
       }

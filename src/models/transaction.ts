@@ -2,23 +2,37 @@ import * as dbFunctions from './db'
 
 export interface Transaction {
   transID: number,
-  dbtAccID: string,
+  dbtAccID: number,
   crdtAccID: number,
   amount: number,
   date: string
 }
 
+function isTransaction (transaction: any): transaction is Transaction {
+  return (
+    typeof transaction.transID === 'number' &&
+    typeof transaction.dbtAccID === 'number' &&
+    typeof transaction.crdtAccID === 'number' &&
+    typeof transaction.amount === 'number' &&
+    typeof transaction.date === 'string'
+  )
+}
+
 // function to handle adding transactions
 export function createTransaction (transaction: Transaction, callback: (error: Boolean) => void) {
-  const sql = `INSERT INTO transactions (dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
-  dbFunctions.query(sql, function (err: object) {
-    if (err) {
-      callback(true)
-      console.log(err)
-    } else {
-      callback(false)
-    }
-  })
+  if (isTransaction(transaction)) {
+    const sql = `INSERT INTO transactions (dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
+    dbFunctions.query(sql, function (err: object) {
+      if (err) {
+        callback(true)
+        console.log(err)
+      } else {
+        callback(false)
+      }
+    })
+  } else {
+    callback(true)
+  }
 }
 
 // function to handle getting all transactions

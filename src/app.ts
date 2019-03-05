@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import * as jwtController from './controllers/jwtcontroller'
+// import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
 
 dotenv.config()
