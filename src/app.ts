@@ -1,9 +1,9 @@
-import * as dotenv from 'dotenv'
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
 // import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
+import * as account from './controllers/account'
 
 dotenv.config()
 const app = express()
@@ -19,30 +19,20 @@ app.get('/transactions/id/:id/', transaction.readTransactionByID)
 app.get('/transactions/account/:accountID/', transaction.readTransactionByAccount)
 // account id as param
 
-// app.post('/account', middleware.verifyToken, account.addAccount)
-//   // body.accountID?, body.accountName?, body.ownerUserID?
-// app.get('/accounts', account.accounts)
-//   // no required input
-// app.get('/account/:id', middleware.validateData, account.getAccount)
-//   // id as param
-// app.put('/account/:id', middleware.verifyToken, account.updateAccount)
-//   // id as param, body.accountName, body.ownerUserID?
-// app.delete('/account/:id', middleware.verifyToken, account.delAccount)
-//   // id as param
-
-app.post('/users/:id/accounts', middleware.verifyToken, account.createAccount)
+app.post('/users/:id/accounts', account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
 app.get('/accounts', account.readAllAccounts)
   // no required input
 app.get('/users/:id/accounts', account.readAllAccountsByUserId)
 
-app.get('/users/:id/accounts/:id', middleware.validateData, account.readAccount)
+app.get('/users/:id/accounts/:id', account.readAccount)
   // id as param
-app.put('/users/:id/accounts/:id', middleware.verifyToken, account.updateAccount)
+app.put('/users/:id/accounts/:id', account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
-app.delete('/users/:id/accounts/:id', middleware.verifyToken, account.deleteAccount)
+app.delete('/users/:id/accounts/:id', account.deleteAccount)
   // id as param
-// app.post('/user', middleware.verifyToken, user.addUser)
+
+  // app.post('/user', middleware.verifyToken, user.addUser)
 //   // body.userName?, body.password?, body.active?
 // app.get('/users', user.users)
 //   // no required input

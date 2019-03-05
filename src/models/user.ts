@@ -15,9 +15,9 @@ function createUser (User: User, callback: (result: User) => void) {
   dbFunctions.query(sql, function (err: object) {
     console.log(err)
     if (err) {
-      //throw an error
+      // throw an error
     } else {
-      //create that user
+      // create that user
     }
   })
 }
