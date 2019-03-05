@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import * as dbFunctions from '../db'
+import * as dbFunctions from './db'
 
 interface User {
   userId: number,
