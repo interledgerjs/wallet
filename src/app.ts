@@ -24,17 +24,17 @@ app.put('/transaction/:id', middleware.verifyToken, transaction.updateTransactio
 app.delete('/transaction/:id', middleware.verifyToken, transaction.delTransaction)
   // id as param
 
-app.post('/user/:id/account', middleware.verifyToken, account.createAccount)
+app.post('/users/:id/accounts', middleware.verifyToken, account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
-app.get('/user/account', account.readAllAccount)
+app.get('/accounts', account.readAllAccounts)
   // no required input
-app.get('/user/:id/account', account.readAllAccountByUserId)
+app.get('/users/:id/accounts', account.readAllAccountsByUserId)
 
-app.get('/user/:id/account/:id', middleware.validateData, account.readAccount)
+app.get('/users/:id/accounts/:id', middleware.validateData, account.readAccount)
   // id as param
-app.put('/user/:id/account/:id', middleware.verifyToken, account.updateAccount)
+app.put('/users/:id/accounts/:id', middleware.verifyToken, account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
-app.delete('/user/:id/account/:id', middleware.verifyToken, account.deleteAccount)
+app.delete('/users/:id/accounts/:id', middleware.verifyToken, account.deleteAccount)
   // id as param
 
 app.post('/user', middleware.verifyToken, user.addUser)

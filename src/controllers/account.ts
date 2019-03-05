@@ -20,7 +20,7 @@ export const createAccount = (req: Request, res: Response) => {
 }
 
 // get /account #returns all accounts
-export const readAllAccount = (req: Request, res: Response) => {
+export const readAllAccounts = (req: Request, res: Response) => {
   let dataParams = {
     action: 'get',
     table: 'accounts',
@@ -39,7 +39,7 @@ export const readAllAccount = (req: Request, res: Response) => {
   })
 }
 
-export const readAllAccountByUserId = () => {
+export const readAllAccountsByUserId = () => {
   const placeholder = 1
   console.log(placeholder)
 }
