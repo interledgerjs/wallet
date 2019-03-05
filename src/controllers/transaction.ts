@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import * as transaction from '../models/transaction'
 
 // post /transaction #adds new transaction to table
-export function addTransaction (req: Request, res: Response) {
+export function createTransaction (req: Request, res: Response) {
   const transObject: transaction.Transaction = {
     transID: -1,
     dbtAccID: req.body.dbtAccID,
@@ -20,8 +20,8 @@ export function addTransaction (req: Request, res: Response) {
 }
 
 // get /transaction #returns all transactions
-export function allTransactions (req: Request, res: Response) {
-  transaction.getTransactions(function (error, result) {
+export function readTransactions (req: Request, res: Response) {
+  transaction.readTransactions(function (error, result) {
     if (error) {
       res.status(500).send('Unable to retrieve transactions')
     } else {
@@ -35,9 +35,9 @@ export function allTransactions (req: Request, res: Response) {
 }
 
 // get /transaction/id/:id #returns single transaction by id
-export function getTransactionByID (req: Request, res: Response) {
+export function readTransactionByID (req: Request, res: Response) {
   const transID: number = req.params.id
-  transaction.getTransactionByID(transID, function (error, result) {
+  transaction.readTransactionByID(transID, function (error, result) {
     if (error) {
       res.status(500).send('Unable to retrieve transaction')
     } else {
@@ -51,9 +51,9 @@ export function getTransactionByID (req: Request, res: Response) {
 }
 
 // get /transaction/id/:id #returns transaction array by account ids
-export function getTransactionByAccount (req: Request, res: Response) {
+export function readTransactionByAccount (req: Request, res: Response) {
   const accountID: number = req.params.accountID
-  transaction.getTransactionsByAccID(accountID, function (error, result) {
+  transaction.readTransactionsByAccID(accountID, function (error, result) {
     if (error) {
       res.status(500).send('Unable to retrieve transactions')
     } else {

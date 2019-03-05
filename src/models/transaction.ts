@@ -36,7 +36,7 @@ export function createTransaction (transaction: Transaction, callback: (error: B
 }
 
 // function to handle getting all transactions
-export function getTransactions (callback: (error: Boolean, result: Transaction[] | null) => void) {
+export function readTransactions (callback: (error: Boolean, result: Transaction[] | null) => void) {
   const sql = `SELECT * FROM transactions`
   dbFunctions.query(sql, function (err: object, result: Transaction[]) {
     if (err) {
@@ -49,7 +49,7 @@ export function getTransactions (callback: (error: Boolean, result: Transaction[
 }
 
 // function to handle getting transactions by id
-export function getTransactionByID (transID: number, callback: (error: Boolean, result: Transaction | null) => void) {
+export function readTransactionByID (transID: number, callback: (error: Boolean, result: Transaction | null) => void) {
   const sql = `SELECT * FROM transactions where transID = '${transID}'`
   dbFunctions.query(sql, function (err: object, result: Transaction[]) {
     if (err) {
@@ -66,7 +66,7 @@ export function getTransactionByID (transID: number, callback: (error: Boolean, 
 }
 
 // function to handle getting transactions by account id
-export function getTransactionsByAccID (AccountID: number, callback: (error: Boolean, result: Transaction[] | null) => void) {
+export function readTransactionsByAccID (AccountID: number, callback: (error: Boolean, result: Transaction[] | null) => void) {
   const sql = `SELECT * FROM transactions where (dbtAccID = '${AccountID}' OR crdtAccID = '${AccountID}')`
   dbFunctions.query(sql, function (err: object, result: Transaction[]) {
     if (err) {

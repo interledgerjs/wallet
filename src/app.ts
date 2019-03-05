@@ -9,13 +9,13 @@ const app = express()
 module.exports = app
 app.use(bodyParser.json())
 
-app.post('/transactions', transaction.addTransaction)
+app.post('/transactions', transaction.createTransaction)
   // body.transID?, body.dbtAccID, body.crdtAccID, body.amount
-app.get('/transactions/', transaction.allTransactions)
+app.get('/transactions/', transaction.readTransactions)
 // no required input
-app.get('/transactions/id/:id/', transaction.getTransactionByID)
+app.get('/transactions/id/:id/', transaction.readTransactionByID)
 // id as param
-app.get('/transactions/account/:accountID/', transaction.getTransactionByAccount)
+app.get('/transactions/account/:accountID/', transaction.readTransactionByAccount)
 // account id as param
 
 // app.post('/account', middleware.verifyToken, account.addAccount)
