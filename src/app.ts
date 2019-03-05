@@ -6,7 +6,6 @@ import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
 import * as middleware from './middleware'
-import * as dotenv from 'dotenv'
 
 dotenv.config()
 const app = express()
