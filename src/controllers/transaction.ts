@@ -1,136 +1,67 @@
 import { Request, Response } from 'express'
-import * as jwt from 'jsonwebtoken'
-import * as dlInterface from '../datalayer/dlInterface'
-
-// get /transaction #returns all transactions
-export let transactions = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'get',
-    table: 'transactions',
-    selectAll: true
-  }
-  dlInterface.handleOp(dataParams, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      if (result.length === 0) {
-        res.sendStatus(404)
-      } else {
-        res.json(result)
-      }
-    }
-  })
-}
-
-// ------------------------------------------------------------------------------------------------------------------------------
-// Use script to initialise db
-// check: 12 factor app, .env, hibernate, ORM, mocha
-// build data layer for further abstraction, create separation between low level data and do further processing in controllers
-//
-// mvc mvm
-//
-// ------------------------------------------------------------------------------------------------------------------------------
-
-// get /transaction/{1} #returns transaction with id 1
-export let getTransaction = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'get',
-    table: 'transactions',
-    selectAll: true,
-    filter: [{ field: 'transID', operator: '=', value: req.params.id }]
-  }
-  dlInterface.handleOp(dataParams, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      if (result.length === 0) {
-        res.sendStatus(404)
-      } else {
-        res.json(result)
-      }
-    }
-  })
-}
+import * as transaction from '../models/transaction'
 
 // post /transaction #adds new transaction to table
-export let addTransaction = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'post',
-    table: 'transactions',
-    parameters: req.body
+export function addTransaction (req: Request, res: Response) {
+  const transObject: transaction.Transaction = {
+    transID: -1,
+    dbtAccID: req.body.dbtAccID,
+    crdtAccID: req.body.crdtAccID,
+    amount: req.body.amount,
+    date: new Date().toISOString()
   }
-  dlInterface.handleOp(dataParams, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
+  transaction.createTransaction(transObject, function (error) {
+    if (error) {
+      res.status(500).send('Unable to add transaction')
     } else {
       res.send('Transaction added')
     }
   })
 }
 
-// delete /transaction/{1} #removes transaction with id 1
-export let delTransaction = (req: Request, res: Response) => {
-  // console.log(req.token)
-  let dataParams = {
-    action: 'get',
-    table: 'transactions',
-    selectAll: true,
-    filter: [{ field: 'transID', operator: '=', value: req.params.id }]
-  }
-  dlInterface.handleOp(dataParams, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
+// get /transaction #returns all transactions
+export function allTransactions (req: Request, res: Response) {
+  transaction.getTransactions(function (error, result) {
+    if (error) {
+      res.status(500).send('Unable to retrieve transactions')
     } else {
       if (result.length === 0) {
         res.sendStatus(404)
       } else {
-        let delParams = {
-          action: 'delete',
-          table: 'transactions',
-          filter: [{ field: 'transID', operator: '=', value: req.params.id }]
-        }
-        dlInterface.handleOp(delParams, (err, result) => {
-          if (err) {
-            res.status(500).send(err)
-          } else {
-            res.send(`Transaction id: ${req.params.id} deleted`)
-          }
-        })
+        res.send(result)
       }
     }
   })
-
 }
 
-// put /transaction/{1} #updates transaction with id 1
-export let updateTransaction = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'put',
-    table: 'transactions',
-    filter: [{ field: 'transID', operator: '=', value: req.params.id }],
-    parameters: req.body
-  }
-  dlInterface.handleOp(dataParams, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
+// get /transaction/id/:id #returns single transaction by id
+export function getTransactionByID (req: Request, res: Response) {
+  const transID: number = req.params.id
+  transaction.getTransactionByID(transID, function (error, result) {
+    if (error) {
+      res.status(500).send('Unable to retrieve transaction')
     } else {
-      let getParams = {
-        action: 'get',
-        table: 'transactions',
-        filter: [{ field: 'transID', operator: '=', value: req.params.id }],
-        selectAll: true
+      if (!result) {
+        res.sendStatus(404)
+      } else {
+        res.send(result)
       }
-      dlInterface.handleOp(getParams, (err, result) => {
-        if (err) {
-          res.status(500).send(err)
-        } else {
-          if (result.length === 0) {
-            res.status(404).send('invalid id requested')
-          } else {
-            res.json(result)
-          }
-        }
-      })
+    }
+  })
+}
+
+// get /transaction/id/:id #returns transaction array by account ids
+export function getTransactionByAccount (req: Request, res: Response) {
+  const accountID: number = req.params.accountID
+  transaction.getTransactionsByAccID(accountID, function (error, result) {
+    if (error) {
+      res.status(500).send('Unable to retrieve transactions')
+    } else {
+      if (!result) {
+        res.sendStatus(404)
+      } else {
+        res.send(result)
+      }
     }
   })
 }
