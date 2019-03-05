@@ -1,3 +1,5 @@
+import * as dbFunctions from './db'
+
 export interface Account {
   accountId: number,
   accountName: string,
@@ -8,6 +10,18 @@ export interface Account {
 
 // app.post('/users/:id/accounts', middleware.verifyToken, account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
+
+export function createAccount (account: Account, callback: (error: Boolean, account: Account) => void) {
+  const sql = `INSERT INTO accounts (accountName, balance, ownerUserID) VALUES ('${account.accountName}', ${account.balance}, ${account.ownerUserId})`
+  dbFunctions.query(sql, function (err: object) {
+    console.log(err)
+    if (err) {
+      callback(true, account)
+    } else {
+      callback(false, account)
+    }
+  })
+}
 
 // app.get('/accounts', account.readAllAccounts)
   // no required input
