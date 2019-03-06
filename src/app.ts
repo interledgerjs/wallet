@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv'
 import * as express from 'express'
 // import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
-import * as account from './controllers/account'
+import * as account from './controllers/account.controller'
 
 dotenv.config()
 const app = express()
