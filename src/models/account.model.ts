@@ -21,30 +21,33 @@ function isAccount (account: Account) {
 // app.post('/users/:id/accounts', account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
 
-export function createAccount (account: Account, callback: (error: Boolean, account: Account) => void) {
+export function createAccount (account: Account, callback: (error: Boolean) => void) {
   if (isAccount) {
+    // console.log('isAccount returned TRUE')
+    console.log(account)
     const sqlquery = `INSERT INTO accounts (accountName, balance, ownerUserID) VALUES ('${account.accountName}', ${account.balance}, ${account.ownerUserId})`
     dbFunctions.query(sqlquery, function (err: object) {
-      console.log(err)
+      // console.log(err)
       if (err) {
-        callback(true, account)
+        callback(true)
       } else {
-        callback(false, account)
+        callback(false)
       }
     })
   } else {
-    callback(true, account)
+    // console.log('isAccount returned FALSE')
+    callback(true)
   }
 }
+
+// app.get('/users/:id/accounts/:id', account.readAccount)
+  // id as param
 
 // app.get('/accounts', account.readAllAccounts)
   // no required input
 
 // app.get('/users/:id/accounts', account.readAllAccountsByUserId)
   // placeholder comment
-
-// app.get('/users/:id/accounts/:id', account.readAccount)
-  // id as param
 
 // app.put('/users/:id/accounts/:id', account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?

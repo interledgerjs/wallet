@@ -1,19 +1,24 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import * as dlInterface from '../datalayer/dlInterface'
+import * as accountModel from '../models/account.model'
+import { number } from 'joi'
 
 // post /account #adds new account to table
 export let createAccount = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'post',
-    table: 'accounts',
-    parameters: req.body
+  console.log('controller found')
+  const account: accountModel.Account = {
+    accountId: 1,
+    accountName: req.body.accountName,
+    ownerUserId: Number(req.params.id),
+    balance: req.body.balance,
+    last_updated: new Date().toISOString()
   }
-  dlInterface.handleOp(dataParams, (err, result) => {
+  accountModel.createAccount(account, function (err) {
     if (err) {
-      res.status(500).send(err)
+      res.status(500).send('Unable to create account')
     } else {
-      res.send('Account added')
+      res.send('Account created')
     }
   })
 
