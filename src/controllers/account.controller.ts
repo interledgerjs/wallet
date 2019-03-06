@@ -2,6 +2,23 @@ import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import * as dlInterface from '../datalayer/dlInterface'
 
+// post /account #adds new account to table
+export let createAccount = (req: Request, res: Response) => {
+  let dataParams = {
+    action: 'post',
+    table: 'accounts',
+    parameters: req.body
+  }
+  dlInterface.handleOp(dataParams, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      res.send('Account added')
+    }
+  })
+
+}
+
 // get /account #returns all accounts
 export let readAllAccounts = (req: Request, res: Response) => {
   let dataParams = {
@@ -62,23 +79,6 @@ export let readAccount = (req: Request, res: Response) => {
       }
     }
   })
-}
-
-// post /account #adds new account to table
-export let createAccount = (req: Request, res: Response) => {
-  let dataParams = {
-    action: 'post',
-    table: 'accounts',
-    parameters: req.body
-  }
-  dlInterface.handleOp(dataParams, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      res.send('Account added')
-    }
-  })
-
 }
 
 // delete /account/{1} #removes account with id 1
