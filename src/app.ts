@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser'
 import * as express from 'express'
 // import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
+import * as user from './controllers/user'
 
 dotenv.config()
 const app = express()
@@ -37,11 +38,11 @@ app.get('/users/id/:id', user.readUserByID)
   // id as param
 app.get('/users/username/:username', user.readUserByUserName)
 // userName as param
-app.get('/login/:userName', user.login)
+// app.get('/login/:userName', user.login)
   // userName as param, body.password
-app.put('/user/:id', middleware.verifyToken, user.updateuser)
+// app.put('/user/:id', middleware.verifyToken, user.updateuser)
   // id as param, body.userName?, body.active?, body.password?
-app.delete('/user/:id', middleware.verifyToken, user.deluser)
+// app.delete('/user/:id', middleware.verifyToken, user.deluser)
   // id as param
 
 // app.get('/getToken', jwtController.genToken)

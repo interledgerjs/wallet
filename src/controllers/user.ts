@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 // import * as jwt from 'jsonwebtoken'
-import * as dlInterface from '../datalayer/dlInterface'
+// import * as dlInterface from '../datalayer/dlInterface'
 // import * as bcrypt from 'bcrypt'
 // const saltRounds = 3
 import * as model from '../models/user'
