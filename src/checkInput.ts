@@ -28,7 +28,7 @@ export let valUser = (req, callback) => {
     userID: Joi.number().optional(),
     userName: Joi.string(),
     active: Joi.number(),
-    password: Joi.string()
+    pssword: Joi.string()
   })
   switch (req.method) {
     case ('POST'):
@@ -37,7 +37,7 @@ export let valUser = (req, callback) => {
       })
       break
     case ('PUT'):
-      Joi.validate(req.body, schema.or('userName', 'active', 'password'), (error) => {
+      Joi.validate(req.body, schema.or('userName', 'active', 'pssword'), (error) => {
         callback(error)
       })
       break
@@ -50,7 +50,7 @@ export let valAcc = (req, callback) => {
   let schema = Joi.object().keys({
     accountID: Joi.number().optional(),
     accountName: Joi.string(),
-    ownerUserID: Joi.number()
+    owneruserID: Joi.number()
   })
   switch (req.method) {
     case ('POST'):
@@ -59,7 +59,7 @@ export let valAcc = (req, callback) => {
       })
       break
     case ('PUT'):
-      Joi.validate(req.body, schema.or('accountName', 'ownerUserID'), (error) => {
+      Joi.validate(req.body, schema.or('accountName', 'owneruserID'), (error) => {
         callback(error)
       })
       break
@@ -70,7 +70,7 @@ export let valAcc = (req, callback) => {
 
 export let valLogin = (req, callback) => {
   let schema = Joi.object().keys({
-    password: Joi.string()
+    pssword: Joi.string()
   })
   let schema2 = Joi.object().keys({
     userName: Joi.string()
