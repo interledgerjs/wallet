@@ -1,10 +1,9 @@
-import * as dotenv from 'dotenv'
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
+import * as account from './controllers/account.controller'
 // import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
-import * as account from './controllers/account.controller'
 import * as user from './controllers/user'
 
 dotenv.config()
