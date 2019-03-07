@@ -34,13 +34,13 @@ app.put('/account/:id', middleware.verifyToken, account.updateAccount)
 app.delete('/account/:id', middleware.verifyToken, account.delAccount)
   // id as param
 
-app.post('/user', user.createUser)
+// app.post('/user', user.createUser)
 
-app.get('/user', user.readUser)
+app.get('/users', user.readUser)
   // no required input
-app.get('/user/id/:id', user.readUserByID)
+app.get('/users/id/:id', user.readUserByID)
   // id as param
-app.get('/user/username/:username', user.readUserByUserName)
+app.get('/users/username/:username', user.readUserByUserName)
 // userName as param
 app.get('/login/:userName', user.login)
   // userName as param, body.password

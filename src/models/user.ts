@@ -10,14 +10,6 @@ export interface User {
 }
 
 // functions
-export function createUser (User: User, callback: (result: User) => void) {
-  const sql = `INSERT INTO users (userName, password) VALUES ('${User.userName}', ${User.password})`
-  dbFunctions.query(sql, function (err: object) {
-    if (err) {
-      console.log(err)
-    }
-  })
-}
 
 // function to handle getting all users
 export function readUser (callback: (error: Boolean, result: User[] | null) => void) {

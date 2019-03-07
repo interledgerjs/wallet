@@ -209,23 +209,6 @@ export let login = (req: Request, res: Response) => {
 
 // new controllers
 
-export function createUser (req: Request, res: Response) {
-  const user: model.User = {
-    userId: -1,
-    userName: req.body.accountName,
-    dateCreated: new Date().toISOString(),
-    active: true,
-    password : req.body.password
-  }
-  model.createUser(user, function (error) {
-    if (error) {
-      res.status(500).send('User creation failed')
-    } else {
-      res.send('User created')
-    }
-  })
-}
-
 // get /user #returns all users
 export function readUser (req: Request, res: Response) {
   model.readUser(function (error, result) {
