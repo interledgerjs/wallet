@@ -4,7 +4,6 @@ import * as dlInterface from '../datalayer/dlInterface'
 import * as accountModel from '../models/account.model'
 import { number } from 'joi'
 
-// post /account #adds new account to table
 export let createAccount = (req: Request, res: Response) => {
   console.log('controller found')
   const accountObject: accountModel.Account = {
@@ -24,7 +23,6 @@ export let createAccount = (req: Request, res: Response) => {
 
 }
 
-// get /account/{1} #returns account with ID 1
 export let readAccountByID = (req: Request, res: Response) => {
   const accountObject: accountModel.Account = {
     accountID: Number(req.params.accountid),
@@ -38,7 +36,7 @@ export let readAccountByID = (req: Request, res: Response) => {
       res.status(500).send(err)
     } else {
       if (!result) {
-        res.sendStatus(404).send('Cannot find matching records')
+        res.sendStatus(404)
       } else {
         res.json(result)
       }
@@ -46,7 +44,6 @@ export let readAccountByID = (req: Request, res: Response) => {
   })
 }
 
-// get /account #returns all accounts
 export let readAllAccounts = (req: Request, res: Response) => {
   let dataParams = {
     action: 'get',
@@ -66,7 +63,6 @@ export let readAllAccounts = (req: Request, res: Response) => {
   })
 }
 
-// get /account/{1} #returns account with ID 1
 export let readAllAccountsByUserID = (req: Request, res: Response) => {
   let dataParams = {
     action: 'get',
@@ -87,7 +83,6 @@ export let readAllAccountsByUserID = (req: Request, res: Response) => {
   })
 }
 
-// delete /account/{1} #removes account with ID 1
 export let deleteAccount = (req: Request, res: Response) => {
   let dataParams = {
     action: 'get',
@@ -119,7 +114,6 @@ export let deleteAccount = (req: Request, res: Response) => {
   })
 }
 
-// put /account/{1} #updates account with ID 1
 export let updateAccount = (req: Request, res: Response) => {
   let dataParams = {
     action: 'put',
