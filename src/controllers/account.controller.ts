@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import * as dlInterface from '../datalayer/dlInterface'
 import * as accountModel from '../models/account.model'
 import { number } from 'joi'
 
