@@ -78,46 +78,43 @@ export let readAllAccountsByUserID = (req: Request, res: Response) => {
   })
 }
 
-// export let updateAccount = (req: Request, res: Response) => {
-//   const accountObject: accountModel.Account = {
-//     accountID: Number(req.params.accountid),
-//     accountName: '',
-//     ownerUserID: Number(req.params.userid),
-//     balance: null,
-//     lastUpdated: null
-//   }
-//   accountModel.readAccountByID(accountObject, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else if (!result) {
-//       res.status(404).send('invalid ID requested')
-//       const updatedAccount: accountModel.Account = {
-//         accountID: result[0].accountID,
-//         accountName: result[0].accountName,
-//         ownerUserID: result[0].ownerUserID,
-//         balance: result[0].balance,
-//         lastUpdated: null
-//       }
-//       if (req.body.accountName) {
-//         updatedAccount.accountName = req.body.accountName
-//       }
-//       if (req.body.balance) {
-//         updatedAccount.balance = req.body.balance
-//       }
-//       accountModel.updateAccount(updatedAccount, (err) => {
-//         if (err) {
-//           res.status(500).send(err)
-//         } else {
-//           if (result.length === 0) {
-//             res.status(404).send('invalid ID requested')
-//           } else {
-//             res.json(result)
-//           }
-//         }
-//       })
-//     }
-//   })
-// }
+export let updateAccount = (req: Request, res: Response) => {
+  const accountObject: accountModel.Account = {
+    accountID: Number(req.params.accountid),
+    accountName: '',
+    ownerUserID: Number(req.params.userid),
+    balance: null,
+    lastUpdated: null
+  }
+  accountModel.readAccountByID(accountObject, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else if (!result) {
+      res.status(404).send('invalid ID requested')
+    } else {
+      const updatedAccount: accountModel.Account = {
+        accountID: result[0].accountID,
+        accountName: result[0].accountName,
+        ownerUserID: result[0].ownerUserID,
+        balance: result[0].balance,
+        lastUpdated: null
+      }
+      if (req.body.accountName) {
+        updatedAccount.accountName = req.body.accountName
+      }
+      if (req.body.balance) {
+        updatedAccount.balance = req.body.balance
+      }
+      accountModel.updateAccount(updatedAccount, (err) => {
+        if (err) {
+          res.status(500).send('Account could not be updated')
+        } else {
+          res.send('Account updated')
+        }
+      })
+    }
+  })
+}
 
 export let deleteAccount = (req: Request, res: Response) => {
   const accountObject: accountModel.Account = {
