@@ -47,10 +47,10 @@ app.get('/users/username/:username', user.readUserByUserName)
 // app.get('/user/:id', middleware.validateData, user.getuser)
 //   // id as param
 // app.get('/login/:userName', user.login)
-  // userName as param, body.password
-// app.put('/user/:id', middleware.verifyToken, user.updateuser)
-  // id as param, body.userName?, body.active?, body.password?
-// app.delete('/user/:id', middleware.verifyToken, user.deluser)
+  // userName as param, body.pssword
+app.put('/users/:id', user.updateUser)
+  // id as param, body.userName?, body.active?, body.pssword?
+app.delete('/users/:id', user.deleteUser)
   // id as param
 app.post('/users', user.createUser)
   // body.userName?, body.password?
