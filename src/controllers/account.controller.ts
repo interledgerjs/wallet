@@ -43,24 +43,19 @@ export let readAccountByID = (req: Request, res: Response) => {
   })
 }
 
-// export let readAllAccounts = (req: Request, res: Response) => {
-//   let dataParams = {
-//     action: 'get',
-//     table: 'accounts',
-//     selectAll: true
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       if (result.length === 0) {
-//         res.sendStatus(404)
-//       } else {
-//         res.json(result)
-//       }
-//     }
-//   })
-// }
+export let readAllAccounts = (req: Request, res: Response) => {
+  accountModel.readAllAccounts((err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      if (!result) {
+        res.sendStatus(404)
+      } else {
+        res.json(result)
+      }
+    }
+  })
+}
 
 export let readAllAccountsByUserID = (req: Request, res: Response) => {
   const accountObject: accountModel.Account = {

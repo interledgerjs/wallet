@@ -26,7 +26,7 @@ app.get('/users/:userid/accounts/:accountid', account.readAccountByID)
   // id's as param
 app.get('/users/:userid/accounts', account.readAllAccountsByUserID)
 
-// app.get('/accounts', account.readAllAccounts)
+app.get('/accounts', account.readAllAccounts)
   // no required input
 // app.put('/users/:userid/accounts/:accountid', account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
