@@ -12,7 +12,6 @@ export function createTransaction (req: Request, res: Response) {
   }
   transaction.createTransaction(transObject, function (error) {
     if (error) {
-      // res.status(500).send('Unable to add transaction')
       res.status(500).send(error)
     } else {
       res.send('Transaction added')

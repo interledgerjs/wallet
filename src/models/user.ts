@@ -2,13 +2,21 @@ import { Request, Response } from 'express'
 import * as dbFunctions from './db'
 
 export interface User {
-  userId: number,
+  userID: number,
   userName: string,
   dateCreated: string,
   active: boolean,
   password: string
 }
-
+function isUser (user: any): user is User {
+  return (
+    typeof user.userID === 'number' &&
+    typeof user.userName === 'string' &&
+    typeof user.dateCreated === 'string' &&
+    typeof user.active === 'boolean' &&
+    typeof user.password === 'string'
+  )
+}
 // functions
 
 // function to handle getting all users
@@ -42,7 +50,7 @@ export function readUserByID (userID: number, callback: (error: Boolean, result:
 }
 
 // function to handle get user by userName
-export function readUserByUsername (userName: string, callback: (error: Boolean, result: User | null) => void) {
+export function readUserByUserName (userName: string, callback: (error: Boolean, result: User | null) => void) {
   const sql = `SELECT * FROM users where userName = '${userName}'`
   dbFunctions.query(sql, function (err: object, result: User[]) {
     if (err) {
@@ -56,4 +64,20 @@ export function readUserByUsername (userName: string, callback: (error: Boolean,
       }
     }
   })
+}
+// function to handle adding users
+export function createUser (user: User, callback: (error: Boolean) => void) {
+  if (isUser(user)) {
+    const sql = `INSERT INTO users (userName, dateCreated, active, password) VALUES ('${user.userName}', '${user.dateCreated}', ${user.active}, '${user.password}')`
+    dbFunctions.query(sql, function (err: object) {
+      if (err) {
+        callback(true)
+        console.log(err)
+      } else {
+        callback(false)
+      }
+    })
+  } else {
+    callback(true)
+  }
 }

@@ -52,6 +52,8 @@ app.get('/users/username/:username', user.readUserByUserName)
   // id as param, body.userName?, body.active?, body.password?
 // app.delete('/user/:id', middleware.verifyToken, user.deluser)
   // id as param
+app.post('/users', user.createUser)
+  // body.userName?, body.password?
 
 // app.get('/getToken', jwtController.genToken)
 
