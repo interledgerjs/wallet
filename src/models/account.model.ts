@@ -129,7 +129,8 @@ export function updateAccount (account: Account, callback: (error: Boolean) => v
     const sqlquery = `
       UPDATE accounts
       SET accountName = '${account.accountName}',
-          balance = '${account.balance}'
+          balance = '${account.balance}',
+          lastUpdated = DEFAULT
       WHERE accountID = ${account.accountID}
       AND ownerUserID = ${account.ownerUserID}
     `
