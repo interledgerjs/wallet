@@ -86,19 +86,26 @@ export function readAllAccounts (callback: (error: Boolean, result: Account) => 
 
 export function readAllAccountsByUserID (account: Account, callback: (error: Boolean, result: Account) => void) {
   // console.log('model found')
-  const sqlquery = `SELECT * FROM accounts where dbtAccID = '${account.ownerUserID}'`
-  dbFunctions.query(sqlquery, function (err: object, result: Account) {
-    if (err) {
-      callback(true, null)
+  if (isAccount) {
+    // console.log('isAccount passed')
+    const sqlquery = `SELECT * FROM accounts where ownerUserID = ${account.ownerUserID}`
+    // console.log(sqlquery)
+    dbFunctions.query(sqlquery, function (err: object, result: Account) {
+      if (err) {
+        callback(true, null)
       // console.log(err)
-    } else {
-      if (result) {
-        callback(false, result)
       } else {
-        callback(false, null)
+        if (result) {
+          callback(false, result)
+        } else {
+          callback(false, null)
+        }
       }
-    }
-  })
+    })
+  } else {
+    // console.log('isAccount failed')
+    callback(true, null)
+  }
 }
 
 // app.put('/users/:id/accounts/:id', account.updateAccount)
