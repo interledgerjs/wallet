@@ -68,9 +68,4 @@ build/
 
 # db files
 accounts
-<<<<<<< HEAD
-.vscode/
-my_db
-=======
 testdb
->>>>>>> origin/userrelated
