@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser'
 import * as express from 'express'
 // import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
+import * as user from './controllers/user'
 
 dotenv.config()
 const app = express()
@@ -29,20 +30,20 @@ app.get('/transactions/account/:accountID/', transaction.readTransactionByAccoun
 // app.delete('/account/:id', middleware.verifyToken, account.delAccount)
 //   // id as param
 
-// app.post('/user', middleware.verifyToken, user.addUser)
-//   // body.userName?, body.password?, body.active?
-// app.get('/users', user.users)
-//   // no required input
-// app.get('/user/:id', middleware.validateData, user.getuser)
-//   // id as param
+// app.post('/user', user.createUser)
+
+app.get('/users', user.readUser)
+  // no required input
+app.get('/users/id/:id', user.readUserByID)
+  // id as param
+app.get('/users/username/:username', user.readUserByUserName)
+// userName as param
 // app.get('/login/:userName', user.login)
-//   // userName as param, body.password
+  // userName as param, body.password
 // app.put('/user/:id', middleware.verifyToken, user.updateuser)
-//   // id as param, body.userName?, body.active?, body.password?
+  // id as param, body.userName?, body.active?, body.password?
 // app.delete('/user/:id', middleware.verifyToken, user.deluser)
-//   // id as param
-// app.get('/user/userName/:userName', middleware.validateData, user.getUserByUserName)
-// // userName as param
+  // id as param
 
 // app.get('/getToken', jwtController.genToken)
 

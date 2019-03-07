@@ -1,8 +1,9 @@
-// import { Request, Response } from 'express'
+import { Request, Response } from 'express'
 // import * as jwt from 'jsonwebtoken'
 // import * as dlInterface from '../datalayer/dlInterface'
 // import * as bcrypt from 'bcrypt'
 // const saltRounds = 3
+import * as model from '../models/user'
 
 // export let users = (req: Request, res: Response) => {
 //   let dataParams = {
@@ -204,3 +205,52 @@
 //     }
 //   })
 // }
+
+// new controllers
+
+// get /user #returns all users
+export function readUser (req: Request, res: Response) {
+  model.readUser(function (error, result) {
+    if (error) {
+      res.status(500).send('Unable to retrieve users')
+    } else {
+      if (result.length === 0) {
+        res.sendStatus(404)
+      } else {
+        res.send(result)
+      }
+    }
+  })
+}
+
+// get /user/id/:id #returns single user by id
+export function readUserByID (req: Request, res: Response) {
+  const userID: number = req.params.id
+  model.readUserByID(userID, function (error, result) {
+    if (error) {
+      res.status(500).send('Unable to retrieve user')
+    } else {
+      if (!result) {
+        res.sendStatus(404)
+      } else {
+        res.send(result)
+      }
+    }
+  })
+}
+
+// get /user/id/:id #returns single user by userName
+export function readUserByUserName (req: Request, res: Response) {
+  const userName: string = req.params.username
+  model.readUserByUsername(userName, function (error, result) {
+    if (error) {
+      res.status(500).send('Unable to retrieve user')
+    } else {
+      if (!result) {
+        res.sendStatus(404)
+      } else {
+        res.send(result)
+      }
+    }
+  })
+}
