@@ -6,7 +6,7 @@ export interface User {
   userName: string,
   dateCreated: string,
   active: boolean,
-  password: string
+  pssword: string
 }
 function isUser (user: any): user is User {
   return (
@@ -68,7 +68,7 @@ export function readUserByUserName (userName: string, callback: (error: Boolean,
 // function to handle adding users
 export function createUser (user: User, callback: (error: Boolean) => void) {
   if (isUser(user)) {
-    const sql = `INSERT INTO users (userName, dateCreated, active, password) VALUES ('${user.userName}', '${user.dateCreated}', ${user.active}, '${user.password}')`
+    const sql = `INSERT INTO users (userName, dateCreated, active, password) VALUES ('${user.userName}', '${user.dateCreated}', ${user.active}, '${user.pssword}')`
     dbFunctions.query(sql, function (err: object) {
       if (err) {
         callback(true)
@@ -80,4 +80,28 @@ export function createUser (user: User, callback: (error: Boolean) => void) {
   } else {
     callback(true)
   }
+}
+
+export function updateUser (user: User, callback: (error: Boolean) => void) {
+  const sql = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
+  dbFunctions.query(sql, function (err: object) {
+    if (err) {
+      callback(true)
+      console.log(err)
+    } else {
+      callback(false)
+    }
+  })
+}
+
+export function deleteUser (userID: number, callback: (error: Boolean) => void) {
+  const sql = `DELETE FROM users WHERE userID = '${userID}'`
+  dbFunctions.query(sql, function (err: object) {
+    if (err) {
+      callback(true)
+      console.log(err)
+    } else {
+      callback(false)
+    }
+  })
 }
