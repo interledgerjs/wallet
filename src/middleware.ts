@@ -61,7 +61,7 @@ export let validateData = (req: Request, res: Response, next: any) => {
       break
     case ('login'):
       checkInput.valLogin(req, (err) => {
-        if (err) {
+        if (err) { // hit this line
           res.status(400).send(err.details[0].message)
         } else {
           next()
