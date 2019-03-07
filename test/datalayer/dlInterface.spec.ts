@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 import { expect } from 'chai'
-import * as request from 'supertest';
+// import * as request from 'supertest';
 import * as dlInterface from '../../build/datalayer/dlInterface';
 
 describe('dlInterface ftHandleDelete', function() {

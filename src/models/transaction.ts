@@ -25,7 +25,7 @@ export function createTransaction (transaction: Transaction, callback: (error: B
     dbFunctions.query(sql, function (err: object) {
       if (err) {
         callback(true)
-        console.log(err)
+        // console.log(err)
       } else {
         callback(false)
       }
