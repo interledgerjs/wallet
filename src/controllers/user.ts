@@ -1,9 +1,8 @@
 import { Request, Response } from 'express'
 // import * as jwt from 'jsonwebtoken'
-// import * as dlInterface from '../datalayer/dlInterface'
-// import * as bcrypt from 'bcrypt'
-// const saltRounds = 3
 import * as model from '../models/user'
+import * as bcrypt from 'bcrypt'
+const saltRounds = 3
 
 // export let users = (req: Request, res: Response) => {
 //   let dataParams = {
@@ -19,93 +18,6 @@ import * as model from '../models/user'
 //         res.sendStatus(404)
 //       } else {
 //         res.json(result)
-//       }
-//     }
-//   })
-// }
-
-// export let getuser = (req: Request, res: Response) => {
-//   let dataParams = {
-//     action: 'get',
-//     table: 'users',
-//     selectAll: true,
-//     filter: [{ field: 'userID', operator: '=', value: req.params.id }]
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       if (result.length === 0) {
-//         res.sendStatus(404)
-//       } else {
-//         res.json(result)
-//       }
-//     }
-//   })
-// }
-
-// export let getUserByUserName = (req: Request, res: Response) => {
-//   let dataParams = {
-//     action: 'get',
-//     table: 'users',
-//     selectAll: true,
-//     filter: [{ field: 'userName', operator: '=', value: req.params.userName }]
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       if (result.length === 0) {
-//         res.sendStatus(404)
-//       } else {
-//         res.json(result)
-//       }
-//     }
-//   })
-// }
-
-// export let addUser = (req: Request, res: Response) => {
-//   // check if userName already exists
-//   let dataParams = {
-//     action: 'get',
-//     table: 'users',
-//     selectAll: true,
-//     filter: [{ field: 'userName', operator: '=', value: req.body.userName }]
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       if (result.length === 0) {
-//         const pass = req.body.password
-//         bcrypt.genSalt(saltRounds, function (err: any, salt: any) {
-//           if (err) {
-//             throw err
-//           } else {
-//             bcrypt.hash(pass, salt, function (err: any, hash: any) {
-//               if (err) {
-//                 throw err
-//               } else {
-//                 req.body.password = hash
-//                 let dataParams = {
-//                   action: 'post',
-//                   table: 'users',
-//                   parameters: req.body
-//                 }
-//                 dlInterface.handleOp(dataParams, (err, result) => {
-//                   if (err) {
-//                     res.status(500).send(err)
-//                   } else {
-//                     res.send('User added')
-//                   }
-//                 })
-
-//               }
-//             })
-//           }
-//         })
-//       } else {
-//         res.json('userName alredy exists')
 //       }
 //     }
 //   })
@@ -242,7 +154,7 @@ export function readUserByID (req: Request, res: Response) {
 // get /user/id/:id #returns single user by userName
 export function readUserByUserName (req: Request, res: Response) {
   const userName: string = req.params.username
-  model.readUserByUsername(userName, function (error, result) {
+  model.readUserByUserName(userName, function (error, result) {
     if (error) {
       res.status(500).send('Unable to retrieve user')
     } else {
@@ -250,6 +162,51 @@ export function readUserByUserName (req: Request, res: Response) {
         res.sendStatus(404)
       } else {
         res.send(result)
+      }
+    }
+  })
+}
+
+// post /users #adds new user to table
+export function createUser (req: Request, res: Response) {
+  // check if userName already exists
+  const userName = req.body.userName
+  model.readUserByUserName(userName, function (error, result) {
+    if (error) {
+      // Unable to retrieve user by userName
+      res.status(500)
+    } else {
+      if (!result) {
+        bcrypt.genSalt(saltRounds, function (err: any, salt: any) {
+          if (err) {
+            throw err
+          } else {
+            bcrypt.hash(req.body.password, salt, function (err: any, hash: any) {
+              if (err) {
+                throw err
+              } else {
+                const userObject: model.User = {
+                  userID: -1,
+                  userName: req.body.userName,
+                  dateCreated: new Date().toISOString(),
+                  active: true,
+                  password: hash
+                }
+                model.createUser(userObject, function (error) {
+                  if (error) {
+                    // if invalid params
+                    res.status(500).send('Unable to create user')
+                  } else {
+                    res.send('User created')
+                  }
+                })
+              }
+            })
+          }
+        })
+      } else {
+        // if userName already exists
+        res.send('Unable to create user')
       }
     }
   })
