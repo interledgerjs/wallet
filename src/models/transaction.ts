@@ -21,7 +21,12 @@ function isTransaction (transaction: any): transaction is Transaction {
 // function to handle adding transactions
 export function createTransaction (transaction: Transaction, callback: (error: Boolean) => void) {
   if (isTransaction(transaction)) {
-    const sql = `INSERT INTO transactions (dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
+    let sql: string
+    if (transaction.transID !== -1) {
+      sql = `INSERT INTO transactions (transID, dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.transID}', '${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
+    } else {
+      sql = `INSERT INTO transactions (dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
+    }
     dbFunctions.query(sql, function (err: object) {
       if (err) {
         callback(true)
