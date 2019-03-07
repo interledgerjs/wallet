@@ -45,38 +45,6 @@ export function readTransactions (req: Request, res: Response) {
   })
 }
 
-<<<<<<< HEAD
-// get /transaction/id/:id #returns single transaction by id
-export function readTransactionByID (req: Request, res: Response) {
-  const transID: number = req.params.id
-  transaction.readTransactionByID(transID, function (error, result) {
-    if (error) {
-      res.status(500).send('Unable to retrieve transaction')
-    } else {
-      if (!result) {
-        res.sendStatus(404)
-      } else {
-        res.send(result)
-      }
-    }
-  })
-}
-
-// get /transaction/id/:id #returns transaction array by account ids
-export function readTransactionByAccount (req: Request, res: Response) {
-  const accountID: number = req.params.accountID
-  transaction.readTransactionsByAccID(accountID, function (error, result) {
-    if (error) {
-      res.status(500).send('Unable to retrieve transactions')
-    } else {
-      if (!result) {
-        res.sendStatus(404)
-      } else {
-        res.send(result)
-      }
-    }
-  })
-=======
 // get /transactions/id/:id #returns single transaction by id
 export function readTransactionByID (req: Request, res: Response) {
   if (
@@ -122,5 +90,4 @@ export function readTransactionByAccount (req: Request, res: Response) {
   } else {
     res.status(400).send('Bad request')
   }
->>>>>>> origin/transactiontesting
 }

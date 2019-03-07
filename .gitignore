@@ -68,8 +68,4 @@ build/
 
 # db files
 accounts
-<<<<<<< HEAD
-my_db
-=======
 testdb
->>>>>>> origin/pullreqbranch

@@ -1,4 +1,4 @@
-// // prototype for user login with hashed passwords
+// // prototype for user login with hashed psswords
 
 // import { Request, Response } from 'express'
 // import * as dbFunctions from './db'
@@ -6,7 +6,7 @@
 // const bcrypt = require('bcrypt')
 // const saltRounds = 3
 
-// // #adds new user to table and hashes user password
+// // #adds new user to table and hashes user pssword
 // export let addUser = (req: Request, res: Response) => {
 //   let keys: string = ''
 //   for (let k in req.body) {
@@ -16,13 +16,13 @@
 
 //   const userName = req.body.userName
 //   const active = req.body.active
-//   const password = req.body.password
+//   const pssword = req.body.pssword
 
 //   bcrypt.genSalt(saltRounds, function (err: any, salt: any) {
 //     if (err) {
 //       throw err
 //     } else {
-//       bcrypt.hash(password, salt, function (err: any, hash: any) {
+//       bcrypt.hash(pssword, salt, function (err: any, hash: any) {
 //         if (err) {
 //           throw err
 //         } else {
@@ -46,12 +46,12 @@
 
 // // login
 // export let login = (req: Request, res: Response) => {
-//   let password = req.params.password
+//   let pssword = req.params.pssword
 //   dbFunctions.query(`SELECT * FROM users WHERE userName = '${req.params.userName}'`, (err, array) => {
 //     if (err) {
 //       throw err
 //     }
-//     bcrypt.compare(password, array[0].password, function (err: any, result: any) {
+//     bcrypt.compare(pssword, array[0].pssword, function (err: any, result: any) {
 //       if (err) {
 //         throw err
 //       }

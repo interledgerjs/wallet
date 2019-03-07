@@ -2,11 +2,11 @@ import { Request, Response } from 'express'
 import * as dbFunctions from './db'
 
 export interface User {
-  userId: number,
+  userID: number,
   userName: string,
   dateCreated: string,
   active: boolean,
-  password: string
+  pssword: string
 }
 
 // functions
@@ -54,6 +54,30 @@ export function readUserByUsername (userName: string, callback: (error: Boolean,
       } else {
         callback(false, null)
       }
+    }
+  })
+}
+
+export function updateUser (user: User, callback: (error: Boolean) => void) {
+  const sql = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
+  dbFunctions.query(sql, function (err: object) {
+    if (err) {
+      callback(true)
+      console.log(err)
+    } else {
+      callback(false)
+    }
+  })
+}
+
+export function deleteUser (userID: number, callback: (error: Boolean) => void) {
+  const sql = `DELETE FROM users WHERE userID = '${userID}'`
+  dbFunctions.query(sql, function (err: object) {
+    if (err) {
+      callback(true)
+      console.log(err)
+    } else {
+      callback(false)
     }
   })
 }

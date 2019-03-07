@@ -32,13 +32,13 @@ let mysqlInit = () => {
                         userName VARCHAR(255),\
                         dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
                         active INT,\
-                        password VARCHAR(255));', (err) => {
+                        pssword VARCHAR(255));', (err) => {
               if (err) throw err
             })
             connectDb.query('CREATE TABLE IF NOT EXISTS accounts (\
                         accountID INT AUTO_INCREMENT PRIMARY KEY,\
                         accountName VARCHAR(255),\
-                        ownerUserID INT,\
+                        owneruserID INT,\
                         balance INT,\
                         lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
               if (err) throw err
@@ -85,11 +85,11 @@ if (process.env.ACTIVEDB === 'MySQL') {
           userName VARCHAR(255),\
           dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
           active INTEGER,\
-          password VARCHAR(255));')
+          pssword VARCHAR(255));')
         db.run('CREATE TABLE IF NOT EXISTS accounts (\
           accountID INTEGER PRIMARY KEY AUTOINCREMENT,\
           accountName VARCHAR(255),\
-          ownerUserID INT, balance INT,\
+          owneruserID INT, balance INT,\
           lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
         db.run('CREATE TABLE IF NOT EXISTS transactions (\
           transID INTEGER PRIMARY KEY AUTOINCREMENT,\

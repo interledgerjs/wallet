@@ -101,7 +101,7 @@ describe('Test to get a transaction by id', function() {
 //     let data = {
 //         "accountID": 605,
 //         "accountName": "test_account",
-//         "ownerUserID": 605
+//         "owneruserID": 605
 //     }
 //     it('should return OK status', function() {
 //       return request(app)
@@ -143,7 +143,7 @@ describe('Test to get a transaction by id', function() {
 // describe('Test to update an account', function() {
 //     let data = {
 //         "accountName": "test_account3",
-//         "ownerUserID": 606
+//         "owneruserID": 606
 //     }
 //     it('should return OK status', function() {
 //         return request(app)
@@ -175,7 +175,7 @@ describe('Test to get a transaction by id', function() {
 //   let data = {
 //       "userID": 605,
 //       "userName": "test_user",
-//       "password": "test_user",
+//       "pssword": "test_user",
 //       "active": 1
 //   }
 //   it('should return OK status', function() {
@@ -236,7 +236,7 @@ describe('Test to get a transaction by id', function() {
 //   it('should return OK status', function() {
 //     return request(app)
 //       .get('/login/testuser3')
-//       .send({"password": "test_user"})
+//       .send({"pssword": "test_user"})
 //       .then(function(response){
 //           //console.log(response)
 //           assert.equal(response.status, 200)
