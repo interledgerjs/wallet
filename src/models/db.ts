@@ -30,7 +30,7 @@ export function query (sqlQuery: string, callback: any) {
 
     db.all(sqlQuery, (err: Error, result: object) => {
       if (err) {
-        console.log(err)
+        // console.log(err)
       }
       callback(err, result)
     })
