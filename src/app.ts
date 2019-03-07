@@ -19,17 +19,17 @@ app.get('/transactions/id/:id/', transaction.readTransactionByID)
 app.get('/transactions/account/:accountID/', transaction.readTransactionByAccount)
 // account id as param
 
-app.post('/users/:id/accounts', account.createAccount)
+app.post('/users/:userid/accounts', account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
+app.get('/users/:userid/accounts/:accountid', account.readAccountByID)
+  // id's as param
+app.get('/users/:userid/accounts', account.readAllAccountsByUserID)
+
 app.get('/accounts', account.readAllAccounts)
   // no required input
-app.get('/users/:id/accounts', account.readAllAccountsByUserId)
-
-app.get('/users/:id/accounts/:id', account.readAccount)
-  // id as param
-app.put('/users/:id/accounts/:id', account.updateAccount)
+app.put('/users/:userid/accounts/:accountid', account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
-app.delete('/users/:id/accounts/:id', account.deleteAccount)
+app.delete('/users/:userid/accounts/:accountid', account.deleteAccount)
   // id as param
 
   // app.post('/user', middleware.verifyToken, user.addUser)
