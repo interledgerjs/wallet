@@ -69,3 +69,7 @@ build/
 # db files
 accounts
 testdb
+my_db
+
+#vscode
+.vscode/
