@@ -5,7 +5,7 @@ export interface Account {
   accountName: string,
   ownerUserID: number,
   balance: number,
-  last_updated: string
+  lastUpdated: string
 }
 
 function isAccount (account: Account) {
@@ -14,7 +14,7 @@ function isAccount (account: Account) {
     typeof account.accountName === 'string' &&
     typeof account.ownerUserID === 'number' &&
     typeof account.balance === 'number' &&
-    typeof account.last_updated === 'string'
+    typeof account.lastUpdated === 'string'
   )
 }
 
