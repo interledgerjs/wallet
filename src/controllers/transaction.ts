@@ -1,27 +1,6 @@
 import { Request, Response } from 'express'
 import * as transaction from '../models/transaction'
 
-<<<<<<< HEAD
-// post /transaction #adds new transaction to table
-export function createTransaction (req: Request, res: Response) {
-  const transObject: transaction.Transaction = {
-    transID: -1,
-    dbtAccID: req.body.dbtAccID,
-    crdtAccID: req.body.crdtAccID,
-    amount: req.body.amount,
-    date: new Date().toISOString()
-  }
-  transaction.createTransaction(transObject, function (error) {
-    if (error) {
-      res.status(500).send('Unable to add transaction')
-    } else {
-      res.send('Transaction added')
-    }
-  })
-}
-
-// get /transaction #returns all transactions
-=======
 // post /transactions #adds new transaction to table
 export function createTransaction (req: Request, res: Response) {
   if (
@@ -52,7 +31,6 @@ export function createTransaction (req: Request, res: Response) {
 }
 
 // get /transactions #returns all transactions
->>>>>>> origin/transactiontesting
 export function readTransactions (req: Request, res: Response) {
   transaction.readTransactions(function (error, result) {
     if (error) {
