@@ -113,3 +113,24 @@ export function readAllAccountsByUserID (account: Account, callback: (error: Boo
 
 // app.delete('/users/:id/accounts/:id', account.deleteAccount)
   // id as param
+
+export function deleteAccount (account: Account, callback: (error: Boolean) => void) {
+  console.log('model found')
+  if (isAccount) {
+    console.log('isAccount returned TRUE')
+    console.log(account)
+    const sqlquery = `DELETE FROM accounts WHERE accountID = ${account.accountID} AND ownerUserID = ${account.ownerUserID}`
+    dbFunctions.query(sqlquery, function (err: object) {
+      console.log(err)
+      console.log(sqlquery)
+      if (err) {
+        callback(true)
+      } else {
+        callback(false)
+      }
+    })
+  } else {
+    console.log('isAccount returned FALSE')
+    callback(true)
+  }
+}

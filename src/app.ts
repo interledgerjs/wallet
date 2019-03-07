@@ -30,8 +30,8 @@ app.get('/accounts', account.readAllAccounts)
   // no required input
 // app.put('/users/:userid/accounts/:accountid', account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
-// app.delete('/users/:userid/accounts/:accountid', account.deleteAccount)
-  // id as param
+app.delete('/users/:userid/accounts/:accountid', account.deleteAccount)
+  // id's as params
 
 // app.post('/user', user.createUser)
 app.get('/users', user.readUser)

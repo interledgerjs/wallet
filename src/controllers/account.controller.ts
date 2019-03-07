@@ -78,37 +78,6 @@ export let readAllAccountsByUserID = (req: Request, res: Response) => {
   })
 }
 
-// export let deleteAccount = (req: Request, res: Response) => {
-//   let dataParams = {
-//     action: 'get',
-//     table: 'accounts',
-//     selectAll: true,
-//     filter: [{ field: 'accountID', operator: '=', value: req.params.ID }]
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       if (result.length === 0) {
-//         res.sendStatus(404)
-//       } else {
-//         let delParams = {
-//           action: 'delete',
-//           table: 'accounts',
-//           filter: [{ field: 'accountID', operator: '=', value: req.params.ID }]
-//         }
-//         dlInterface.handleOp(delParams, (err, result) => {
-//           if (err) {
-//             res.status(500).send(err)
-//           } else {
-//             res.send(`account ID: ${req.params.ID} deleted`)
-//           }
-//         })
-//       }
-//     }
-//   })
-// }
-
 // export let updateAccount = (req: Request, res: Response) => {
 //   let dataParams = {
 //     action: 'put',
@@ -140,3 +109,30 @@ export let readAllAccountsByUserID = (req: Request, res: Response) => {
 //     }
 //   })
 // }
+
+export let deleteAccount = (req: Request, res: Response) => {
+  const accountObject: accountModel.Account = {
+    accountID: Number(req.params.accountid),
+    accountName: '',
+    ownerUserID: Number(req.params.userid),
+    balance: null,
+    last_updated: ''
+  }
+  accountModel.readAccountByID(accountObject, (err, result) => {
+    if (err) {
+      res.status(500).send(err)
+    } else {
+      if (!result) {
+        res.sendStatus(404)
+      } else {
+        accountModel.deleteAccount(accountObject, (err) => {
+          if (err) {
+            res.status(500).send('Unable to delete account')
+          } else {
+            res.send(`Account deleted`)
+          }
+        })
+      }
+    }
+  })
+}
