@@ -24,7 +24,7 @@ app.post('/users/:userid/accounts', account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
 app.get('/users/:userid/accounts/:accountid', account.readAccountByID)
   // id's as param
-app.get('/users/:userid/accounts', account.readAllAccountsByUserID)
+// app.get('/users/:userid/accounts', account.readAllAccountsByUserID)
 
 // app.post('/user', user.createUser)
 
@@ -34,11 +34,11 @@ app.get('/users/id/:id', user.readUserByID)
   // id as param
 app.get('/users/username/:username', user.readUserByUserName)
 // userName as param
-app.get('/accounts', account.readAllAccounts)
+// app.get('/accounts', account.readAllAccounts)
   // no required input
-app.put('/users/:userid/accounts/:accountid', account.updateAccount)
+// app.put('/users/:userid/accounts/:accountid', account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
-app.delete('/users/:userid/accounts/:accountid', account.deleteAccount)
+// app.delete('/users/:userid/accounts/:accountid', account.deleteAccount)
   // id as param
 
   // app.post('/user', middleware.verifyToken, user.addUser)
