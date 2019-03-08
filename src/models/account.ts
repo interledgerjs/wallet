@@ -5,7 +5,7 @@ export interface Account {
   accountName: string,
   ownerUserID: number,
   balance: number,
-  last_updated: string
+  lastUpdated: string
 }
 
 function isAccount (account: Account) {
@@ -14,7 +14,7 @@ function isAccount (account: Account) {
     typeof account.accountName === 'string' &&
     typeof account.ownerUserID === 'number' &&
     typeof account.balance === 'number' &&
-    typeof account.last_updated === 'string'
+    typeof account.lastUpdated === 'string'
   )
 }
 
@@ -22,14 +22,17 @@ function isAccount (account: Account) {
   // body.accountID?, body.accountName?, body.ownerUserID?
 
 export function createAccount (account: Account, callback: (error: Boolean) => void) {
-  console.log('model found')
+  // console.log('model found')
   if (isAccount) {
-    console.log('isAccount returned TRUE')
-    console.log(account)
-    const sqlquery = `INSERT INTO accounts (accountName, balance, ownerUserID) VALUES ('${account.accountName}', ${account.balance}, ${account.ownerUserID})`
+    // console.log('isAccount returned TRUE')
+    // console.log(account)
+    const sqlquery = `
+      INSERT INTO accounts (accountName, balance, ownerUserID)
+      VALUES ('${account.accountName}', ${account.balance}, ${account.ownerUserID})
+    `
     dbFunctions.query(sqlquery, function (err: object) {
-      console.log(err)
-      console.log(sqlquery)
+      // console.log(err)
+      // console.log(sqlquery)
       if (err) {
         callback(true)
       } else {
@@ -37,7 +40,7 @@ export function createAccount (account: Account, callback: (error: Boolean) => v
       }
     })
   } else {
-    console.log('isAccount returned FALSE')
+    // console.log('isAccount returned FALSE')
     callback(true)
   }
 }
@@ -48,12 +51,16 @@ export function createAccount (account: Account, callback: (error: Boolean) => v
 export function readAccountByID (account: Account, callback: (error: Boolean, result: Account) => void) {
   if (isAccount) {
     // console.log('isAccount returned TRUE')
-    console.log(account)
-    const sqlquery = `SELECT * FROM accounts WHERE accountID = ${account.accountID} AND ownerUserID = ${account.ownerUserID}`
-    console.log(sqlquery)
+    // console.log(account)
+    const sqlquery = `
+      SELECT * FROM accounts
+      WHERE accountID = ${account.accountID}
+      AND ownerUserID = ${account.ownerUserID}
+    `
+    // console.log(sqlquery)
     dbFunctions.query(sqlquery, function (err: object, result: Account) {
-      console.log(err)
-      console.log('result = ' + result)
+      // console.log(err)
+      // console.log('result = ' + result)
       if (err) {
         callback(true, null)
       } else {
@@ -88,7 +95,10 @@ export function readAllAccountsByUserID (account: Account, callback: (error: Boo
   // console.log('model found')
   if (isAccount) {
     // console.log('isAccount passed')
-    const sqlquery = `SELECT * FROM accounts where ownerUserID = ${account.ownerUserID}`
+    const sqlquery = `
+      SELECT * FROM accounts
+      WHERE ownerUserID = ${account.ownerUserID}
+    `
     // console.log(sqlquery)
     dbFunctions.query(sqlquery, function (err: object, result: Account) {
       if (err) {
@@ -111,5 +121,58 @@ export function readAllAccountsByUserID (account: Account, callback: (error: Boo
 // app.put('/users/:id/accounts/:id', account.updateAccount)
   // id as param, body.accountName, body.ownerUserID?
 
+export function updateAccount (account: Account, callback: (error: Boolean) => void) {
+    // console.log('model found')
+  if (isAccount) {
+      // console.log('isAccount returned TRUE')
+      // console.log(account)
+    const sqlquery = `
+      UPDATE accounts
+      SET accountName = '${account.accountName}',
+          balance = '${account.balance}',
+          lastUpdated = DEFAULT
+      WHERE accountID = ${account.accountID}
+      AND ownerUserID = ${account.ownerUserID}
+    `
+    dbFunctions.query(sqlquery, function (err: object) {
+        // console.log(err)
+        // console.log(sqlquery)
+      if (err) {
+        callback(true)
+      } else {
+        callback(false)
+      }
+    })
+  } else {
+      // console.log('isAccount returned FALSE')
+    callback(true)
+  }
+}
+
 // app.delete('/users/:id/accounts/:id', account.deleteAccount)
   // id as param
+
+export function deleteAccount (account: Account, callback: (error: Boolean) => void) {
+  // console.log('model found')
+  if (isAccount) {
+    // console.log('isAccount returned TRUE')
+    // console.log(account)
+    const sqlquery = `
+      DELETE FROM accounts
+      WHERE accountID = ${account.accountID}
+      AND ownerUserID = ${account.ownerUserID}
+    `
+    dbFunctions.query(sqlquery, function (err: object) {
+      // console.log(err)
+      // console.log(sqlquery)
+      if (err) {
+        callback(true)
+      } else {
+        callback(false)
+      }
+    })
+  } else {
+    // console.log('isAccount returned FALSE')
+    callback(true)
+  }
+}

@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import * as account from './controllers/account.controller'
+import * as account from './controllers/account'
 // import * as jwtController from './controllers/jwtcontroller'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
@@ -25,6 +25,13 @@ app.post('/users/:userid/accounts', account.createAccount)
 app.get('/users/:userid/accounts/:accountid', account.readAccountByID)
   // id's as param
 app.get('/users/:userid/accounts', account.readAllAccountsByUserID)
+
+app.get('/accounts', account.readAllAccounts)
+  // no required input
+app.put('/users/:userid/accounts/:accountid', account.updateAccount)
+  // id as param, body.accountName, body.ownerUserID?
+app.delete('/users/:userid/accounts/:accountid', account.deleteAccount)
+  // id's as params
 
 // app.post('/user', user.createUser)
 app.get('/users', user.readUser)
