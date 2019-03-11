@@ -4,122 +4,6 @@ import * as model from '../models/user'
 import * as bcrypt from 'bcrypt'
 const saltRounds = 3
 
-// export let users = (req: Request, res: Response) => {
-//   let dataParams = {
-//     action: 'get',
-//     table: 'users',
-//     selectAll: true
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       if (result.length === 0) {
-//         res.sendStatus(404)
-//       } else {
-//         res.json(result)
-//       }
-//     }
-//   })
-// }
-
-// export let deluser = (req: Request, res: Response) => {
-//   let dataParams = {
-//     action: 'get',
-//     table: 'users',
-//     selectAll: true,
-//     filter: [{ field: 'userID', operator: '=', value: req.params.id }]
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       if (result.length === 0) {
-//         res.sendStatus(404)
-//       } else {
-//         let delParams = {
-//           action: 'delete',
-//           table: 'users',
-//           filter: [{ field: 'userID', operator: '=', value: req.params.id }]
-//         }
-//         dlInterface.handleOp(delParams, (err, result) => {
-//           if (err) {
-//             res.status(500).send(err)
-//           } else {
-//             res.send(`user id: ${req.params.id} deleted`)
-//           }
-//         })
-//       }
-//     }
-//   })
-// }
-
-// export let updateuser = (req: Request, res: Response) => {
-//   let dataParams = {
-//     action: 'put',
-//     table: 'users',
-//     filter: [{ field: 'userID', operator: '=', value: req.params.id }],
-//     parameters: req.body
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       let getParams = {
-//         action: 'get',
-//         table: 'users',
-//         filter: [{ field: 'userID', operator: '=', value: req.params.id }],
-//         selectAll: true
-//       }
-//       dlInterface.handleOp(getParams, (err, result) => {
-//         if (err) {
-//           res.status(500).send(err)
-//         } else {
-//           if (result.length === 0) {
-//             res.status(404).send('invalid id requested')
-//           } else {
-//             res.json(result)
-//           }
-//         }
-//       })
-//     }
-//   })
-// }
-
-// export let login = (req: Request, res: Response) => {
-//   let pssword = req.body.pssword
-//   let dataParams = {
-//     action: 'get',
-//     table: 'users',
-//     selectAll: true,
-//     filter: [{ field: 'userName', operator: '=', value: req.params.userName }]
-//   }
-//   dlInterface.handleOp(dataParams, (err, result) => {
-//     if (err) {
-//       res.status(500).send(err)
-//     } else {
-//       bcrypt.compare(pssword, result[0].pssword, function (err: any, answer: any) {
-//         if (err) {
-//           throw err
-//         }
-//         if (answer) {
-//           const user = {
-//             userID: result[0].userID,
-//             userName: result[0].userName
-//           }
-//           jwt.sign({ user }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
-//             res.json({ token })
-//           })
-//         } else {
-//           res.json('Invalid pssword.')
-//         }
-//       })
-//     }
-//   })
-// }
-
-// new controllers
-
 // get /user #returns all users
 export function readUser (req: Request, res: Response) {
   model.readUser(function (error, result) {
@@ -227,30 +111,42 @@ export function updateUser (req: Request, res: Response) {
         res.status(500).send('Unable to update user')
       } else {
         if (result) {
-          const userObject: model.User = {
-            userID: result.userID,
-            userName: result.userName,
-            dateCreated: result.dateCreated,
-            active: result.active,
-            pssword: result.pssword
-          }
-          if (req.body.userName !== undefined) {
-            userObject.userName = req.body.userName
-          }
-          if (req.body.dateCreated !== undefined) {
-            userObject.dateCreated = req.body.dateCreated
-          }
-          if (req.body.active !== undefined) {
-            userObject.active = req.body.active
-          }
-          if (req.body.pssword !== undefined) {
-            userObject.pssword = req.body.pssword // need to hash at some point
-          }
-          model.updateUser(userObject, function (error) {
-            if (error) {
-              res.status(500).send('Unable to update user')
+          bcrypt.genSalt(saltRounds, function (err: any, salt: any) {
+            if (err) {
+              throw err
             } else {
-              res.send('Successfully updated user')
+              bcrypt.hash(req.body.password, salt, function (err: any, hash: any) {
+                if (err) {
+                  throw err
+                } else {
+                  const userObject: model.User = {
+                    userID: result.userID,
+                    userName: result.userName,
+                    dateCreated: result.dateCreated,
+                    active: result.active,
+                    pssword: result.pssword
+                  }
+                  if (req.body.userName !== undefined) {
+                    userObject.userName = req.body.userName
+                  }
+                  if (req.body.dateCreated !== undefined) {
+                    userObject.dateCreated = req.body.dateCreated
+                  }
+                  if (req.body.active !== undefined) {
+                    userObject.active = req.body.active
+                  }
+                  if (req.body.pssword !== undefined) {
+                    userObject.pssword = hash
+                  }
+                  model.updateUser(userObject, function (error) {
+                    if (error) {
+                      res.status(500).send('Unable to update user')
+                    } else {
+                      res.send('Successfully updated user')
+                    }
+                  })
+                }
+              })
             }
           })
         } else {
