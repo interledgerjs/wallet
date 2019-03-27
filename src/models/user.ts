@@ -115,29 +115,23 @@ export function createUser (user: User): Promise<boolean> {
 export function updateUser (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
-    
-  })
-}
-
-  const sql = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
-  dbFunctions.query(sql, function (err: object) {
-    if (err) {
-      callback(true)
-      console.log(err)
-    } else {
-      callback(false)
+    try {
+      const result = await query(sql)
+      resolve(false)
+    } catch (error) {
+      reject(error)
     }
   })
 }
 
-export function deleteUser (userID: number, callback: (error: Boolean) => void) {
-  const sql = `DELETE FROM users WHERE userID = '${userID}'`
-  dbFunctions.query(sql, function (err: object) {
-    if (err) {
-      callback(true)
-      console.log(err)
-    } else {
-      callback(false)
+export function deleteUser (userID: number): Promise<boolean> {
+  return new Promise(async function (resolve, reject) {
+    const sql: string = `DELETE FROM users WHERE userID = '${userID}'`
+    try {
+      const result = await query(sql)
+      resolve(false)
+    } catch (error) {
+      reject(error)
     }
   })
 }
