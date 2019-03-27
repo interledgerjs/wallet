@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import * as accountModel from '../models/account'
+import * as accountModel from '../models/account.model'
 import { number } from 'joi'
 
 export let createAccount = (req: Request, res: Response) => {
