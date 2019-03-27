@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import * as account from './controllers/account'
+import * as account from './controllers/account.controller'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
 
@@ -18,7 +18,6 @@ app.get('/transactions/account/:accountID/', transaction.readTransactionByAccoun
 app.post('/users/:userid/accounts', account.createAccount) // body.accountID?, body.accountName?, body.ownerUserID?
 app.get('/users/:userid/accounts/:accountid', account.readAccountByID) // id's as param
 app.get('/users/:userid/accounts', account.readAllAccountsByUserID)
-
 app.get('/accounts', account.readAllAccounts) // no required input
 app.put('/users/:userid/accounts/:accountid', account.updateAccount) // id as param, body.accountName, body.ownerUserID?
 app.delete('/users/:userid/accounts/:accountid', account.deleteAccount) // id's as params
