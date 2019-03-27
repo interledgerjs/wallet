@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Transaction, isTransactionArray, addTransaction, retrieveTransactions, retrieveTransactionByID, retrieveTransactionsByAccID } from '../models/transaction'
+import { Transaction, addTransaction, retrieveTransactions, retrieveTransactionByID, retrieveTransactionsByAccID } from '../models/transaction'
 
 // post /transactions #adds new transaction to table
 export async function createTransaction (req: Request, res: Response) {
@@ -20,8 +20,8 @@ export async function createTransaction (req: Request, res: Response) {
     }
 
     try {
-      const result = await addTransaction(transObject)
-      if (!result) {
+      const failure = await addTransaction(transObject)
+      if (!failure) {
         res.send('Transaction added')
       }
     } catch (error) {
@@ -39,14 +39,10 @@ export async function readTransactions (req: Request, res: Response) {
 
   try {
     const result = await retrieveTransactions()
-    if (isTransactionArray(result)) {
-      if (result.length === 0) {
-        res.sendStatus(404)
-      } else {
-        res.send(result)
-      }
+    if (result.length === 0) {
+      res.sendStatus(404)
     } else {
-      res.status(500).send('Unable to retrieve transactions')
+      res.send(result)
     }
   } catch (error) {
     res.status(500).send('Unable to retrieve transactions')
@@ -88,14 +84,10 @@ export async function readTransactionByAccount (req: Request, res: Response) {
 
     try {
       const result = await retrieveTransactionsByAccID(accountID)
-      if (isTransactionArray(result)) {
-        if (result.length === 0) {
-          res.sendStatus(404)
-        } else {
-          res.send(result)
-        }
+      if (result.length === 0) {
+        res.sendStatus(404)
       } else {
-        res.status(500).send('Unable to retrieve transactions')
+        res.send(result)
       }
     } catch (error) {
       console.log(error)

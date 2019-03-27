@@ -31,7 +31,7 @@ export function isTransactionArray (result: any): result is Transaction[] {
 }
 
 // function to handle adding transactions
-export function addTransaction (transaction: Transaction) {
+export function addTransaction (transaction: Transaction): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isTransaction(transaction)) {
       let sql: string
@@ -43,7 +43,7 @@ export function addTransaction (transaction: Transaction) {
       try {
         const result = await dbFunctions.query(sql)
         if (isTransactionArray(result)) {
-          resolve()
+          resolve(false)
         } else {
           reject(true)
         }
@@ -59,7 +59,7 @@ export function addTransaction (transaction: Transaction) {
 }
 
 // function to handle getting all transactions
-export function retrieveTransactions () {
+export function retrieveTransactions (): Promise<Transaction[]> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `SELECT * FROM transactions`
 
@@ -77,9 +77,9 @@ export function retrieveTransactions () {
 }
 
 // function to handle getting transactions by id
-export function retrieveTransactionByID (transID: number) {
+export function retrieveTransactionByID (transID: number): Promise<Transaction> {
   return new Promise(async function (resolve, reject) {
-    const sql = `SELECT * FROM transactions where transID = '${transID}'`
+    const sql: string = `SELECT * FROM transactions where transID = '${transID}'`
 
     try {
       const result = await dbFunctions.query(sql)
@@ -99,9 +99,9 @@ export function retrieveTransactionByID (transID: number) {
 }
 
 // function to handle getting transactions by account id
-export function retrieveTransactionsByAccID (AccountID: number) {
+export function retrieveTransactionsByAccID (AccountID: number): Promise<Transaction[]> {
   return new Promise(async function (resolve, reject) {
-    const sql = `SELECT * FROM transactions where (dbtAccID = '${AccountID}' OR crdtAccID = '${AccountID}')`
+    const sql: string = `SELECT * FROM transactions where (dbtAccID = '${AccountID}' OR crdtAccID = '${AccountID}')`
 
     try {
       const result = await dbFunctions.query(sql)

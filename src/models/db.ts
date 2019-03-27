@@ -12,7 +12,7 @@ export function query (sqlQuery: string) {
         database    : process.env.DBNAME
       }))
 
-      connectDb.query(sqlQuery, (err, data) => {
+      connectDb.query(sqlQuery, function (err: Error, data: object[]) {
         connectDb.end()
         if (err) {
           reject(err)
@@ -26,7 +26,7 @@ export function query (sqlQuery: string) {
       if (typeof process.env.DBNAME === 'string') {
         db = new sqlite3.Database(process.env.DBNAME)
       }
-      db.all(sqlQuery, (err: Error, data: object) => {
+      db.all(sqlQuery, function (err: Error, data: object[]) {
         if (err) {
           reject(err)
         } else {
