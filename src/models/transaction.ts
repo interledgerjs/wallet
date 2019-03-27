@@ -8,7 +8,7 @@ export interface Transaction {
   date: string
 }
 
-function isTransaction (transaction: any): transaction is Transaction {
+export function isTransaction (transaction: any): transaction is Transaction {
   return (
     typeof transaction.transID === 'number' &&
     typeof transaction.dbtAccID === 'number' &&
@@ -18,71 +18,100 @@ function isTransaction (transaction: any): transaction is Transaction {
   )
 }
 
-// function to handle adding transactions
-export function createTransaction (transaction: Transaction, callback: (error: Boolean) => void) {
-  if (isTransaction(transaction)) {
-    let sql: string
-    if (transaction.transID !== -1) {
-      sql = `INSERT INTO transactions (transID, dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.transID}', '${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
-    } else {
-      sql = `INSERT INTO transactions (dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
+export function isTransactionArray (result: any): result is Transaction[] {
+  let isTransactionArray: boolean = true
+  result.forEach(function (element) {
+    if (!isTransaction(element)) {
+      isTransactionArray = false
     }
-    dbFunctions.query(sql, function (err: object) {
-      if (err) {
-        callback(true)
-        // console.log(err)
+  })
+  return (
+    isTransactionArray || result === null
+  )
+}
+
+// function to handle adding transactions
+export function addTransaction (transaction: Transaction) {
+  return new Promise(async function (resolve, reject) {
+    if (isTransaction(transaction)) {
+      let sql: string
+      if (transaction.transID !== -1) {
+        sql = `INSERT INTO transactions (transID, dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.transID}', '${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
       } else {
-        callback(false)
+        sql = `INSERT INTO transactions (dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
       }
-    })
-  } else {
-    callback(true)
-  }
+      try {
+        const result = await dbFunctions.query(sql)
+        if (isTransactionArray(result)) {
+          resolve()
+        } else {
+          reject(true)
+        }
+      } catch (error) {
+        console.log(error)
+        console.log('model catch')
+        reject(error)
+      }
+    } else {
+      resolve(true)
+    }
+  })
 }
 
 // function to handle getting all transactions
-export function readTransactions (callback: (error: Boolean, result: Transaction[] | null) => void) {
-  const sql = `SELECT * FROM transactions`
-  dbFunctions.query(sql, function (err: object, result: Transaction[]) {
-    if (err) {
-      callback(true, null)
-      console.log(err)
-    } else {
-      callback(false, result)
+export function retrieveTransactions () {
+  return new Promise(async function (resolve, reject) {
+    const sql: string = `SELECT * FROM transactions`
+
+    try {
+      const result = await dbFunctions.query(sql)
+      if (isTransactionArray(result)) {
+        resolve(result)
+      } else {
+        reject(true)
+      }
+    } catch (error) {
+      reject(error)
     }
   })
 }
 
 // function to handle getting transactions by id
-export function readTransactionByID (transID: number, callback: (error: Boolean, result: Transaction | null) => void) {
-  const sql = `SELECT * FROM transactions where transID = '${transID}'`
-  dbFunctions.query(sql, function (err: object, result: Transaction[]) {
-    if (err) {
-      callback(true, null)
-      console.log(err)
-    } else {
-      if (result.length > 0) {
-        callback(false, result[0])
+export function retrieveTransactionByID (transID: number) {
+  return new Promise(async function (resolve, reject) {
+    const sql = `SELECT * FROM transactions where transID = '${transID}'`
+
+    try {
+      const result = await dbFunctions.query(sql)
+      if (isTransactionArray(result)) {
+        if (result.length > 0) {
+          resolve(result[0])
+        } else {
+          resolve(null)
+        }
       } else {
-        callback(false, null)
+        reject(true)
       }
+    } catch (error) {
+      reject(error)
     }
   })
 }
 
 // function to handle getting transactions by account id
-export function readTransactionsByAccID (AccountID: number, callback: (error: Boolean, result: Transaction[] | null) => void) {
-  const sql = `SELECT * FROM transactions where (dbtAccID = '${AccountID}' OR crdtAccID = '${AccountID}')`
-  dbFunctions.query(sql, function (err: object, result: Transaction[]) {
-    if (err) {
-      callback(true, null)
-      console.log(err)
-    } else {
-      if (result.length > 0) {
-        callback(false, result)
+export function retrieveTransactionsByAccID (AccountID: number) {
+  return new Promise(async function (resolve, reject) {
+    const sql = `SELECT * FROM transactions where (dbtAccID = '${AccountID}' OR crdtAccID = '${AccountID}')`
+
+    try {
+      const result = await dbFunctions.query(sql)
+      if (isTransactionArray(result)) {
+        resolve(result)
       } else {
-        callback(false, null)
+        reject(true)
       }
+    } catch (error) {
+      reject(error)
     }
   })
 }

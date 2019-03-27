@@ -18,6 +18,18 @@ function isAccount (account: Account) {
   )
 }
 
+function isAccountArray (result: any): result is Account[] {
+  let isAccountArray: boolean = true
+  result.forEach(function (element) {
+    if (!isAccount(element)) {
+      isAccountArray = false
+    }
+  })
+  return (
+    isAccountArray || result === null
+  )
+}
+
 // app.post('/users/:id/accounts', account.createAccount)
   // body.accountID?, body.accountName?, body.ownerUserID?
 
