@@ -5,7 +5,7 @@ export interface User {
   userID: number,
   userName: string,
   dateCreated: string,
-  active: boolean,
+  active: number,
   pssword: string
 }
 
@@ -14,18 +14,20 @@ function isUser (user: any): user is User {
     typeof user.userID === 'number' &&
     typeof user.userName === 'string' &&
     typeof user.dateCreated === 'string' &&
-    typeof user.active === 'boolean' &&
+    typeof user.active === 'number' &&
     typeof user.pssword === 'string'
   )
 }
 
 function isUserArray (result: any): result is User[] {
   let isUserArray: boolean = true
-  result.forEach(function (element) {
-    if (!isUser(element)) {
-      isUserArray = false
-    }
-  })
+  if (result.length) {
+    result.forEach(function (element) {
+      if (!isUser(element)) {
+        isUserArray = false
+      }
+    })
+  }
   return (
     isUserArray || result === null
   )
@@ -33,7 +35,7 @@ function isUserArray (result: any): result is User[] {
 // functions
 
 // function to handle getting all users
-export function readUser (): Promise<User[]> {
+export function retrieveUser (): Promise<User[]> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `SELECT * FROM users`
     try {
@@ -50,7 +52,7 @@ export function readUser (): Promise<User[]> {
 }
 
 // function to handle get user by id
-export function readUserByID (userID: number): Promise<User> {
+export function retrieveUserByID (userID: number): Promise<User> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `SELECT * FROM users where iserID = '${userID}'`
     try {
@@ -71,11 +73,12 @@ export function readUserByID (userID: number): Promise<User> {
 }
 
 // function to handle get user by userName
-export function readUserByUserName (userName: string): Promise<User> {
+export function retrieveUserByUserName (userName: string): Promise<User> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `SELECT * FROM users WHERE username = '${userName}'`
     try {
       const result = await query(sql)
+      console.log(result)
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -83,6 +86,7 @@ export function readUserByUserName (userName: string): Promise<User> {
           resolve(null)
         }
       } else {
+        console.log(isUserArray(result))
         reject(true)
       }
     } catch (error) {
@@ -92,8 +96,8 @@ export function readUserByUserName (userName: string): Promise<User> {
 }
 
 // function to handle adding users
-export function createUser (user: User): Promise<boolean> {
-  return new Promise(async function(resolve, reject) {
+export function addUser (user: User): Promise<boolean> {
+  return new Promise(async function (resolve, reject) {
     if (isUser(user)) {
       const sql: string = `INSERT INTO users (userName, dateCreated, active, pssword) VALUES ('${user.userName}', '${user.dateCreated}', ${user.active}, '${user.pssword}')`
       try {
@@ -112,7 +116,7 @@ export function createUser (user: User): Promise<boolean> {
   })
 }
 
-export function updateUser (user: User): Promise<boolean> {
+export function alterUser (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
     try {
@@ -124,7 +128,7 @@ export function updateUser (user: User): Promise<boolean> {
   })
 }
 
-export function deleteUser (userID: number): Promise<boolean> {
+export function removeUser (userID: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `DELETE FROM users WHERE userID = '${userID}'`
     try {
