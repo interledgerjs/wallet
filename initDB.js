@@ -34,7 +34,7 @@ let mysqlInit = () => {
         connectDb.query('CREATE TABLE IF NOT EXISTS accounts (\
                     accountID INT AUTO_INCREMENT PRIMARY KEY,\
                     accountName VARCHAR(255),\
-                    owneruserID INT,\
+                    ownerUserID INT,\
                     balance INT,\
                     lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
           if (err) throw err
@@ -79,7 +79,7 @@ if (process.env.ACTIVEDB === 'MySQL') {
     db.run('CREATE TABLE IF NOT EXISTS accounts (\
       accountID INTEGER PRIMARY KEY AUTOINCREMENT,\
       accountName VARCHAR(255),\
-      owneruserID INT, balance INT,\
+      ownerUserID INT, balance INT,\
       lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
     db.run('CREATE TABLE IF NOT EXISTS transactions (\
       transID INTEGER PRIMARY KEY AUTOINCREMENT,\
