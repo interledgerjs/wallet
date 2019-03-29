@@ -2,7 +2,7 @@ import * as mysql from 'mysql'
 import * as sqlite3 from 'sqlite3'
 require('dotenv').config()
 
-export function query (sqlQuery: string) {
+export function query (sqlQuery: string): Promise<object[]> {
   return new Promise(function (resolve, reject) {
     if (process.env.ACTIVEDB === 'MySQL') {
       const connectDb = (mysql.createConnection({

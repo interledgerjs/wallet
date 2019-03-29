@@ -18,7 +18,7 @@ export async function readUser (req: Request, res: Response) {
   }
 }
 
-// get /user/id/:id #returns single user by id
+// get /users/id/:id #returns single user by id
 export async function readUserByID (req: Request, res: Response) {
   const userID: number = req.params.id
   try {
@@ -33,7 +33,7 @@ export async function readUserByID (req: Request, res: Response) {
   }
 }
 
-// get /user/id/:id #returns single user by userName
+// get /users/username/:username #returns single user by userName
 export async function readUserByUserName (req: Request, res: Response) {
   const userName: string = req.params.username
 
@@ -55,14 +55,10 @@ export async function createUser (req: Request, res: Response) {
   const userName: string = req.body.userName
 
   try {
-    console.log('a')
     const userExists = await retrieveUserByUserName(userName)
-    console.log('b')
-    console.log(userExists)
     if (!userExists) {
       const salt = await bcrypt.genSalt(saltRounds)
       const hash = await bcrypt.hash(req.body.pssword, salt)
-      console.log('c')
       const userObject: User = {
         userID: -1,
         userName: req.body.userName,
@@ -70,16 +66,16 @@ export async function createUser (req: Request, res: Response) {
         active: 1,
         pssword: hash
       }
-      console.log('d')
       const result = await addUser(userObject)
       if (!result) {
         res.send('User created')
+      } else {
+        res.sendStatus(400)
       }
     } else {
       res.sendStatus(400)
     }
   } catch (error) {
-    console.log(error)
     res.sendStatus(500)
   }
 }
