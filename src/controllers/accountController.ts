@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import { Account, addAccount, retrieveAccountByID, retrieveAllAccounts, retrieveAccountsByUserID, modifyAccount, removeAccount } from '../models/account'
+import { Account, addAccount, retrieveAccountByID, retrieveAllAccounts, retrieveAccountsByUserID, modifyAccount, removeAccount } from '../models/accountModel'
 
 export async function createAccount (req: Request, res: Response) {
   if (
