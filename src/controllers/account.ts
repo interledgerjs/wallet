@@ -16,9 +16,9 @@ export async function createAccount (req: Request, res: Response) {
       lastUpdated: ''
     }
     try {
-      console.log(accountObject)
+      // console.log(accountObject)
       const result = await addAccount(accountObject)
-      console.log(result)
+      // console.log(result)
       if (!result) {
         res.send('Account created')
       }
@@ -52,7 +52,7 @@ export async function readAllAccounts (req: Request, res: Response) {
       res.sendStatus(404)
     }
   } catch (error) {
-    console.log(error)
+    // console.log(error)
     res.sendStatus(500)
   }
 }
@@ -99,7 +99,7 @@ export async function updateAccount (req: Request, res: Response) {
           accountObject.balance = req.body.balance
         }
         const result = await modifyAccount(accountObject)
-        console.log(accountObject)
+        // console.log(accountObject)
         if (!result) {
           res.send('Successfully updated account')
         }
@@ -107,7 +107,7 @@ export async function updateAccount (req: Request, res: Response) {
         res.sendStatus(404)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       res.sendStatus(500)
     }
   } else {

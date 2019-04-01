@@ -25,8 +25,7 @@ export async function createTransaction (req: Request, res: Response) {
         res.send('Transaction added')
       }
     } catch (error) {
-      console.log(error)
-      console.log('controller catch')
+      // console.log(error)
       res.status(500).send('unable to add transaction')
     }
   } else {
@@ -65,7 +64,7 @@ export async function readTransactionByID (req: Request, res: Response) {
         res.send(result)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       res.status(500).send('Unable to retrieve transaction')
     }
   } else {
@@ -79,7 +78,7 @@ export async function readTransactionByAccount (req: Request, res: Response) {
     req.params.accountID &&
     !isNaN(parseInt(req.params.accountID, 10))
   ) {
-    console.log(`value is '${req.params.accountID}'`)
+    // console.log(`value is '${req.params.accountID}'`)
     const accountID: number = req.params.accountID
 
     try {
@@ -90,7 +89,7 @@ export async function readTransactionByAccount (req: Request, res: Response) {
         res.send(result)
       }
     } catch (error) {
-      console.log(error)
+      // console.log(error)
       res.status(500).send('Unable to retrieve transactions')
     }
   } else {

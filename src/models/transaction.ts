@@ -48,8 +48,7 @@ export function addTransaction (transaction: Transaction): Promise<boolean> {
           reject(true)
         }
       } catch (error) {
-        console.log(error)
-        console.log('model catch')
+        // console.log(error)
         reject(error)
       }
     } else {
