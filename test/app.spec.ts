@@ -52,17 +52,17 @@ describe('Test to get all transactions', function() {
   });
 });
 
-// .get('/transaction/id/:id')
-describe('Test to get a transaction by id', function() {
-  it('should return OK status', function() {
-    return request(app)
-      .get('/transactions/id/605')
-      .then(function(response){
-          //console.log(response)
-          assert.equal(response.status, 200)
-      })
-  });
-});
+// // .get('/transaction/id/:id')
+// describe('Test to get a transaction by id', function() {
+//   it('should return OK status', function() {
+//     return request(app)
+//       .get('/transactions/id/605')
+//       .then(function(response){
+//           //console.log(response)
+//           assert.equal(response.status, 200)
+//       })
+//   });
+// });
 
 // // .put('/transaction/:id')
 // describe('Test to update a transaction', function() {
