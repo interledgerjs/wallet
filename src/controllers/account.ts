@@ -95,7 +95,7 @@ export async function updateAccount (req: Request, res: Response) {
         if (req.body.dateCreated !== undefined) {
           accountObject.ownerUserID = req.body.ownerUserID
         }
-        if (req.body.active !== undefined) {
+        if (req.body.balance !== undefined) {
           accountObject.balance = req.body.balance
         }
         const result = await modifyAccount(accountObject)
