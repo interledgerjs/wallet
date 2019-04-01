@@ -1,4 +1,4 @@
-import * as dbFunctions from './db'
+import { query } from './db'
 
 export interface Account {
   accountID: number,
@@ -18,161 +18,130 @@ function isAccount (account: Account) {
   )
 }
 
-// app.post('/users/:id/accounts', account.createAccount)
-  // body.accountID?, body.accountName?, body.ownerUserID?
-
-export function createAccount (account: Account, callback: (error: Boolean) => void) {
-  // console.log('model found')
-  if (isAccount) {
-    // console.log('isAccount returned TRUE')
-    // console.log(account)
-    const sqlquery = `
-      INSERT INTO accounts (accountName, balance, ownerUserID)
-      VALUES ('${account.accountName}', ${account.balance}, ${account.ownerUserID})
-    `
-    dbFunctions.query(sqlquery, function (err: object) {
-      // console.log(err)
-      // console.log(sqlquery)
-      if (err) {
-        callback(true)
-      } else {
-        callback(false)
+function isAccountArray (result: any): result is Account[] {
+  let isAccountArray: boolean = true
+  if (result.length) {
+    result.forEach(function (element) {
+      if (!isAccount(element)) {
+        isAccountArray = false
       }
     })
-  } else {
-    // console.log('isAccount returned FALSE')
-    callback(true)
   }
+  return (
+    isAccountArray || result === null
+  )
 }
 
-// app.get('/users/:id/accounts/:id', account.readAccountById)
-  // id as param
-
-export function readAccountByID (account: Account, callback: (error: Boolean, result: Account) => void) {
-  if (isAccount) {
-    // console.log('isAccount returned TRUE')
-    // console.log(account)
-    const sqlquery = `
-      SELECT * FROM accounts
-      WHERE accountID = ${account.accountID}
-      AND ownerUserID = ${account.ownerUserID}
-    `
-    // console.log(sqlquery)
-    dbFunctions.query(sqlquery, function (err: object, result: Account) {
-      // console.log(err)
-      // console.log('result = ' + result)
-      if (err) {
-        callback(true, null)
-      } else {
-        callback(false, result)
+// function to handle adding an account
+export function addAccount (account: Account): Promise<boolean> {
+  return new Promise(async function (resolve, reject) {
+    if (isAccount(account)) {
+      const sql: string = `INSERT INTO accounts (accountName, balance, ownerUserID) VALUES ('${account.accountName}', ${account.balance}, ${account.ownerUserID})`
+      try {
+        const result = await query(sql)
+        if (isAccountArray(result)) {
+          resolve(false)
+        } else {
+          resolve(true)
+        }
+      } catch (error) {
+        reject(error)
       }
-    })
-  } else {
-    // console.log('isAccount returned FALSE')
-    callback(true, null)
-  }
-}
-
-// app.get('/accounts', account.readAllAccounts)
-  // no required input
-
-export function readAllAccounts (callback: (error: Boolean, result: Account) => void) {
-  const sqlquery = `SELECT * FROM accounts`
-  dbFunctions.query(sqlquery, function (err: object, result: Account) {
-    if (err) {
-      callback(true, null)
-      // console.log(err)
     } else {
-      callback(false, result)
+      resolve(true)
     }
   })
 }
 
-// app.get('/users/:id/accounts', account.readAllAccountsByUserID)
-  // placeholder comment
-
-export function readAllAccountsByUserID (account: Account, callback: (error: Boolean, result: Account) => void) {
-  // console.log('model found')
-  if (isAccount) {
-    // console.log('isAccount passed')
-    const sqlquery = `
-      SELECT * FROM accounts
-      WHERE ownerUserID = ${account.ownerUserID}
-    `
-    // console.log(sqlquery)
-    dbFunctions.query(sqlquery, function (err: object, result: Account) {
-      if (err) {
-        callback(true, null)
-      // console.log(err)
-      } else {
-        if (result) {
-          callback(false, result)
+// function to handle retrieving a singular account by AccountID
+export function retrieveAccountByID (id: number): Promise<Account> {
+  return new Promise(async function (resolve, reject) {
+    const sql: string = `SELECT * FROM accounts WHERE accountID = ${id}`
+    try {
+      const result = await query(sql)
+      if (isAccountArray(result)) {
+        if (result.length > 0) {
+          resolve(result[0])
         } else {
-          callback(false, null)
+          resolve(null)
         }
+      } else {
+        reject(true)
       }
-    })
-  } else {
-    // console.log('isAccount failed')
-    callback(true, null)
-  }
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
-// app.put('/users/:id/accounts/:id', account.updateAccount)
-  // id as param, body.accountName, body.ownerUserID?
-
-export function updateAccount (account: Account, callback: (error: Boolean) => void) {
-    // console.log('model found')
-  if (isAccount) {
-      // console.log('isAccount returned TRUE')
-      // console.log(account)
-    const sqlquery = `
-      UPDATE accounts
-      SET accountName = '${account.accountName}',
-          balance = '${account.balance}',
-          lastUpdated = DEFAULT
-      WHERE accountID = ${account.accountID}
-      AND ownerUserID = ${account.ownerUserID}
-    `
-    dbFunctions.query(sqlquery, function (err: object) {
-        // console.log(err)
-        // console.log(sqlquery)
-      if (err) {
-        callback(true)
+// function to handle the retrieval of all accounts
+export function retrieveAllAccounts (): Promise<Account[]> {
+  return new Promise(async function (resolve, reject) {
+    const sql: string = `SELECT * FROM accounts`
+    try {
+      const result = await query(sql)
+      if (isAccountArray(result)) {
+        if (result.length > 0) {
+          resolve(result)
+        } else {
+          resolve(null)
+        }
       } else {
-        callback(false)
+        reject(true)
       }
-    })
-  } else {
-      // console.log('isAccount returned FALSE')
-    callback(true)
-  }
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
-// app.delete('/users/:id/accounts/:id', account.deleteAccount)
-  // id as param
-
-export function deleteAccount (account: Account, callback: (error: Boolean) => void) {
-  // console.log('model found')
-  if (isAccount) {
-    // console.log('isAccount returned TRUE')
-    // console.log(account)
-    const sqlquery = `
-      DELETE FROM accounts
-      WHERE accountID = ${account.accountID}
-      AND ownerUserID = ${account.ownerUserID}
-    `
-    dbFunctions.query(sqlquery, function (err: object) {
-      // console.log(err)
-      // console.log(sqlquery)
-      if (err) {
-        callback(true)
+// function to handle list of accounts owned by userID
+export function retrieveAccountsByUserID (userID: number): Promise<Account[]> {
+  return new Promise(async function (resolve, reject) {
+    const sql: string = `SELECT * FROM accounts WHERE ownerUserID = ${userID}`
+    try {
+      const result = await query(sql)
+      if (isAccountArray(result)) {
+        if (result.length > 0) {
+          resolve(result)
+        } else {
+          resolve(null)
+        }
       } else {
-        callback(false)
+        reject(true)
       }
-    })
-  } else {
-    // console.log('isAccount returned FALSE')
-    callback(true)
-  }
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+// function to handle the updating of account information
+export function modifyAccount (account: Account): Promise<boolean> {
+  return new Promise(async function (resolve, reject) {
+    if (isAccount(account)) {
+      const sql: string = `UPDATE accounts SET accountName = '${account.accountName}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}' WHERE accountID = ${account.accountID} AND ownerUserID = ${account.ownerUserID}`
+      try {
+        const result = await query(sql)
+        resolve(false)
+      } catch (error) {
+        reject(error)
+      }
+    } else {
+      resolve(true)
+    }
+  })
+}
+
+// funcion to handle the deletion of accounts
+export function removeAccount (accountID: number): Promise<boolean> {
+  return new Promise(async function (resolve, reject) {
+    const sql: string = `DELETE FROM accounts WHERE accountID = ${accountID}`
+    try {
+      const result = await query(sql)
+      resolve(false)
+    } catch (error) {
+      reject(error)
+    }
+  })
 }

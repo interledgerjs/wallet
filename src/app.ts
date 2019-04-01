@@ -15,12 +15,13 @@ app.get('/transactions/', transaction.readTransactions) // no required input
 app.get('/transactions/id/:id/', transaction.readTransactionByID) // id as param
 app.get('/transactions/account/:accountID/', transaction.readTransactionByAccount) // account id as param
 
-app.post('/users/:userid/accounts', account.createAccount) // body.accountID?, body.accountName?, body.ownerUserID?
-app.get('/users/:userid/accounts/:accountid', account.readAccountByID) // id's as param
-app.get('/users/:userid/accounts', account.readAllAccountsByUserID)
+app.post('/accounts', account.createAccount) // body.balance , body.accountName, body.ownerUserID
+app.get('/accounts/id/:accountid', account.readAccountByID) // id's as param
+app.get('/accounts/userid/:userid/', account.readAllAccountsByUserID)
+
 app.get('/accounts', account.readAllAccounts) // no required input
-app.put('/users/:userid/accounts/:accountid', account.updateAccount) // id as param, body.accountName, body.ownerUserID?
-app.delete('/users/:userid/accounts/:accountid', account.deleteAccount) // id's as params
+app.put('/accounts/:id', account.updateAccount) // id as param, body.accountName, body.ownerUserID, body.balance
+app.delete('/accounts/:id', account.deleteAccount) // id's as params
 
 app.post('/users', user.createUser) // body.userName, body.password
 app.get('/users', user.readUser)
