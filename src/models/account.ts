@@ -42,14 +42,12 @@ export function addAccount (account: Account): Promise<boolean> {
         if (isAccountArray(result)) {
           resolve(false)
         } else {
-          console.log('x')
           resolve(true)
         }
       } catch (error) {
         reject(error)
       }
     } else {
-      console.log('y')
       resolve(true)
     }
   })
@@ -82,7 +80,6 @@ export function retrieveAllAccounts (): Promise<Account[]> {
     const sql: string = `SELECT * FROM accounts`
     try {
       const result = await query(sql)
-      console.log(result)
       if (isAccountArray(result)) {
         if (result.length > 0) {
           resolve(result)
@@ -124,7 +121,6 @@ export function modifyAccount (account: Account): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isAccount(account)) {
       const sql: string = `UPDATE accounts SET accountName = '${account.accountName}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}' WHERE accountID = ${account.accountID} AND ownerUserID = ${account.ownerUserID}`
-      console.log(sql)
       try {
         const result = await query(sql)
         resolve(false)
