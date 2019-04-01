@@ -1,4 +1,4 @@
-import * as dbFunctions from './db'
+import * as dbFunctions from './dbModel'
 
 export interface Transaction {
   transID: number,

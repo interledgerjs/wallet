@@ -1,9 +1,9 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import * as account from './controllers/account.controller'
-import * as transaction from './controllers/transaction'
-import * as user from './controllers/user'
+import * as account from './controllers/accountController'
+import * as transaction from './controllers/transactionController'
+import * as user from './controllers/userController'
 
 dotenv.config()
 const app = express()

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 // import * as jwt from 'jsonwebtoken'
-import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, alterUser, removeUser, User } from '../models/user'
+import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, alterUser, removeUser, User } from '../models/userModel'
 import * as bcrypt from 'bcrypt'
 const saltRounds = 3
 

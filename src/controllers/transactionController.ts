@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Transaction, addTransaction, retrieveTransactions, retrieveTransactionByID, retrieveTransactionsByAccID } from '../models/transaction'
+import { Transaction, addTransaction, retrieveTransactions, retrieveTransactionByID, retrieveTransactionsByAccID } from '../models/transactionModel'
 
 // post /transactions #adds new transaction to table
 export async function createTransaction (req: Request, res: Response) {
