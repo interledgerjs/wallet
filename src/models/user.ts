@@ -53,7 +53,7 @@ export function retrieveUser (): Promise<User[]> {
 // function to handle get user by id
 export function retrieveUserByID (userID: number): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users where iserID = '${userID}'`
+    const sql: string = `SELECT * FROM users where userID = '${userID}'`
     try {
       const result = await query(sql)
       if (isUserArray(result)) {
