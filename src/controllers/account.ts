@@ -1,144 +1,139 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import * as accountModel from '../models/account'
-import { number } from 'joi'
+import { Account, addAccount, retrieveAccountByID, retrieveAllAccounts, retrieveAccountsByUserID, modifyAccount, removeAccount } from '../models/account'
 
-export let createAccount = (req: Request, res: Response) => {
-  // console.log('controller found')
-  const accountObject: accountModel.Account = {
-    accountID: null,
-    accountName: req.body.accountName,
-    ownerUserID: Number(req.params.userid),
-    balance: req.body.balance,
-    lastUpdated: null
-  }
-  accountModel.createAccount(accountObject, function (err) {
-    if (err) {
-      res.status(500).send('Unable to create account')
-    } else {
-      res.send('Account created')
+export async function createAccount (req: Request, res: Response) {
+  if (
+    req.body.accountName && typeof req.body.accountName === 'string' &&
+    req.body.ownerUserID && typeof req.body.ownerUserID === 'number' &&
+    req.body.balance && typeof req.body.balance === 'number'
+  ) {
+    const accountObject: Account = {
+      accountID: 0,
+      accountName: req.body.accountName,
+      ownerUserID: req.body.ownerUserID,
+      balance: req.body.balance,
+      lastUpdated: ''
     }
-  })
-
-}
-
-export let readAccountByID = (req: Request, res: Response) => {
-  const accountObject: accountModel.Account = {
-    accountID: Number(req.params.accountid),
-    accountName: '',
-    ownerUserID: Number(req.params.userid),
-    balance: null,
-    lastUpdated: ''
-  }
-  accountModel.readAccountByID(accountObject, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
+    try {
+      // console.log(accountObject)
+      const result = await addAccount(accountObject)
+      // console.log(result)
       if (!result) {
-        res.sendStatus(404)
-      } else {
-        res.json(result)
+        res.send('Account created')
       }
+    } catch (error) {
+      res.sendStatus(500)
     }
-  })
-}
-
-export let readAllAccounts = (req: Request, res: Response) => {
-  accountModel.readAllAccounts((err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      if (!result) {
-        res.sendStatus(404)
-      } else {
-        res.json(result)
-      }
-    }
-  })
-}
-
-export let readAllAccountsByUserID = (req: Request, res: Response) => {
-  const accountObject: accountModel.Account = {
-    accountID: null,
-    accountName: '',
-    ownerUserID: Number(req.params.userid),
-    balance: null,
-    lastUpdated: ''
+  } else {
+    res.sendStatus(400)
   }
-  accountModel.readAllAccountsByUserID(accountObject, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      if (!result) {
-        res.sendStatus(404)
-      } else {
-        res.json(result)
-      }
-    }
-  })
 }
 
-export let updateAccount = (req: Request, res: Response) => {
-  const accountObject: accountModel.Account = {
-    accountID: Number(req.params.accountid),
-    accountName: '',
-    ownerUserID: Number(req.params.userid),
-    balance: null,
-    lastUpdated: null
-  }
-  accountModel.readAccountByID(accountObject, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else if (!result) {
-      res.status(404).send('invalid ID requested')
+export async function readAccountByID (req: Request, res: Response) {
+  try {
+    const result = await retrieveAccountByID(req.params.accountid)
+    if (result) {
+      res.send(result)
     } else {
-      const updatedAccount: accountModel.Account = {
-        accountID: result[0].accountID,
-        accountName: result[0].accountName,
-        ownerUserID: result[0].ownerUserID,
-        balance: result[0].balance,
-        lastUpdated: null
-      }
-      if (req.body.accountName) {
-        updatedAccount.accountName = req.body.accountName
-      }
-      if (req.body.balance) {
-        updatedAccount.balance = req.body.balance
-      }
-      accountModel.updateAccount(updatedAccount, (err) => {
-        if (err) {
-          res.status(500).send('Account could not be updated')
-        } else {
-          res.send('Account updated')
+      res.sendStatus(404)
+    }
+  } catch (error) {
+    res.send(500)
+  }
+}
+
+export async function readAllAccounts (req: Request, res: Response) {
+  try {
+    const result = await retrieveAllAccounts()
+    if (result) {
+      res.send(result)
+    } else {
+      res.sendStatus(404)
+    }
+  } catch (error) {
+    // console.log(error)
+    res.sendStatus(500)
+  }
+}
+
+export async function readAllAccountsByUserID (req: Request, res: Response) {
+  try {
+    const result = await retrieveAccountsByUserID(req.params.userid)
+    if (result) {
+      res.send(result)
+    } else {
+      res.sendStatus(404)
+    }
+  } catch (error) {
+    res.sendStatus(500)
+  }
+}
+
+export async function updateAccount (req: Request, res: Response) {
+  if (
+    req.params.id &&
+    !isNaN(parseInt(req.params.id, 10)) &&
+    (req.body.accountName === undefined || typeof req.body.accountName === 'string') &&
+    (req.body.ownerUserID === undefined || typeof req.body.ownerUserID === 'number') &&
+    (req.body.balance === undefined || typeof req.body.balance === 'number')
+
+  ) {
+    try {
+      const accountExists = await retrieveAccountByID(req.params.id)
+      if (accountExists) {
+        const accountObject: Account = {
+          accountID: accountExists.accountID,
+          accountName: accountExists.accountName,
+          ownerUserID: accountExists.ownerUserID,
+          balance: accountExists.balance,
+          lastUpdated: new Date().toISOString()
         }
-      })
+        if (req.body.accountName !== undefined) {
+          accountObject.accountName = req.body.accountName
+        }
+        if (req.body.dateCreated !== undefined) {
+          accountObject.ownerUserID = req.body.ownerUserID
+        }
+        if (req.body.balance !== undefined) {
+          accountObject.balance = req.body.balance
+        }
+        const result = await modifyAccount(accountObject)
+        // console.log(accountObject)
+        if (!result) {
+          res.send('Successfully updated account')
+        }
+      } else {
+        res.sendStatus(404)
+      }
+    } catch (error) {
+      // console.log(error)
+      res.sendStatus(500)
     }
-  })
+  } else {
+    res.sendStatus(400)
+  }
 }
 
-export let deleteAccount = (req: Request, res: Response) => {
-  const accountObject: accountModel.Account = {
-    accountID: Number(req.params.accountid),
-    accountName: '',
-    ownerUserID: Number(req.params.userid),
-    balance: null,
-    lastUpdated: ''
-  }
-  accountModel.readAccountByID(accountObject, (err, result) => {
-    if (err) {
-      res.status(500).send(err)
-    } else {
-      if (!result) {
-        res.sendStatus(404)
+export async function deleteAccount (req: Request, res: Response) {
+  if (
+    req.params.id &&
+    !isNaN(parseInt(req.params.id, 10))
+  ) {
+    try {
+      const accountExists = await retrieveAccountByID(req.params.id)
+      if (accountExists) {
+        const result = await removeAccount(req.params.id)
+        if (!result) {
+          res.send('Successfully deleted account')
+        }
       } else {
-        accountModel.deleteAccount(accountObject, (err) => {
-          if (err) {
-            res.status(500).send('Unable to delete account')
-          } else {
-            res.send(`Account deleted`)
-          }
-        })
+        res.sendStatus(404)
       }
+    } catch (error) {
+      res.sendStatus(500)
     }
-  })
+  } else {
+    res.sendStatus(400)
+  }
 }
