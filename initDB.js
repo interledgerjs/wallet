@@ -28,7 +28,7 @@ let mysqlInit = () => {
                     userName VARCHAR(255),\
                     dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
                     deletedAt DATETIME,\
-                    role VARCHAR(255),\
+                    userRole VARCHAR(255),\
                     pssword VARCHAR(255));', (err) => {
           if (err) throw err
         })
@@ -77,7 +77,7 @@ if (process.env.ACTIVEDB === 'MySQL') {
       userName VARCHAR(255),\
       dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
       deletedAt DATETIME,\
-      role VARCHAR(255),\
+      userRole VARCHAR(255),\
       pssword VARCHAR(255));')
     db.run('CREATE TABLE IF NOT EXISTS accounts (\
       accountID INTEGER PRIMARY KEY AUTOINCREMENT,\

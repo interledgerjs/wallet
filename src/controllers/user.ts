@@ -65,7 +65,7 @@ export async function createUser (req: Request, res: Response) {
         userName: req.body.userName,
         dateCreated: new Date().toISOString(),
         deletedAt: null,
-        role: req.body.role,
+        userRole: req.body.userRole,
         pssword: hash
       }
       const result = await addUser(userObject)
@@ -90,7 +90,7 @@ export async function updateUser (req: Request, res: Response) {
     (req.body.userName === undefined || typeof req.body.userName === 'string') &&
     (req.body.dateCreated === undefined || typeof req.body.dateCreated === 'string') &&
     (req.body.deletedAt === undefined || typeof req.body.deletedAt === 'boolean') &&
-    (req.body.role === undefined || typeof req.body.role === 'string') &&
+    (req.body.userRole === undefined || typeof req.body.userRole === 'string') &&
     (req.body.pssword === undefined || typeof req.body.pssword === 'string')
 
   ) {
@@ -102,7 +102,7 @@ export async function updateUser (req: Request, res: Response) {
           userName: userExists.userName,
           dateCreated: userExists.dateCreated,
           deletedAt: userExists.deletedAt,
-          role: userExists.role,
+          userRole: userExists.userRole,
           pssword: userExists.pssword
         }
         if (req.body.userName !== undefined) {
@@ -114,8 +114,8 @@ export async function updateUser (req: Request, res: Response) {
         if (req.body.deletedAt !== undefined) {
           userObject.deletedAt = req.body.deletedAt
         }
-        if (req.body.role !== undefined) {
-          userObject.role = req.body.role
+        if (req.body.userRole !== undefined) {
+          userObject.userRole = req.body.userRole
         }
         if (req.body.pssword !== undefined) {
           const salt = await bcrypt.genSalt(saltRounds)
