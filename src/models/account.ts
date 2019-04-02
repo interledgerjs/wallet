@@ -5,6 +5,7 @@ export interface Account {
   accountName: string,
   ownerUserID: number,
   balance: number,
+  deletedAt: string,
   lastUpdated: string
 }
 
@@ -14,6 +15,7 @@ function isAccount (account: Account) {
     typeof account.accountName === 'string' &&
     typeof account.ownerUserID === 'number' &&
     typeof account.balance === 'number' &&
+    typeof account.deletedAt === 'string' &&
     typeof account.lastUpdated === 'string'
   )
 }
@@ -123,7 +125,7 @@ export function retrieveAccountsByUserID (userID: number): Promise<Account[]> {
 export function modifyAccount (account: Account): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isAccount(account)) {
-      const sql: string = `UPDATE accounts SET accountName = '${account.accountName}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}' WHERE accountID = ${account.accountID} AND ownerUserID = ${account.ownerUserID}`
+      const sql: string = `UPDATE accounts SET accountName = '${account.accountName}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE accountID = ${account.accountID} AND ownerUserID = ${account.ownerUserID}`
       console.log(sql)
       try {
         const result = await query(sql)

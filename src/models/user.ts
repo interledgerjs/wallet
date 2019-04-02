@@ -4,7 +4,8 @@ export interface User {
   userID: number,
   userName: string,
   dateCreated: string,
-  active: number,
+  deletedAt: string,
+  role: string
   pssword: string
 }
 
@@ -13,7 +14,8 @@ function isUser (user: any): user is User {
     typeof user.userID === 'number' &&
     typeof user.userName === 'string' &&
     typeof user.dateCreated === 'string' &&
-    typeof user.active === 'number' &&
+    typeof user.deletedAt === 'string' &&
+    typeof user.role === 'string' &&
     typeof user.pssword === 'string'
   )
 }
@@ -98,7 +100,7 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
 export function addUser (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isUser(user)) {
-      const sql: string = `INSERT INTO users (userName, dateCreated, active, pssword) VALUES ('${user.userName}', '${user.dateCreated}', ${user.active}, '${user.pssword}')`
+      const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '${user.deletedAt}', '${user.role}', '${user.pssword}')`
       try {
         const result = query(sql)
         if (isUserArray(result)) {
@@ -117,7 +119,7 @@ export function addUser (user: User): Promise<boolean> {
 
 export function alterUser (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
+    const sql: string = `UPDATE users SET userName = '${user.userName}', deletedAt = '${user.deletedAt}', role = '${user.role}', pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
     try {
       const result = await query(sql)
       resolve(false)

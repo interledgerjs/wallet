@@ -13,6 +13,7 @@ export async function createAccount (req: Request, res: Response) {
       accountName: req.body.accountName,
       ownerUserID: req.body.ownerUserID,
       balance: req.body.balance,
+      deletedAt: null,
       lastUpdated: ''
     }
     try {
@@ -76,6 +77,7 @@ export async function updateAccount (req: Request, res: Response) {
     !isNaN(parseInt(req.params.id, 10)) &&
     (req.body.accountName === undefined || typeof req.body.accountName === 'string') &&
     (req.body.ownerUserID === undefined || typeof req.body.ownerUserID === 'number') &&
+    (req.body.deletedAt === undefined || typeof req.body.deletedAt === 'string') &&
     (req.body.balance === undefined || typeof req.body.balance === 'number')
 
   ) {
@@ -87,6 +89,7 @@ export async function updateAccount (req: Request, res: Response) {
           accountName: accountExists.accountName,
           ownerUserID: accountExists.ownerUserID,
           balance: accountExists.balance,
+          deletedAt: accountExists.deletedAt,
           lastUpdated: new Date().toISOString()
         }
         if (req.body.accountName !== undefined) {
@@ -97,6 +100,9 @@ export async function updateAccount (req: Request, res: Response) {
         }
         if (req.body.balance !== undefined) {
           accountObject.balance = req.body.balance
+        }
+        if (req.body.deletedAt !== undefined) {
+          accountObject.deletedAt = req.body.deletedAt
         }
         const result = await modifyAccount(accountObject)
         console.log(accountObject)

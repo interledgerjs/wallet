@@ -176,7 +176,8 @@ describe('Test to get all transactions', function() {
 //       "userID": 605,
 //       "userName": "test_user",
 //       "pssword": "test_user",
-//       "active": 1
+//       "deletedAt": null
+//       "role": "admin"
 //   }
 //   it('should return OK status', function() {
 //     return request(app)
