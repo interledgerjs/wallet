@@ -41,6 +41,37 @@ export function verifyRole (roles) {
   }
 }
 
+export function superverifyRole (roles) {
+  if (typeof roles === 'string') {
+    roles = [roles]
+  }
+  return function (req, res, next) {
+    console.log('start')
+    const bearerHeader: string = req.headers['authorization']
+    if (bearerHeader) {
+            // pulls token out of header
+      const bearer: string[] = bearerHeader.split(' ')
+      const bearerToken: string = bearer[1]
+      req['token'] = bearerToken
+
+            // verifies token and returns authData
+      jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, authData) => {
+        if (err) {
+          res.sendStatus(403)
+        } else {
+          console.log('Token Verified')
+          console.log(roles)
+          req.authData = authData
+          //next()
+          res.json({authData})
+        }
+      })
+    } else {
+      res.sendStatus(403)
+    }
+  }
+}
+
 /*
 // verifyToken
 export function verifyToken (roles) {
