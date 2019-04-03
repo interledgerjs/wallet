@@ -115,7 +115,7 @@ export function addUser (user: User): Promise<boolean> {
   })
 }
 
-export function alterUser (user: User): Promise<boolean> {
+export function modifyUser (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
     try {

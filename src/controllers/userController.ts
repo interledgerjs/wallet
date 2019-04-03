@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 // import * as jwt from 'jsonwebtoken'
-import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, alterUser, removeUser, User } from '../models/userModel'
+import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, modifyUser, removeUser, User } from '../models/userModel'
 import * as bcrypt from 'bcrypt'
 const saltRounds = 3
 
@@ -115,7 +115,7 @@ export async function updateUser (req: Request, res: Response) {
           const hash = await bcrypt.hash(req.body.pssword, salt)
           userObject.pssword = hash
         }
-        const result = await alterUser(userObject)
+        const result = await modifyUser(userObject)
         if (!result) {
           res.send('Successfully updated user')
         }
