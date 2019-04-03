@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
+import { User, AdminUser } from '../models/user'
 
 // verifyToken
 export function verifyToken (req: any, res: Response, next: any) {
@@ -15,7 +16,6 @@ export function verifyToken (req: any, res: Response, next: any) {
       if (err) {
         res.sendStatus(403)
       } else {
-                // console.log('Token Verified');
         req.authData = authData
         next()
       }
@@ -25,28 +25,11 @@ export function verifyToken (req: any, res: Response, next: any) {
   }
 }
 
-export function verifyRole (roles) {
-  if (typeof roles === 'string') {
-    roles = [roles]
-  }
-  return function (req, res, next) {
-    if (roles.userRole !== 'Admin') {
-      console.log('No authorisation')
-      res.sendStatus(403)
-    } else {
-      console.log('User authenticated')
-      res.sendStatus(200)
-      next()
-    }
-  }
-}
-
-export function superverifyRole (roles) {
-  if (typeof roles === 'string') {
-    roles = [roles]
-  }
-  return function (req, res, next) {
-    console.log('start')
+export function verifyRoleToken (roles) {
+  // if (typeof roles === 'string') {
+  //   roles = [roles]
+  // }
+  return function (req: Request, res: Response, next: any) {
     const bearerHeader: string = req.headers['authorization']
     if (bearerHeader) {
             // pulls token out of header
@@ -55,15 +38,15 @@ export function superverifyRole (roles) {
       req['token'] = bearerToken
 
             // verifies token and returns authData
-      jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, authData) => {
-        if (err) {
+      jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, authData: AdminUser) => {
+        if (err || authData.userRole !== roles) {
+          console.log('Role not authorised')
           res.sendStatus(403)
         } else {
           console.log('Token Verified')
           console.log(roles)
           req.authData = authData
-          //next()
-          res.json({authData})
+          next()
         }
       })
     } else {
