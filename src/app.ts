@@ -32,6 +32,14 @@ app.delete('/users/:id', deleteUser) // id as param
 
 app.post('/admin', createAdmin) // body.userName, body.password
 app.post('/token', token) // body.userName, body.password
+app.get('/getToken', jwtController.genToken)
+
+// app.get('/role', verifyRole({ roles : 'Admin' }))
+
+// dev adding user roles
+app.get('/testVerifyToken', verifyRoleToken('admin'), (res) => {
+  console.log('It works!')
+})
 
 app.all('*', (req, res) => {
   res.sendStatus(404)
@@ -42,3 +50,4 @@ if (!module.parent) {
     console.log('server running on port %d', process.env.PORT)
   })
 }
+
