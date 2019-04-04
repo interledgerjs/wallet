@@ -5,7 +5,16 @@ export interface User {
   userName: string,
   dateCreated: string,
   active: number,
-  pssword: string
+  pssword: string,
+}
+
+export interface AdminUser {
+  userID: number,
+  userName: string,
+  dateCreated: string,
+  active: number,
+  pssword: string,
+  userRole: string
 }
 
 function isUser (user: any): user is User {

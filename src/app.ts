@@ -5,7 +5,8 @@ import * as account from './controllers/account'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
 import * as middleware from './middleware'
-import { verifyRole } from './services/jwt'
+import { verifyRoleToken } from './services/jwt'
+import * as jwtController from './controllers/jwtcontroller'
 
 dotenv.config()
 const app = express()
@@ -32,7 +33,7 @@ app.get('/users/username/:username', user.readUserByUserName) // userName as par
 app.put('/users/:id', user.updateUser) // id as param, body.userName?, body.active?, body.pssword?
 app.delete('/users/:id', user.deleteUser) // id as param
 
-// app.get('/getToken', jwtController.genToken)
+app.get('/getToken', jwtController.genToken)
 
 // dev adding user roles
 const UserAdmin = {
@@ -41,12 +42,13 @@ const UserAdmin = {
   dateCreated: '1984-04-01',
   active: 1,
   pssword: 'dio',
-  userRole: 'Admin'
+  userRole: 'user'
 }
 
 // app.get('/role', verifyRole({ roles : 'Admin' }))
-app.get('/test', verifyRole(UserAdmin), (res) => {
-  console.log('It works')
+
+app.get('/testsuper', verifyRoleToken('Admin'), (res) => {
+  console.log('It works!')
 })
 
 app.all('*', (req, res) => {
