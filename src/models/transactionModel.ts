@@ -1,4 +1,4 @@
-import * as dbFunctions from './db'
+import * as dbFunctions from './dbModel'
 
 export interface Transaction {
   transID: number,
@@ -48,8 +48,6 @@ export function addTransaction (transaction: Transaction): Promise<boolean> {
           reject(true)
         }
       } catch (error) {
-        console.log(error)
-        console.log('model catch')
         reject(error)
       }
     } else {

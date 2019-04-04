@@ -27,7 +27,7 @@ let mysqlInit = () => {
                     userID INT AUTO_INCREMENT PRIMARY KEY,\
                     userName VARCHAR(255),\
                     dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
-                    deletedAt DATETIME,\
+                    deletedAt DATETIME NOT NULL DEFAULT "",\
                     userRole VARCHAR(255),\
                     pssword VARCHAR(255));', (err) => {
           if (err) throw err
@@ -37,7 +37,7 @@ let mysqlInit = () => {
                     accountName VARCHAR(255),\
                     ownerUserID INT,\
                     balance INT,\
-                    deletedAt DATETIME,\
+                    deletedAt DATETIME NOT NULL DEFAULT "",\
                     lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
           if (err) throw err
         })
@@ -76,14 +76,14 @@ if (process.env.ACTIVEDB === 'MySQL') {
       userID INTEGER PRIMARY KEY AUTOINCREMENT,\
       userName VARCHAR(255),\
       dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
-      deletedAt DATETIME,\
+      deletedAt DATETIME NOT NULL DEFAULT "",\
       userRole VARCHAR(255),\
       pssword VARCHAR(255));')
     db.run('CREATE TABLE IF NOT EXISTS accounts (\
       accountID INTEGER PRIMARY KEY AUTOINCREMENT,\
       accountName VARCHAR(255),\
       ownerUserID INT, balance INT,\
-      deletedAt DATETIME,\
+      deletedAt DATETIME NOT NULL DEFAULT "",\
       lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
     db.run('CREATE TABLE IF NOT EXISTS transactions (\
       transID INTEGER PRIMARY KEY AUTOINCREMENT,\

@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
 // import * as jwt from 'jsonwebtoken'
-import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, alterUser, removeUser, User } from '../models/user'
+import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, alterUser, removeUser, User } from '../models/userModel'
 import * as bcrypt from 'bcrypt'
-import { string } from 'joi';
 const saltRounds = 3
 
 // get /user #returns all users
@@ -64,7 +63,7 @@ export async function createUser (req: Request, res: Response) {
         userID: -1,
         userName: req.body.userName,
         dateCreated: new Date().toISOString(),
-        deletedAt: null,
+        deletedAt: '',
         userRole: req.body.userRole,
         pssword: hash
       }

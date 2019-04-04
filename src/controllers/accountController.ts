@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import { Account, addAccount, retrieveAccountByID, retrieveAllAccounts, retrieveAccountsByUserID, modifyAccount, removeAccount } from '../models/account'
+import { Account, addAccount, retrieveAccountByID, retrieveAllAccounts, retrieveAccountsByUserID, modifyAccount, removeAccount } from '../models/accountModel'
 
 export async function createAccount (req: Request, res: Response) {
   if (
@@ -13,13 +13,11 @@ export async function createAccount (req: Request, res: Response) {
       accountName: req.body.accountName,
       ownerUserID: req.body.ownerUserID,
       balance: req.body.balance,
-      deletedAt: null,
+      deletedAt: '',
       lastUpdated: ''
     }
     try {
-      console.log(accountObject)
       const result = await addAccount(accountObject)
-      console.log(result)
       if (!result) {
         res.send('Account created')
       }
@@ -53,7 +51,6 @@ export async function readAllAccounts (req: Request, res: Response) {
       res.sendStatus(404)
     }
   } catch (error) {
-    console.log(error)
     res.sendStatus(500)
   }
 }
@@ -105,7 +102,6 @@ export async function updateAccount (req: Request, res: Response) {
           accountObject.deletedAt = req.body.deletedAt
         }
         const result = await modifyAccount(accountObject)
-        console.log(accountObject)
         if (!result) {
           res.send('Successfully updated account')
         }
@@ -113,7 +109,6 @@ export async function updateAccount (req: Request, res: Response) {
         res.sendStatus(404)
       }
     } catch (error) {
-      console.log(error)
       res.sendStatus(500)
     }
   } else {
