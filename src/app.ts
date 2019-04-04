@@ -26,7 +26,7 @@ app.post('/users', user.createUser) // body.userName, body.password
 app.get('/users', user.readUser)
 app.get('/users/id/:id', user.readUserByID) // id as param
 app.get('/users/username/:username', user.readUserByUserName) // userName as param, body.pssword
-app.put('/users/:id', user.updateUser) // id as param, body.userName?, body.active?, body.pssword?
+app.put('/users/:id', user.updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.userRole?
 app.delete('/users/:id', user.deleteUser) // id as param
 
 // app.get('/getToken', jwtController.genToken)
