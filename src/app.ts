@@ -5,7 +5,7 @@ import * as account from './controllers/account'
 import * as transaction from './controllers/transaction'
 import * as user from './controllers/user'
 import * as middleware from './middleware'
-import { verifyRoleToken } from './services/jwt'
+import { verifyRoleToken, verifyToken } from './services/jwt'
 import * as jwtController from './controllers/jwtcontroller'
 
 dotenv.config()
@@ -35,19 +35,10 @@ app.delete('/users/:id', user.deleteUser) // id as param
 
 app.get('/getToken', jwtController.genToken)
 
-// dev adding user roles
-const UserAdmin = {
-  userID: 10,
-  userName: 'Johanathan Joestar',
-  dateCreated: '1984-04-01',
-  active: 1,
-  pssword: 'dio',
-  userRole: 'user'
-}
-
 // app.get('/role', verifyRole({ roles : 'Admin' }))
 
-app.get('/testsuper', verifyRoleToken('Admin'), (res) => {
+// dev adding user roles
+app.get('/testVerifyToken', verifyRoleToken('admin'), (res) => {
   console.log('It works!')
 })
 

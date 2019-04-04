@@ -40,11 +40,10 @@ export function verifyRoleToken (roles) {
             // verifies token and returns authData
       jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, authData: AdminUser) => {
         if (err || authData.userRole !== roles) {
-          console.log('Role not authorised')
+          // console.log(`Role of ${roles} not authorised`)
           res.sendStatus(403)
         } else {
-          console.log('Token Verified')
-          console.log(roles)
+          // console.log('Token Verified')
           req.authData = authData
           // res.json(authData)
           res.sendStatus(200) // remove when this is actually middleware

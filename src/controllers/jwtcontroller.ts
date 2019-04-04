@@ -4,13 +4,15 @@ import * as jwt from 'jsonwebtoken'
 
 // Being replaced by /login
 export let genToken = (req: Request, res: Response) => {
+
+  // hardcoded admin
   const UserAdmin = {
     userID: 10,
     userName: 'Johanathan Joestar',
     dateCreated: '1984-04-01',
     active: 1,
     pssword: 'dio',
-    userRole: 'Admin'
+    userRole: 'admin'
   }
   jwt.sign(UserAdmin, process.env.SECRETKEY, { expiresIn: '1d' }, (err, token) => {
     if (err) {
