@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken'
 import { User, AdminUser } from '../models/user'
 
 // verifyToken
-export function verifyToken (req: any, res: Response, next: any) {
+export function verifyToken (req: Request, res: Response, next: any) {
   const bearerHeader: string = req.headers['authorization']
   if (bearerHeader) {
         // pulls token out of header
@@ -46,6 +46,8 @@ export function verifyRoleToken (roles) {
           console.log('Token Verified')
           console.log(roles)
           req.authData = authData
+          // res.json(authData)
+          res.sendStatus(200) // remove when this is actually middleware
           next()
         }
       })
