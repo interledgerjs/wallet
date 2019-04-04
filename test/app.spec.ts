@@ -1,7 +1,8 @@
-import {assert} from 'chai';
+import { assert } from 'chai';
 import { expect } from 'chai'
 import * as request from 'supertest';
 import * as app from '../build/app';
+import { response } from 'express';
 require('../initTestDB')
 
 // this test uses a preset ID's
@@ -22,212 +23,223 @@ require('../initTestDB')
 //   });
 // });
 
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpYXQiOjE1NTA3MTc4MTgsImV4cCI6MTU1MDcyMTQxOH0.YwK3l5zhI7W0qpN-EYvmFFqCSUkKN1Yvmd3KPKfhPxg'
+
 // .post('/transaction')
-describe('Test to create a new transaction', function() { 
+describe('Test to create a new transaction', function () {
   let data = {
-      "dbtAccID": 606,
-      "crdtAccID": 607,
-      "amount": 608
-  }
-  it('should return OK status', function() {
+    "dbtAccID" : 1,
+    "crdtAccID" : 2,
+    "amount" : 100
+    }
+  it('should return OK status', function () {
     return request(app)
       .post('/transactions')
       .send(data)
-      .then(function(response){
-          assert.equal(response.status, 200)
+      .then(function (response) {
+        assert.equal(response.status, 200)
       })
   });
 });
 
 // .get('/transactions')
-describe('Test to get all transactions', function() {
-  it('should return OK status', function() {
+describe('Test to get all transactions', function () {
+  it('should return OK status', function () {
     return request(app)
       .get('/transactions')
-      .then(function(response){
-          assert.equal(response.status, 200)
+      .then(function (response) {
+        assert.equal(response.status, 200)
       })
   });
 });
 
-// // .get('/transaction/id/:id')
-// describe('Test to get a transaction by id', function() {
-//   it('should return OK status', function() {
-//     return request(app)
-//       .get('/transactions/id/605')
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
+// .get('/transactions/id/:id')
+describe('Test to get a transaction by id', function () {
+  it('should return OK status', function () {
+    return request(app)
+      .get('/transactions/id/1')
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .put('/transaction/:id')
-// describe('Test to update a transaction', function() {
-//   let data = {
-//       "dbtAccID": 706,
-//       "crdtAccID": 707,
-//       "amount": 708
-//   }
-//   it('should return OK status', function() {
-//       return request(app)
-//       .put('/transaction/605')
-//       .send(data)
-//       .set('Authorization', 'Bearer ' + token)
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
+// .post('/accounts')
+describe('Test to create a new account', function () {
+  let data = {
+    "accountName": "test_account",
+    "ownerUserID": 1,
+    "balance": 100
+  }
+  it('should return OK status', function () {
+    return request(app)
+      .post('/accounts')
+      .send(data)
+      .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .delete('/transaction/:id') 
-// describe('Test to delete a transaction', function() {
-//   it('should return OK status', function() {
-//     return request(app)
-//       .delete('/transaction/605')
-//       .set('Authorization', 'Bearer ' + token)
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
+// .get('/accounts')
+describe('Test to get all accounts', function () {
+  it('should return OK status', function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .post('/account')
-// describe('Test to create a new account', function() { 
-//     let data = {
-//         "accountID": 605,
-//         "accountName": "test_account",
-//         "owneruserID": 605
-//     }
-//     it('should return OK status', function() {
-//       return request(app)
-//         .post('/account')
-//         .send(data)
-//         .set('Authorization', 'Bearer ' + token)
-//         .then(function(response){
-//             //console.log(response)
-//             assert.equal(response.status, 200)
-//         })
-//     });
-// });
+// .get('/accounts/:id')
+describe('Test to get an account by id', function () {
+  let accountID
+  before(function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        accountID = response.body[0].accountID
+      })
+  })
+  it('should return OK status', function () {
+    return request(app)
+      .get('/accounts/id/' + accountID)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .get('/accounts')
-// describe('Test to get all accounts', function() {
-//     it('should return OK status', function() {
-//       return request(app)
-//         .get('/accounts')
-//         .then(function(response){
-//             //console.log(response)
-//             assert.equal(response.status, 200)
-//         })
-//     });
-// });
+// .put('/accounts/:id')
+describe('Test to update an account', function () {
+  let accountID
+  before(function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        accountID = response.body[0].accountID
+      })
+  })
+  let data = {
+    "accountName": "test_account",
+    "ownerUserID": 1,
+    "balance": 4069
+  }
+  it('should return OK status', function () {
+    return request(app)
+      .put('/accounts/' + accountID)
+      .send(data)
+      .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .get('/account/:id')
-// describe('Test to get an account by id', function() {
-//     it('should return OK status', function() {
-//       return request(app)
-//         .get('/account/605')
-//         .then(function(response){
-//             //console.log(response)
-//             assert.equal(response.status, 200)
-//         })
-//     });
-// });
+// .delete('/accounts/:id')
+describe('Test to delete an account', function () {
+  let accountID
+  before(function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        accountID = response.body[0].accountID
+      })
+  })
+  it('should return OK status', function () {
+    return request(app)
+      .delete('/accounts/' + accountID)
+      .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .put('/account/:id')
-// describe('Test to update an account', function() {
-//     let data = {
-//         "accountName": "test_account3",
-//         "owneruserID": 606
-//     }
-//     it('should return OK status', function() {
-//         return request(app)
-//         .put('/account/605')
-//         .send(data)
-//         .set('Authorization', 'Bearer ' + token)
-//         .then(function(response){
-//             //console.log(response)
-//             assert.equal(response.status, 200)
-//         })
-//     });
-// });
+// .post('/user')
+describe('Test to create a new user', function () {
+  before(function () {
+    return request(app)
+      .get('/users/username/test_user')
+      .then(function (response) {
+        if (response.body.userName) {
+          const userID = response.body.userID
+          return request(app)
+            .delete('/users/' + response.body.userID)
+        }
+      })
+  })
+  let data = {
+    "userName": "test_user",
+    "pssword": "123"
+  }
+  it('should return OK status', function () {
+    return request(app)
+      .post('/users')
+      .send(data)
+      .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .delete('/account/:id')
-// describe('Test to delete an account', function() {
-//   it('should return OK status', function() {
-//     return request(app)
-//       .delete('/account/605')
-//       .set('Authorization', 'Bearer ' + token)
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
+// .get('/users')
+describe('Test to get all users', function () {
+  it('should return OK status', function () {
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .post('/user')
-// describe('Test to create a new user', function() { 
-//   let data = {
-//       "userID": 605,
-//       "userName": "test_user",
-//       "pssword": "test_user",
-//       "active": 1
-//   }
-//   it('should return OK status', function() {
-//     return request(app)
-//       .post('/user')
-//       .send(data)
-//       .set('Authorization', 'Bearer ' + token)
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
+// .get('/users/id/:id')
+describe('Test to get a user by id', function () {
+  let userID
+  before(function () {
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        userID = response.body[0].userID
+      })
+  })
+  it('should return OK status', function () {
+    return request(app)
+      .get('/users/id/' + userID)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
-// // .get('/users')
-// describe('Test to get all users', function() {
-//   it('should return OK status', function() {
-//     return request(app)
-//       .get('/users')
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
-
-// // .get('/user/:id')
-// describe('Test to get a user by id', function() {
-//   it('should return OK status', function() {
-//     return request(app)
-//       .get('/user/605')
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
-
-// // .put('/user/:id')
-// describe('Test to update a user', function() {
-//   let data = {
-//       "userName": "testuser3",
-//   }
-//   it('should return OK status', function() {
-//       return request(app)
-//       .put('/user/605')
-//       .send(data)
-//       .set('Authorization', 'Bearer ' + token)
-//       .then(function(response){
-//           //console.log(response)
-//           assert.equal(response.status, 200)
-//       })
-//   });
-// });
+// .put('/user/:id')
+describe('Test to update a user', function () {
+  let userID
+  before(function () {
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        userID = response.body[0].userID
+      })
+  })
+  let data = {
+    "userName": "TEST_USER",
+    "pssword": "321"
+  }
+  it('should return OK status', function () {
+    return request(app)
+      .put('/users/' + userID)
+      .send(data)
+      .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
 // // .get('/login/:userName') 
 // describe('Test to log a user in', function() {
@@ -242,26 +254,33 @@ describe('Test to get all transactions', function() {
 //   });
 // });
 
-// // .delete('/user/:id')
-// describe('Test to delete a user', function() {
-//     it('should return OK status', function() {
-//       return request(app)
-//         .delete('/user/605')
-//         .set('Authorization', 'Bearer ' + token)
-//         .then(function(response){
-//             //console.log(response)
-//             assert.equal(response.status, 200)
-//         })
-//     });
-// });
+// .delete('/users/:id')
+describe('Test to delete a user', function () {
+  let userID
+  before(function () {
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        userID = response.body[0].userID
+      })
+  })
+  it('should return OK status', function () {
+    return request(app)
+      .delete('/users/' + userID)
+      .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
 
 // catch all
-describe('Test for catching unrecognised endpoint', function() {
-  it('should return 404 status', function() {
+describe('Test for catching unrecognised endpoint', function () {
+  it('should return 404 status', function () {
     return request(app)
       .delete('/apple')
-      .then(function(response){
-          assert.equal(response.status, 404)
+      .then(function (response) {
+        assert.equal(response.status, 404)
       })
   });
 });
