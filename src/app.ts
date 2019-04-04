@@ -18,7 +18,6 @@ app.get('/transactions/account/:accountID/', transaction.readTransactionByAccoun
 app.post('/accounts', account.createAccount) // body.balance , body.accountName, body.ownerUserID
 app.get('/accounts/id/:accountid', account.readAccountByID) // id's as param
 app.get('/accounts/userid/:userid/', account.readAllAccountsByUserID)
-
 app.get('/accounts', account.readAllAccounts) // no required input
 app.put('/accounts/:id', account.updateAccount) // id as param, body.accountName, body.ownerUserID, body.balance
 app.delete('/accounts/:id', account.deleteAccount) // id's as params

@@ -77,7 +77,6 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
     const sql: string = `SELECT * FROM users WHERE username = '${userName}'`
     try {
       const result = await query(sql)
-      // console.log(result)
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -85,7 +84,6 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
           resolve(null)
         }
       } else {
-        // console.log(isUserArray(result))
         reject(true)
       }
     } catch (error) {
@@ -115,7 +113,7 @@ export function addUser (user: User): Promise<boolean> {
   })
 }
 
-export function alterUser (user: User): Promise<boolean> {
+export function modifyUser (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `UPDATE users SET userName = '${user.userName}', active = ${user.active}, pssword = '${user.pssword}' WHERE userID = '${user.userID}'`
     try {

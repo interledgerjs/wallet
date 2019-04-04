@@ -34,7 +34,6 @@ describe('Test to create a new transaction', function() {
       .post('/transactions')
       .send(data)
       .then(function(response){
-          //console.log(response)
           assert.equal(response.status, 200)
       })
   });
@@ -46,7 +45,6 @@ describe('Test to get all transactions', function() {
     return request(app)
       .get('/transactions')
       .then(function(response){
-          //console.log(response)
           assert.equal(response.status, 200)
       })
   });
@@ -263,7 +261,6 @@ describe('Test for catching unrecognised endpoint', function() {
     return request(app)
       .delete('/apple')
       .then(function(response){
-          //console.log(response)
           assert.equal(response.status, 404)
       })
   });
