@@ -173,7 +173,8 @@ describe('Test to create a new user', function () {
   })
   let data = {
     "userName": "test_user",
-    "pssword": "123"
+    "pssword": "123",
+    "userRole": "admin"
   }
   it('should return OK status', function () {
     return request(app)
