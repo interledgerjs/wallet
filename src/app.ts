@@ -5,12 +5,14 @@ import * as account from './controllers/accountController'
 import * as transaction from './controllers/transactionController'
 import { readUser, readUserByID, readUserByUserName, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
-import { verifyRoleToken } from './services/jwtService'
+import { verifyRoleToken, verifyToken } from './services/jwtService'
 
 dotenv.config()
 const app = express()
 module.exports = app
 app.use(bodyParser.json())
+
+let verifyAdmin = verifyRoleToken('admin')
 
 app.post('/transactions', transaction.createTransaction) // body.transID?, body.dbtAccID, body.crdtAccID, body.amount
 app.get('/transactions/', transaction.readTransactions) // no required input
@@ -35,7 +37,11 @@ app.post('/admin', createAdmin) // body.userName, body.password
 app.post('/token', token) // body.userName, body.password
 // app.get('/getToken', jwtController.genToken)
 
-app.get('/testVerifyToken', verifyRoleToken('admin'), (res) => {
+app.get('/testVerifyAdminToken', verifyAdmin, (res) => {
+  console.log('It works!')
+})
+
+app.get('/testVerifyToken', verifyToken, (res) => {
   console.log('It works!')
 })
 
