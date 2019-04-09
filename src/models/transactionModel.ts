@@ -1,18 +1,18 @@
 import * as dbFunctions from './dbModel'
 
 export interface Transaction {
-  transID: number,
-  dbtAccID: number,
-  crdtAccID: number,
+  id: number,
+  debitAccount: number,
+  creditAccount: number,
   amount: number,
   date: string
 }
 
 export function isTransaction (transaction: any): transaction is Transaction {
   return (
-    typeof transaction.transID === 'number' &&
-    typeof transaction.dbtAccID === 'number' &&
-    typeof transaction.crdtAccID === 'number' &&
+    typeof transaction.id === 'number' &&
+    typeof transaction.debitAccount === 'number' &&
+    typeof transaction.creditAccount === 'number' &&
     typeof transaction.amount === 'number' &&
     typeof transaction.date === 'string'
   )
@@ -35,10 +35,10 @@ export function addTransaction (transaction: Transaction): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isTransaction(transaction)) {
       let sql: string
-      if (transaction.transID !== -1) {
-        sql = `INSERT INTO transactions (transID, dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.transID}', '${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
+      if (transaction.id !== -1) {
+        sql = `INSERT INTO transactions (id, debitAccount, creditAccount, amount, date) VALUES ('${transaction.id}', '${transaction.debitAccount}', '${transaction.creditAccount}', '${transaction.amount}', '${transaction.date}')`
       } else {
-        sql = `INSERT INTO transactions (dbtAccID, crdtAccID, amount, date) VALUES ('${transaction.dbtAccID}', '${transaction.crdtAccID}', '${transaction.amount}', '${transaction.date}')`
+        sql = `INSERT INTO transactions (debitAccount, creditAccount, amount, date) VALUES ('${transaction.debitAccount}', '${transaction.creditAccount}', '${transaction.amount}', '${transaction.date}')`
       }
       try {
         const result = await dbFunctions.query(sql)
@@ -75,9 +75,9 @@ export function retrieveTransactions (): Promise<Transaction[]> {
 }
 
 // function to handle getting transactions by id
-export function retrieveTransactionByID (transID: number): Promise<Transaction> {
+export function retrieveTransactionByID (id: number): Promise<Transaction> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM transactions where transID = '${transID}'`
+    const sql: string = `SELECT * FROM transactions where id = '${id}'`
 
     try {
       const result = await dbFunctions.query(sql)
@@ -97,9 +97,9 @@ export function retrieveTransactionByID (transID: number): Promise<Transaction> 
 }
 
 // function to handle getting transactions by account id
-export function retrieveTransactionsByAccID (AccountID: number): Promise<Transaction[]> {
+export function retrieveTransactionsByAccID (id: number): Promise<Transaction[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM transactions where (dbtAccID = '${AccountID}' OR crdtAccID = '${AccountID}')`
+    const sql: string = `SELECT * FROM transactions where (debitAccount = '${id}' OR creditAccount = '${id}')`
 
     try {
       const result = await dbFunctions.query(sql)

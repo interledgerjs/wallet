@@ -1,20 +1,20 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import { retrieveUserByUserName } from '../models/userModel'
+import { retrieveUserByname } from '../models/userModel'
 import { compareHash } from '../models/tokenModel'
 
 // get /token #returns a token
 export async function token (req: Request, res: Response) {
-  const userName: string = req.body.userName
+  const name: string = req.body.name
   const pssword: string = req.body.pssword
   try {
-    const userExists = await retrieveUserByUserName(userName)
+    const userExists = await retrieveUserByname(name)
     if (userExists) {
       const result = await compareHash(userExists, pssword)
       if (result) {
         const authData = {
-          userID: userExists.userID,
-          userName: userExists.userName
+          id: userExists.id,
+          name: userExists.name
         }
         jwt.sign({ authData }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
           res.json({ token })

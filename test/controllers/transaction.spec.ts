@@ -36,9 +36,9 @@
 
 //     process.env.DBNAME = 'testdb'
 //     let req = new Request({
-//       transID: 789,
-//       dbtAccID: 606,
-//       crdtAccID: 60,
+//       id: 789,
+//       debitAccount: 606,
+//       creditAccount: 60,
 //       amount: 5
 //     })
 
@@ -59,8 +59,8 @@
 
 //     process.env.DBNAME = 'testdb'
 //     let req = new Request({
-//       dbtAccID: 606,
-//       crdtAccID: 60,
+//       debitAccount: 606,
+//       creditAccount: 60,
 //       amount: 5
 //     })
 //     let res = new Response()
@@ -75,9 +75,9 @@
 //   // negative tests
 //   // it('should set res statusCode as "500"', function(done) {
 //   //   const req = new Request({
-//   //     transID: 1,
-//   //     dbtAccID: 606,
-//   //     crdtAccID: 60,
+//   //     id: 1,
+//   //     debitAccount: 606,
+//   //     creditAccount: 60,
 //   //     amount: 5
 //   //   })
 //   //   const res = new Response()
@@ -89,7 +89,7 @@
 //   // })
 //   // it('should set res statusCode as "400"', function(done) {
 //   //   const req = new Request({
-//   //     dbtAccID: 606,
+//   //     debitAccount: 606,
 //   //     amount: 5
 //   //   })
 //   //   const res = new Response()

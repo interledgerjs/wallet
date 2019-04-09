@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, addAdmin, modifyUser, removeUser, User, hashing } from '../models/userModel'
+import { retrieveUser, retrieveUserByID, retrieveUserByname, addUser, addAdmin, modifyUser, removeUser, User, hashing } from '../models/userModel'
 
 // get /user #returns all users
 export async function readUser (req: Request, res: Response) {
@@ -17,9 +17,9 @@ export async function readUser (req: Request, res: Response) {
 
 // get /users/id/:id #returns single user by id
 export async function readUserByID (req: Request, res: Response) {
-  const userID: number = req.params.id
+  const id: number = req.params.id
   try {
-    const result = await retrieveUserByID(userID)
+    const result = await retrieveUserByID(id)
     if (result) {
       res.send(result)
     } else {
@@ -30,12 +30,12 @@ export async function readUserByID (req: Request, res: Response) {
   }
 }
 
-// get /users/username/:username #returns single user by userName
-export async function readUserByUserName (req: Request, res: Response) {
-  const userName: string = req.params.username
+// get /users/name/:name #returns single user by name
+export async function readUserByname (req: Request, res: Response) {
+  const name: string = req.params.name
 
   try {
-    const result = await retrieveUserByUserName(userName)
+    const result = await retrieveUserByname(name)
     if (result) {
       res.send(result)
     } else {
@@ -48,13 +48,13 @@ export async function readUserByUserName (req: Request, res: Response) {
 
 // post /users #adds new user to table
 export async function createUser (req: Request, res: Response) {
-  // check if userName already exists
-  const userName: string = req.body.userName
+  // check if name already exists
+  const name: string = req.body.name
   const pssword: string = req.body.pssword
   try {
-    const userExists = await retrieveUserByUserName(userName)
+    const userExists = await retrieveUserByname(name)
     if (!userExists) {
-      const userObject = await hashing(pssword, userName)
+      const userObject = await hashing(pssword, name)
       if (userObject) {
         const result = await addUser(userObject)
         res.sendStatus(200)
@@ -69,13 +69,13 @@ export async function createUser (req: Request, res: Response) {
 
 // post /users #adds new admin to table
 export async function createAdmin (req: Request, res: Response) {
-  // check if userName already exists
-  const userName: string = req.body.userName
+  // check if name already exists
+  const name: string = req.body.name
   const pssword: string = req.body.pssword
   try {
-    const userExists = await retrieveUserByUserName(userName)
+    const userExists = await retrieveUserByname(name)
     if (!userExists) {
-      const userObject = await hashing(pssword, userName)
+      const userObject = await hashing(pssword, name)
       if (userObject) {
         const result = await addAdmin(userObject)
         res.sendStatus(200)

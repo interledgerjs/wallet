@@ -1,19 +1,19 @@
 import { query } from './dbModel'
 
 export interface Account {
-  accountID: number,
-  accountName: string,
-  ownerUserID: number,
+  id: number,
+  name: string,
+  owner: number,
   balance: number,
   deletedAt: string,
   lastUpdated: string
 }
 
-function isAccount (account: Account) {
+function isAccount (account: any): account is Account {
   return (
-    typeof account.accountID === 'number' &&
-    typeof account.accountName === 'string' &&
-    typeof account.ownerUserID === 'number' &&
+    typeof account.id === 'number' &&
+    typeof account.name === 'string' &&
+    typeof account.owner === 'number' &&
     typeof account.balance === 'number' &&
     typeof account.deletedAt === 'string' &&
     typeof account.lastUpdated === 'string'
@@ -38,7 +38,7 @@ function isAccountArray (result: any): result is Account[] {
 export function addAccount (account: Account): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isAccount(account)) {
-      const sql: string = `INSERT INTO accounts (accountName, balance, ownerUserID) VALUES ('${account.accountName}', ${account.balance}, ${account.ownerUserID})`
+      const sql: string = `INSERT INTO accounts (name, balance, owner) VALUES ('${account.name}', ${account.balance}, ${account.owner})`
       try {
         const result = await query(sql)
         if (isAccountArray(result)) {
@@ -55,10 +55,10 @@ export function addAccount (account: Account): Promise<boolean> {
   })
 }
 
-// function to handle retrieving a singular account by AccountID
+// function to handle retrieving a singular account by id
 export function retrieveAccountByID (id: number): Promise<Account> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE accountID = ${id}`
+    const sql: string = `SELECT * FROM accounts WHERE id = ${id}`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
@@ -97,10 +97,10 @@ export function retrieveAllAccounts (): Promise<Account[]> {
   })
 }
 
-// function to handle list of accounts owned by userID
-export function retrieveAccountsByUserID (userID: number): Promise<Account[]> {
+// function to handle list of accounts owned by id
+export function retrieveAccountsByid (id: number): Promise<Account[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE ownerUserID = ${userID}`
+    const sql: string = `SELECT * FROM accounts WHERE owner = ${id}`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
@@ -122,7 +122,7 @@ export function retrieveAccountsByUserID (userID: number): Promise<Account[]> {
 export function modifyAccount (account: Account): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isAccount(account)) {
-      const sql: string = `UPDATE accounts SET accountName = '${account.accountName}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE accountID = ${account.accountID} AND ownerUserID = ${account.ownerUserID}`
+      const sql: string = `UPDATE accounts SET name = '${account.name}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE id = ${account.id} AND owner = ${account.owner}`
       try {
         const result = await query(sql)
         resolve(false)
@@ -136,9 +136,9 @@ export function modifyAccount (account: Account): Promise<boolean> {
 }
 
 // funcion to handle the deletion of accounts
-export function removeAccount (accountID: number): Promise<boolean> {
+export function removeAccount (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `DELETE FROM accounts WHERE accountID = ${accountID}`
+    const sql: string = `DELETE FROM accounts WHERE id = ${id}`
     try {
       const result = await query(sql)
       resolve(false)

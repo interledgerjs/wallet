@@ -1,4 +1,4 @@
-import { User, retrieveUserByUserName } from '../models/userModel'
+import { User, retrieveUserByname } from '../models/userModel'
 import * as bcrypt from 'bcrypt'
 import { token } from '../controllers/tokenController'
 
