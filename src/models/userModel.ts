@@ -200,7 +200,7 @@ export function removeUser (id: number): Promise<boolean> {
   })
 }
 
-export function hashing (pssword: string, userName: string): Promise<User> {
+export async function hashing (pssword: string, userName: string): Promise<User> {
   return new Promise(async function (resolve, reject) {
     try {
       const salt = await bcrypt.genSalt(saltRounds)
