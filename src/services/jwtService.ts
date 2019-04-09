@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import { User, AdminUser } from '../models/user'
+import { User } from '../models/userModel'
 
 // verifyToken
 export function verifyToken (req: Request, res: Response, next: any) {
@@ -38,14 +38,14 @@ export function verifyRoleToken (roles) {
       req['token'] = bearerToken
 
             // verifies token and returns authData
-      jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, authData: AdminUser) => {
+      jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, authData: User) => {
         if (err || authData.userRole !== roles) {
-          // console.log(`Role of ${roles} not authorised`)
+          console.log(`Role of ${roles} not authorised`)
           res.sendStatus(403)
         } else {
-          // console.log('Token Verified')
+          console.log('Token Verified')
           req.authData = authData
-          // res.json(authData)
+          res.json(authData)
           res.sendStatus(200) // remove when this is actually middleware
           next()
         }

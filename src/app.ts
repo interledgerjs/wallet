@@ -5,6 +5,7 @@ import * as account from './controllers/accountController'
 import * as transaction from './controllers/transactionController'
 import { readUser, readUserByID, readUserByUserName, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
+import { verifyRoleToken } from './services/jwtService'
 
 dotenv.config()
 const app = express()
@@ -32,11 +33,8 @@ app.delete('/users/:id', deleteUser) // id as param
 
 app.post('/admin', createAdmin) // body.userName, body.password
 app.post('/token', token) // body.userName, body.password
-app.get('/getToken', jwtController.genToken)
+// app.get('/getToken', jwtController.genToken)
 
-// app.get('/role', verifyRole({ roles : 'Admin' }))
-
-// dev adding user roles
 app.get('/testVerifyToken', verifyRoleToken('admin'), (res) => {
   console.log('It works!')
 })
@@ -50,4 +48,3 @@ if (!module.parent) {
     console.log('server running on port %d', process.env.PORT)
   })
 }
-
