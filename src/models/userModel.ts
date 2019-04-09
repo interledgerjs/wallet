@@ -2,17 +2,22 @@ import { query } from './dbModel'
 import * as bcrypt from 'bcrypt'
 const saltRounds = 3
 
-export class User {
-  constructor (public userName, public userID, public dateCreated, public deletedAt, public userRole, public pssword) {}
+export interface User {
+  userName: string,
+  id: number,
+  dateCreated: string,
+  deletedAt: string,
+  role: string,
+  pssword: string,
 }
 
 function isUser (user: any): user is User {
   return (
-    typeof user.userID === 'number' &&
+    typeof user.id === 'number' &&
     typeof user.userName === 'string' &&
     typeof user.dateCreated === 'string' &&
     typeof user.deletedAt === 'string' &&
-    typeof user.userRole === 'string' &&
+    typeof user.role === 'string' &&
     typeof user.pssword === 'string'
   )
 }
@@ -50,9 +55,9 @@ export function retrieveUser (): Promise<User[]> {
 }
 
 // function to handle get user by id
-export function retrieveUserByID (userID: number): Promise<User> {
+export function retrieveUserById (id: number): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users where userID = '${userID}'`
+    const sql: string = `SELECT * FROM users where id = '${id}'`
     try {
       const result = await query(sql)
       if (isUserArray(result)) {
@@ -95,7 +100,7 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
 export function addUser (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isUser(user)) {
-      const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, userRole, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'user', '${user.pssword}')`
+      const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'user', '${user.pssword}')`
       try {
         const result = query(sql)
         if (isUserArray(result)) {
@@ -116,7 +121,7 @@ export function addUser (user: User): Promise<boolean> {
 export function addAdmin (user: User): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (isUser(user)) {
-      const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, userRole, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
+      const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
       try {
         const result = query(sql)
         if (isUserArray(result)) {
@@ -143,11 +148,11 @@ export async function modifyUser (userExists: User, body: any): Promise<boolean>
   ) {
       try {
         const userObject: User = {
-          userID: userExists.userID,
+          id: userExists.id,
           userName: userExists.userName,
           dateCreated: userExists.dateCreated,
           deletedAt: userExists.deletedAt,
-          userRole: userExists.userRole,
+          role: userExists.role,
           pssword: userExists.pssword
         }
         if (body.userName !== undefined) {
@@ -169,7 +174,7 @@ export async function modifyUser (userExists: User, body: any): Promise<boolean>
           const hash = await bcrypt.hash(body.pssword, salt)
           userObject.pssword = hash
         }
-        const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE userID = '${userObject.userID}'`
+        const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE id = '${userObject.id}'`
         const result = await query(sql)
         console.log(result)
         resolve(false)
@@ -186,7 +191,7 @@ export async function modifyUser (userExists: User, body: any): Promise<boolean>
 export function removeUser (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     try {
-      const sql: string = `DELETE FROM users WHERE userID = '${id}'`
+      const sql: string = `DELETE FROM users WHERE id = '${id}'`
       const result = await query(sql)
       resolve(false)
     } catch (error) {
@@ -201,11 +206,11 @@ export async function hashing (pssword: string, userName: string): Promise<User>
       const salt = await bcrypt.genSalt(saltRounds)
       const hash = await bcrypt.hash(pssword, salt)
       const userObject: User = {
-        userID: -1,
+        id: -1,
         userName: userName,
         dateCreated: new Date().toISOString(),
         deletedAt: '',
-        userRole: '',
+        role: '',
         pssword: hash
       }
       resolve(userObject)

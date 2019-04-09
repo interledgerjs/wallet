@@ -28,8 +28,8 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpYXQiOjE1
 // .post('/transaction')
 describe('Test to create a new transaction', function () {
   let data = {
-    "dbtAccID" : 1,
-    "crdtAccID" : 2,
+    "debitAccount" : 1,
+    "creditAccount" : 2,
     "amount" : 100
     }
   it('should return OK status', function () {
@@ -67,8 +67,8 @@ describe('Test to get a transaction by id', function () {
 // .post('/accounts')
 describe('Test to create a new account', function () {
   let data = {
-    "accountName": "test_account",
-    "ownerUserID": 1,
+    "name": "test_account",
+    "owner": 1,
     "balance": 100
   }
   it('should return OK status', function () {
@@ -95,17 +95,17 @@ describe('Test to get all accounts', function () {
 
 // .get('/accounts/:id')
 describe('Test to get an account by id', function () {
-  let accountID
+  let id
   before(function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
-        accountID = response.body[0].accountID
+        id = response.body[0].id
       })
   })
   it('should return OK status', function () {
     return request(app)
-      .get('/accounts/id/' + accountID)
+      .get('/accounts/id/' + id)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -114,22 +114,22 @@ describe('Test to get an account by id', function () {
 
 // .put('/accounts/:id')
 describe('Test to update an account', function () {
-  let accountID
+  let id
   before(function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
-        accountID = response.body[0].accountID
+        id = response.body[0].id
       })
   })
   let data = {
-    "accountName": "test_account",
-    "ownerUserID": 1,
+    "name": "test_account",
+    "owner": 1,
     "balance": 4069
   }
   it('should return OK status', function () {
     return request(app)
-      .put('/accounts/' + accountID)
+      .put('/accounts/' + id)
       .send(data)
       .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
@@ -140,17 +140,17 @@ describe('Test to update an account', function () {
 
 // .delete('/accounts/:id')
 describe('Test to delete an account', function () {
-  let accountID
+  let id
   before(function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
-        accountID = response.body[0].accountID
+        id = response.body[0].id
       })
   })
   it('should return OK status', function () {
     return request(app)
-      .delete('/accounts/' + accountID)
+      .delete('/accounts/' + id)
       .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
@@ -165,16 +165,16 @@ describe('Test to create a new user', function () {
       .get('/users/username/test_user')
       .then(function (response) {
         if (response.body.userName) {
-          const userID = response.body.userID
+          const id = response.body.id
           return request(app)
-            .delete('/users/' + response.body.userID)
+            .delete('/users/' + response.body.id)
         }
       })
   })
   let data = {
     "userName": "test_user",
     "pssword": "123",
-    "userRole": "admin"
+    "role": "admin"
   }
   it('should return OK status', function () {
     return request(app)
@@ -200,17 +200,17 @@ describe('Test to get all users', function () {
 
 // .get('/users/id/:id')
 describe('Test to get a user by id', function () {
-  let userID
+  let id
   before(function () {
     return request(app)
       .get('/users')
       .then(function (response) {
-        userID = response.body[0].userID
+        id = response.body[0].id
       })
   })
   it('should return OK status', function () {
     return request(app)
-      .get('/users/id/' + userID)
+      .get('/users/id/' + id)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -219,12 +219,12 @@ describe('Test to get a user by id', function () {
 
 // .put('/user/:id')
 describe('Test to update a user', function () {
-  let userID
+  let id
   before(function () {
     return request(app)
       .get('/users')
       .then(function (response) {
-        userID = response.body[0].userID
+        id = response.body[0].id
       })
   })
   let data = {
@@ -233,7 +233,7 @@ describe('Test to update a user', function () {
   }
   it('should return OK status', function () {
     return request(app)
-      .put('/users/' + userID)
+      .put('/users/' + id)
       .send(data)
       .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
@@ -257,17 +257,17 @@ describe('Test to update a user', function () {
 
 // .delete('/users/:id')
 describe('Test to delete a user', function () {
-  let userID
+  let id
   before(function () {
     return request(app)
       .get('/users')
       .then(function (response) {
-        userID = response.body[0].userID
+        id = response.body[0].id
       })
   })
   it('should return OK status', function () {
     return request(app)
-      .delete('/users/' + userID)
+      .delete('/users/' + id)
       .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)

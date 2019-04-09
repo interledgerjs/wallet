@@ -24,27 +24,27 @@ let mysqlInit = () => {
     connectServer.query(`CREATE DATABASE IF NOT EXISTS ${process.env.DBNAME}`, (err) => {
       if (!err) {
         connectDb.query('CREATE TABLE IF NOT EXISTS users (\
-                    userID INT AUTO_INCREMENT PRIMARY KEY,\
+                    id INT AUTO_INCREMENT PRIMARY KEY,\
                     userName VARCHAR(255),\
                     dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
                     deletedAt DATETIME NOT NULL DEFAULT "",\
-                    userRole VARCHAR(255),\
+                    role VARCHAR(255),\
                     pssword VARCHAR(255));', (err) => {
           if (err) throw err
         })
         connectDb.query('CREATE TABLE IF NOT EXISTS accounts (\
-                    accountID INT AUTO_INCREMENT PRIMARY KEY,\
-                    accountName VARCHAR(255),\
-                    ownerUserID INT,\
+                    id INT AUTO_INCREMENT PRIMARY KEY,\
+                    name VARCHAR(255),\
+                    owner INT,\
                     balance INT,\
                     deletedAt DATETIME NOT NULL DEFAULT "",\
                     lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
           if (err) throw err
         })
         connectDb.query('CREATE TABLE IF NOT EXISTS transactions (\
-                    transID INT AUTO_INCREMENT PRIMARY KEY,\
-                    dbtAccID INT,\
-                    crdtAccID INT,\
+                    id INT AUTO_INCREMENT PRIMARY KEY,\
+                    debitAccount INT,\
+                    creditAccount INT,\
                     amount INT,\
                     date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', (err) => {
           if (err) throw err
@@ -73,22 +73,22 @@ if (process.env.ACTIVEDB === 'MySQL') {
 
   db.serialize(function () {
     db.run('CREATE TABLE IF NOT EXISTS users (\
-      userID INTEGER PRIMARY KEY AUTOINCREMENT,\
+      id INTEGER PRIMARY KEY AUTOINCREMENT,\
       userName VARCHAR(255),\
       dateCreated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,\
       deletedAt DATETIME NOT NULL DEFAULT "",\
-      userRole VARCHAR(255),\
+      role VARCHAR(255),\
       pssword VARCHAR(255));')
     db.run('CREATE TABLE IF NOT EXISTS accounts (\
-      accountID INTEGER PRIMARY KEY AUTOINCREMENT,\
-      accountName VARCHAR(255),\
-      ownerUserID INT, balance INT,\
+      id INTEGER PRIMARY KEY AUTOINCREMENT,\
+      name VARCHAR(255),\
+      owner INT, balance INT,\
       deletedAt DATETIME NOT NULL DEFAULT "",\
       lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
     db.run('CREATE TABLE IF NOT EXISTS transactions (\
-      transID INTEGER PRIMARY KEY AUTOINCREMENT,\
-      dbtAccID INTEGER,\
-      crdtAccID INT,\
+      id INTEGER PRIMARY KEY AUTOINCREMENT,\
+      debitAccount INTEGER,\
+      creditAccount INT,\
       amount INTEGER,\
       date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
   })
