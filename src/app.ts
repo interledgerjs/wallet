@@ -12,6 +12,7 @@ const app = express()
 module.exports = app
 app.use(bodyParser.json())
 
+// to add token middleware either use verifyToken (for all users), or verifyAdmin for admins only
 let verifyAdmin = verifyRoleToken('admin')
 
 app.post('/transactions', transaction.createTransaction) // body.transID?, body.dbtAccID, body.crdtAccID, body.amount
@@ -35,15 +36,6 @@ app.delete('/users/:id', deleteUser) // id as param
 
 app.post('/admin', createAdmin) // body.userName, body.password
 app.post('/token', token) // body.userName, body.password
-// app.get('/getToken', jwtController.genToken)
-
-app.get('/testVerifyAdminToken', verifyAdmin, (res) => {
-  console.log('It works!')
-})
-
-app.get('/testVerifyToken', verifyToken, (res) => {
-  console.log('It works!')
-})
 
 app.all('*', (req, res) => {
   res.sendStatus(404)

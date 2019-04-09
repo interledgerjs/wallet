@@ -28,9 +28,6 @@ export function verifyToken (req: Request, res: Response, next: any) {
 }
 
 export function verifyRoleToken (roles: string) {
-  // if (typeof roles === 'string') {
-  //   roles = [roles]
-  // }
   return function (req: Request, res: Response, next: any) {
     const bearerHeader: string = req.headers['authorization']
     if (bearerHeader) {
