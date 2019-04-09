@@ -13,7 +13,7 @@ export async function token (req: Request, res: Response) {
       const result = await compareHash(userExists, pssword)
       if (result) {
         const authData = {
-          userID: userExists.userID,
+          id: userExists.id,
           userName: userExists.userName
         }
         jwt.sign({ authData }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
