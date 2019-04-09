@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { retrieveUser, retrieveUserByID, retrieveUserByUserName, addUser, addAdmin, modifyUser, removeUser, User, hashing } from '../models/userModel'
+import { retrieveUser, retrieveUserById, retrieveUserByUserName, addUser, addAdmin, modifyUser, removeUser, User, hashing } from '../models/userModel'
 
 // get /user #returns all users
 export async function readUser (req: Request, res: Response) {
@@ -16,10 +16,10 @@ export async function readUser (req: Request, res: Response) {
 }
 
 // get /users/id/:id #returns single user by id
-export async function readUserByID (req: Request, res: Response) {
-  const userID: number = req.params.id
+export async function readUserById (req: Request, res: Response) {
+  const id: number = req.params.id
   try {
-    const result = await retrieveUserByID(userID)
+    const result = await retrieveUserById(id)
     if (result) {
       res.send(result)
     } else {
@@ -91,7 +91,7 @@ export async function createAdmin (req: Request, res: Response) {
 // put /user/:id
 export async function updateUser (req: Request, res: Response) {
   try {
-    const userExists = await retrieveUserByID(req.params.id)
+    const userExists = await retrieveUserById(req.params.id)
     if (userExists) {
       const result = await modifyUser(userExists, req.body)
       if (!result) {
@@ -110,7 +110,7 @@ export async function updateUser (req: Request, res: Response) {
 // delete /user/:id
 export async function deleteUser (req: Request, res: Response) {
   try {
-    const userExists = await retrieveUserByID(req.params.id)
+    const userExists = await retrieveUserById(req.params.id)
     if (userExists) {
       const result = await removeUser(req.params.id)
       if (!result) {
