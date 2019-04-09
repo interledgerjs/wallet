@@ -35,7 +35,7 @@ function isUserArray (result: any): result is User[] {
 // function to handle getting all users
 export function retrieveUser (): Promise<User[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users`
+    const sql: string = `SELECT * FROM users WHERE deletedAt = ''`
     try {
       const result = await query(sql)
       if (isUserArray(result)) {
@@ -52,7 +52,7 @@ export function retrieveUser (): Promise<User[]> {
 // function to handle get user by id
 export function retrieveUserByID (userID: number): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users where userID = '${userID}'`
+    const sql: string = `SELECT * FROM users where userID = '${userID}' AND deletedAt = ''`
     try {
       const result = await query(sql)
       if (isUserArray(result)) {
@@ -73,7 +73,7 @@ export function retrieveUserByID (userID: number): Promise<User> {
 // function to handle get user by userName
 export function retrieveUserByUserName (userName: string): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users WHERE username = '${userName}'`
+    const sql: string = `SELECT * FROM users WHERE username = '${userName}' AND deletedAt = ''`
     try {
       const result = await query(sql)
       if (isUserArray(result)) {
@@ -183,10 +183,22 @@ export async function modifyUser (userExists: User, body: any): Promise<boolean>
   })
 }
 
+// export function removeUser (id: number): Promise<boolean> {
+//   return new Promise(async function (resolve, reject) {
+//     try {
+//       const sql: string = `DELETE FROM users WHERE userID = '${id}'`
+//       const result = await query(sql)
+//       resolve(false)
+//     } catch (error) {
+//       reject(error)
+//     }
+//   })
+// }
+
 export function removeUser (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     try {
-      const sql: string = `DELETE FROM users WHERE userID = '${id}'`
+      const sql: string = `UPDATE users SET deletedAt = '${new Date().toISOString()}' where userID = '${id}'`
       const result = await query(sql)
       resolve(false)
     } catch (error) {

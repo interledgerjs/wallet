@@ -58,7 +58,7 @@ export function addAccount (account: Account): Promise<boolean> {
 // function to handle retrieving a singular account by AccountID
 export function retrieveAccountByID (id: number): Promise<Account> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE accountID = ${id}`
+    const sql: string = `SELECT * FROM accounts WHERE accountID = ${id} AND deletedAt = ''`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
@@ -79,7 +79,7 @@ export function retrieveAccountByID (id: number): Promise<Account> {
 // function to handle the retrieval of all accounts
 export function retrieveAllAccounts (): Promise<Account[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts`
+    const sql: string = `SELECT * FROM accounts WHERE deletedAt = ''`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
@@ -100,7 +100,7 @@ export function retrieveAllAccounts (): Promise<Account[]> {
 // function to handle list of accounts owned by userID
 export function retrieveAccountsByUserID (userID: number): Promise<Account[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE ownerUserID = ${userID}`
+    const sql: string = `SELECT * FROM accounts WHERE ownerUserID = ${userID} AND deletedAt = ''`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
@@ -135,10 +135,22 @@ export function modifyAccount (account: Account): Promise<boolean> {
   })
 }
 
-// funcion to handle the deletion of accounts
-export function removeAccount (accountID: number): Promise<boolean> {
+// // funcion to handle the deletion of accounts
+// export function removeAccount (accountID: number): Promise<boolean> {
+//   return new Promise(async function (resolve, reject) {
+//     const sql: string = `DELETE FROM accounts WHERE accountID = ${accountID}`
+//     try {
+//       const result = await query(sql)
+//       resolve(false)
+//     } catch (error) {
+//       reject(error)
+//     }
+//   })
+// }
+
+export function removeAccount (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `DELETE FROM accounts WHERE accountID = ${accountID}`
+    const sql: string = `UPDATE accounts SET deletedAt = '${new Date().toISOString()}' WHERE accountID = ${id}`
     try {
       const result = await query(sql)
       resolve(false)
