@@ -15,7 +15,7 @@ export async function token (req: Request, res: Response) {
         const authData = {
           id: userExists.id,
           userName: userExists.userName,
-          userRole: userExists.userRole
+          userRole: userExists.role
         }
         jwt.sign({ authData }, 'secret',{ expiresIn: '1d' }, (_err, token) => {
           res.json({ token })
