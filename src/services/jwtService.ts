@@ -18,7 +18,6 @@ export function verifyToken (req: Request, res: Response, next: any) {
         res.sendStatus(403)
       } else {
         req.authData = tokenData
-        //res.sendStatus(200) //testing purposes
         next()
       }
     })
@@ -42,7 +41,6 @@ export function verifyRoleToken (roles: string) {
           res.sendStatus(403)
         } else {
           req.authData = tokenData
-          //res.sendStatus(200) //testing purposes
           next()
         }
       })
