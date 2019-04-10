@@ -138,7 +138,7 @@ export function addAdmin (user: User): Promise<boolean> {
   })
 }
 
-export async function modifyUser (userExists: User, body: any): Promise<boolean> {
+export function modifyUser (userExists: User, body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (
     (body.userName === undefined || typeof body.userName === 'string') &&
@@ -200,7 +200,7 @@ export function removeUser (id: number): Promise<boolean> {
   })
 }
 
-export async function hashing (pssword: string, userName: string): Promise<User> {
+export function hashing (pssword: string, userName: string): Promise<User> {
   return new Promise(async function (resolve, reject) {
     try {
       const salt = await bcrypt.genSalt(saltRounds)
