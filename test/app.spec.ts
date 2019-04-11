@@ -23,7 +23,7 @@ require('../initTestDB')
 //   });
 // });
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpYXQiOjE1NTA3MTc4MTgsImV4cCI6MTU1MDcyMTQxOH0.YwK3l5zhI7W0qpN-EYvmFFqCSUkKN1Yvmd3KPKfhPxg'
+// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIiLCJpYXQiOjE1NTA3MTc4MTgsImV4cCI6MTU1MDcyMTQxOH0.YwK3l5zhI7W0qpN-EYvmFFqCSUkKN1Yvmd3KPKfhPxg'
 
 // .post('/transaction')
 describe('Test to create a new transaction', function () {
@@ -75,7 +75,7 @@ describe('Test to create a new account', function () {
     return request(app)
       .post('/accounts')
       .send(data)
-      .set('Authorization', 'Bearer ' + token)
+      // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -83,34 +83,39 @@ describe('Test to create a new account', function () {
 });
 
 // .get('/accounts')
-describe('Test to get all accounts', function () {
-  it('should return OK status', function () {
-    return request(app)
-      .get('/accounts')
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  });
-});
-
-// .get('/accounts/:id')
-describe('Test to get an account by id', function () {
+describe('Test to get accounts', function () {
   let id
+  let owner
   before(function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
         id = response.body[0].id
+        owner = response.body[0].owner
       })
   })
-  it('should return OK status', function () {
+  it('should return OK status when querying all', function () {
     return request(app)
-      .get('/accounts/id/' + id)
+      .get('/accounts')
       .then(function (response) {
         assert.equal(response.status, 200)
       })
-  });
-});
+  })
+  it('should return OK status when querying by id', function () {
+    return request(app)
+      .get('/accounts/?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+  it('should return OK status when querying by owner', function () {
+    return request(app)
+      .get('/accounts/?owner=' + owner)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+})
 
 // .put('/accounts/:id')
 describe('Test to update an account', function () {
@@ -131,7 +136,7 @@ describe('Test to update an account', function () {
     return request(app)
       .put('/accounts/' + id)
       .send(data)
-      .set('Authorization', 'Bearer ' + token)
+      // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -151,7 +156,7 @@ describe('Test to delete an account', function () {
   it('should return OK status', function () {
     return request(app)
       .delete('/accounts/' + id)
-      .set('Authorization', 'Bearer ' + token)
+      // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -180,7 +185,7 @@ describe('Test to create a new user', function () {
     return request(app)
       .post('/users')
       .send(data)
-      .set('Authorization', 'Bearer ' + token)
+      // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -210,7 +215,7 @@ describe('Test to get a user by id', function () {
   })
   it('should return OK status', function () {
     return request(app)
-      .get('/users/id/' + id)
+      .get('/users/' + id)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -235,7 +240,7 @@ describe('Test to update a user', function () {
     return request(app)
       .put('/users/' + id)
       .send(data)
-      .set('Authorization', 'Bearer ' + token)
+      // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -268,7 +273,7 @@ describe('Test to delete a user', function () {
   it('should return OK status', function () {
     return request(app)
       .delete('/users/' + id)
-      .set('Authorization', 'Bearer ' + token)
+      // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
       })

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import { retrieveUserByUserName } from '../models/userModel'
-import { compareHash } from '../models/tokenModel'
+import { compareHash } from '../services/tokenService'
 
 // get /token #returns a token
 export async function token (req: Request, res: Response) {
