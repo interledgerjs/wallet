@@ -1,4 +1,4 @@
-import { query } from './dbModel'
+import { query } from '../services/dbService'
 
 export interface Account {
   id: number,

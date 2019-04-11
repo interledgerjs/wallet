@@ -1,4 +1,4 @@
-import { query } from './dbModel'
+import { query } from '../services/dbService'
 import * as bcrypt from 'bcrypt'
 const saltRounds = 3
 
