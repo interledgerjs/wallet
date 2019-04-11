@@ -6,7 +6,6 @@ import { createTransaction, readTransactions, readTransactionById, readTransacti
 import { readUser, readUserById, readUserByUserName, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
 
-
 dotenv.config()
 const app = express()
 module.exports = app
