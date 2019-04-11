@@ -1,7 +1,13 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
 import { User } from '../models/userModel'
-import { token } from '../controllers/tokenController';
+import { token } from '../controllers/tokenController'
+
+// roles to be used for authorisation
+export enum Roles {
+  Admin = 'Admin',
+  User = 'User'
+}
 
 // verifyToken
 export function verifyToken (req: Request, res: Response, next: any) {
@@ -26,7 +32,7 @@ export function verifyToken (req: Request, res: Response, next: any) {
   }
 }
 
-export function verifyRoleToken (roles: string) {
+export function verifyRoleToken (roles: Roles) {
   return function (req: Request, res: Response, next: any) {
     const bearerHeader: string = req.headers['authorization']
     if (bearerHeader) {
@@ -37,7 +43,9 @@ export function verifyRoleToken (roles: string) {
 
             // verifies token and returns authData
       jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, tokenData: any) => {
-        if (err || tokenData.authData.userRole !== roles) {
+        if (err || (tokenData.authData.userRole !== roles && tokenData.authData.userRole !== Roles.Admin)) {
+          console.log(Roles)
+          console.log(tokenData.authData)
           res.sendStatus(403)
         } else {
           req.authData = tokenData

@@ -5,7 +5,7 @@ import * as account from './controllers/accountController'
 import * as transaction from './controllers/transactionController'
 import { readUser, readUserById, readUserByUserName, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
-import { verifyRoleToken, verifyToken } from './services/jwtService'
+import { verifyRoleToken, verifyToken, Roles } from './services/jwtService'
 
 dotenv.config()
 const app = express()
@@ -13,7 +13,7 @@ module.exports = app
 app.use(bodyParser.json())
 
 // to add token middleware either use verifyToken (for all users), or verifyAdmin for admins only
-let verifyAdmin = verifyRoleToken('admin')
+let verifyAdmin = verifyRoleToken(Roles.Admin)
 
 app.post('/transactions', transaction.createTransaction) // body.id?, body.debitAccount, body.creditAccount, body.amount
 app.get('/transactions/', transaction.readTransactions) // no required input
