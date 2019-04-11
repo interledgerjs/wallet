@@ -1,4 +1,4 @@
-import * as dbFunctions from './dbModel'
+import * as dbFunctions from '../services/dbService'
 
 export interface Transaction {
   id: number,
