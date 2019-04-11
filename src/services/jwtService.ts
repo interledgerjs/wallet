@@ -5,11 +5,12 @@ import { token } from '../controllers/tokenController'
 
 // roles to be used for authorisation
 export enum Roles {
-  Admin = 'Admin',
-  User = 'User'
+  Admin = 'admin',
+  User = 'user'
 }
 
 // verifyToken
+/*
 export function verifyToken (req: Request, res: Response, next: any) {
   const bearerHeader: string = req.headers['authorization']
   if (bearerHeader) {
@@ -31,8 +32,9 @@ export function verifyToken (req: Request, res: Response, next: any) {
     res.sendStatus(403)
   }
 }
+*/
 
-export function verifyRoleToken (roles: Roles) {
+export function verifyToken (roles: Roles) {
   return function (req: Request, res: Response, next: any) {
     const bearerHeader: string = req.headers['authorization']
     if (bearerHeader) {
@@ -43,12 +45,12 @@ export function verifyRoleToken (roles: Roles) {
 
             // verifies token and returns authData
       jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, tokenData: any) => {
-        if (err || (tokenData.authData.userRole !== roles && tokenData.authData.userRole !== Roles.Admin)) {
-          console.log(Roles)
-          console.log(tokenData.authData)
+        if (err || (tokenData.authData.userRole !== roles)) {
+          // console.log(Roles)
+          // console.log(tokenData)
           res.sendStatus(403)
         } else {
-          req.authData = tokenData
+          req.authData = tokenData.authData
           next()
         }
       })

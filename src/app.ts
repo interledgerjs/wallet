@@ -5,15 +5,14 @@ import * as account from './controllers/accountController'
 import * as transaction from './controllers/transactionController'
 import { readUser, readUserById, readUserByUserName, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
-import { verifyRoleToken, verifyToken, Roles } from './services/jwtService'
+import { verifyToken, Roles } from './services/jwtService'
 
 dotenv.config()
 const app = express()
 module.exports = app
 app.use(bodyParser.json())
 
-// to add token middleware either use verifyToken (for all users), or verifyAdmin for admins only
-let verifyAdmin = verifyRoleToken(Roles.Admin)
+// to add token middleware add verifyToken(Roles.FooBar)
 
 app.post('/transactions', transaction.createTransaction) // body.id?, body.debitAccount, body.creditAccount, body.amount
 app.get('/transactions/', transaction.readTransactions) // no required input
@@ -28,7 +27,7 @@ app.put('/accounts/:id', account.updateAccount) // id as param, body.name, body.
 app.delete('/accounts/:id', account.deleteAccount) // id's as params
 
 app.post('/users', createUser) // body.userName, body.password
-app.get('/users', readUser)
+app.get('/users', verifyToken(Roles.User), readUser)
 app.get('/users/id/:id', readUserById) // id as param
 app.get('/users/username/:username', readUserByUserName) // userName as param, body.pssword
 app.put('/users/:id', updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.role?
