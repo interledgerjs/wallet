@@ -210,7 +210,7 @@ describe('Test to get a user by id', function () {
   })
   it('should return OK status', function () {
     return request(app)
-      .get('/users/id/' + id)
+      .get('/users/' + id)
       .then(function (response) {
         assert.equal(response.status, 200)
       })

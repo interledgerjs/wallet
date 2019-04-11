@@ -176,7 +176,6 @@ export function modifyUser (userExists: User, body: any): Promise<boolean> {
         }
         const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE id = '${userObject.id}'`
         const result = await query(sql)
-        console.log(result)
         resolve(false)
       } catch (error) {
         reject(error)

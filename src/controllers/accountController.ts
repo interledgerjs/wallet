@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import { Account, addAccount, retrieveAccountById, retrieveAllAccounts, retrieveAccountsById, modifyAccount, removeAccount } from '../models/accountModel'
+import { Account, addAccount, retrieveAccountById, retrieveAccounts, retrieveAccountByOwner, modifyAccount, removeAccount } from '../models/accountModel'
 
 export async function createAccount (req: Request, res: Response) {
   if (
@@ -19,7 +19,7 @@ export async function createAccount (req: Request, res: Response) {
     try {
       const result = await addAccount(accountObject)
       if (!result) {
-        res.send('Account created')
+        res.sendStatus(200)
       }
     } catch (error) {
       res.sendStatus(500)
@@ -42,9 +42,9 @@ export async function readAccountById (req: Request, res: Response) {
   }
 }
 
-export async function readAllAccounts (req: Request, res: Response) {
+export async function readAccounts (req: Request, res: Response) {
   try {
-    const result = await retrieveAllAccounts()
+    const result = await retrieveAccounts()
     if (result) {
       res.send(result)
     } else {
@@ -55,9 +55,9 @@ export async function readAllAccounts (req: Request, res: Response) {
   }
 }
 
-export async function readAllAccountsById (req: Request, res: Response) {
+export async function readAccountByOwner (req: Request, res: Response) {
   try {
-    const result = await retrieveAccountsById(req.params.id)
+    const result = await retrieveAccountByOwner(req.params.id)
     if (result) {
       res.send(result)
     } else {
@@ -103,7 +103,7 @@ export async function updateAccount (req: Request, res: Response) {
         }
         const result = await modifyAccount(accountObject)
         if (!result) {
-          res.send('Successfully updated account')
+          res.sendStatus(200)
         }
       } else {
         res.sendStatus(404)
