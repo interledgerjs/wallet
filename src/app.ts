@@ -27,7 +27,7 @@ app.put('/accounts/:id', account.updateAccount) // id as param, body.name, body.
 app.delete('/accounts/:id', account.deleteAccount) // id's as params
 
 app.post('/users', createUser) // body.userName, body.password
-app.get('/users', verifyToken(Roles.User), readUser)
+app.get('/users', verifyToken(Roles.Admin), readUser)
 app.get('/users/id/:id', readUserById) // id as param
 app.get('/users/username/:username', readUserByUserName) // userName as param, body.pssword
 app.put('/users/:id', updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.role?
