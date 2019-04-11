@@ -77,7 +77,7 @@ export function retrieveAccountById (id: number): Promise<Account> {
 }
 
 // function to handle the retrieval of all accounts
-export function retrieveAllAccounts (): Promise<Account[]> {
+export function retrieveAccounts (): Promise<Account[]> {
   return new Promise(async function (resolve, reject) {
     const sql: string = `SELECT * FROM accounts WHERE deletedAt = ''`
     try {
@@ -97,10 +97,10 @@ export function retrieveAllAccounts (): Promise<Account[]> {
   })
 }
 
-// function to handle list of accounts owned by id
-export function retrieveAccountsById (id: number): Promise<Account[]> {
+// function to handle the retrieval of all accounts by specific owner
+export function retrieveAccountByOwner (owner: number): Promise<Account[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE owner = ${id} AND deletedAt = ''`
+    const sql: string = `SELECT * FROM accounts WHERE owner = ${owner} AND deletedAt = ''`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
@@ -134,19 +134,6 @@ export function modifyAccount (account: Account): Promise<boolean> {
     }
   })
 }
-
-// // funcion to handle the deletion of accounts
-// export function removeAccount (accountID: number): Promise<boolean> {
-//   return new Promise(async function (resolve, reject) {
-//     const sql: string = `DELETE FROM accounts WHERE accountID = ${accountID}`
-//     try {
-//       const result = await query(sql)
-//       resolve(false)
-//     } catch (error) {
-//       reject(error)
-//     }
-//   })
-// }
 
 export function removeAccount (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {

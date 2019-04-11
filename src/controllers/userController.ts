@@ -63,7 +63,6 @@ export async function createUser (req: Request, res: Response) {
       res.sendStatus(400)
     }
   } catch (error) {
-    console.log(error)
     res.sendStatus(500)
   }
 }
