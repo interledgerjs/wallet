@@ -22,13 +22,13 @@ export async function createTransaction (req: Request, res: Response) {
     try {
       const failure = await addTransaction(transObject)
       if (!failure) {
-        res.send('Transaction added')
+        res.sendStatus(200)
       }
     } catch (error) {
-      res.status(500).send('unable to add transaction')
+      res.sendStatus(500)
     }
   } else {
-    res.status(400).send('Bad request')
+    res.sendStatus(400)
   }
 }
 
@@ -43,7 +43,7 @@ export async function readTransactions (req: Request, res: Response) {
       res.send(result)
     }
   } catch (error) {
-    res.status(500).send('Unable to retrieve transactions')
+    res.sendStatus(500)
   }
 }
 
@@ -63,10 +63,10 @@ export async function readTransactionById (req: Request, res: Response) {
         res.send(result)
       }
     } catch (error) {
-      res.status(500).send('Unable to retrieve transaction')
+      res.sendStatus(500)
     }
   } else {
-    res.status(400).send('Bad request')
+    res.sendStatus(400)
   }
 }
 
@@ -85,9 +85,9 @@ export async function readTransactionByAccount (req: Request, res: Response) {
         res.send(result)
       }
     } catch (error) {
-      res.status(500).send('Unable to retrieve transactions')
+      res.sendStatus(500)
     }
   } else {
-    res.status(400).send('Bad request')
+    res.sendStatus(400)
   }
 }
