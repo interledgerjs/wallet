@@ -29,6 +29,10 @@ jobs:
           command: npm install
      
       - run:
+          name: Audit Fix
+          command: npm audit fix
+     
+      - run:
           name: Lint
           command: npm run lint
      
