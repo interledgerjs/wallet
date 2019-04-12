@@ -3,6 +3,8 @@ import * as jwt from 'jsonwebtoken'
 import { User } from '../models/userModel'
 import { token } from '../controllers/tokenController'
 
+// to add token middleware add verifyToken(Roles.User/Admin) to an endpoint
+
 // roles to be used for authorisation
 export enum Roles {
   Admin = 'admin',

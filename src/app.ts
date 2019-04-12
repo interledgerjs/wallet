@@ -12,8 +12,6 @@ const app = express()
 module.exports = app
 app.use(bodyParser.json())
 
-// to add token middleware add verifyToken(Roles.FooBar)
-
 app.post('/transactions', transaction.createTransaction) // body.id?, body.debitAccount, body.creditAccount, body.amount
 app.get('/transactions/', transaction.readTransactions) // no required input
 app.get('/transactions/id/:id/', transaction.readTransactionById) // id as param
