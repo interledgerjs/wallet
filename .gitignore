@@ -70,3 +70,6 @@ my_db
 
 #vscode
 .vscode/
+
+#log files
+*.log
