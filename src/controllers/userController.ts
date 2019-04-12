@@ -3,7 +3,6 @@ import { retrieveUser, retrieveUserById, retrieveUserByUserName, addUser, addAdm
 
 // get /user #returns all users
 export async function readUser (req: Request, res: Response) {
-  console.log(req.authData.userRole)
   try {
     const result = await retrieveUser()
     if (result.length > 0) {

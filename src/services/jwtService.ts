@@ -9,31 +9,7 @@ export enum Roles {
   User = 'user'
 }
 
-// verifyToken
-/*
-export function verifyToken (req: Request, res: Response, next: any) {
-  const bearerHeader: string = req.headers['authorization']
-  if (bearerHeader) {
-        // pulls token out of header
-    const bearer: string[] = bearerHeader.split(' ')
-    const bearerToken: string = bearer[1]
-    req['token'] = bearerToken
-
-        // verifies token and returns tokenData
-    jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, tokenData: any) => {
-      if (err) {
-        res.sendStatus(403)
-      } else {
-        req.authData = tokenData
-        next()
-      }
-    })
-  } else {
-    res.sendStatus(403)
-  }
-}
-*/
-
+// #returns req.authdata object
 export function verifyToken (roles: Roles) {
   return function (req: Request, res: Response, next: any) {
     const bearerHeader: string = req.headers['authorization']
