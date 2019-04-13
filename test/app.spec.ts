@@ -101,7 +101,7 @@ describe('Test to get an account by id', function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
-        id = 11 // response.body[0].id
+        id = response.body[0].id
         owner = response.body[0].owner
       })
   })
