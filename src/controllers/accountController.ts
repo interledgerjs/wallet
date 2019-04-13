@@ -34,12 +34,23 @@ export async function readAccountById (req: Request, res: Response) {
   try {
     switch (queryBy) {
       case ('id') :
-        const result = await retrieveAccountById(req.params.id)
-        if (result) {
-          res.send(result)
+        const accountById = await retrieveAccountById(req.params.id)
+        if (accountById) {
+          res.send(accountById)
         } else {
           res.sendStatus(404)
         }
+        break
+      case ('owner'):
+        const accountsByOwner = await retrieveAccountByOwner(req.params.id)
+        if (accountsByOwner) {
+          res.send(accountsByOwner)
+        } else {
+          res.sendStatus(404)
+        }
+        break
+      default:
+        res.sendStatus(400)
     }
   } catch (error) {
     res.send(500)
