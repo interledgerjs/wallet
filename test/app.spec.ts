@@ -83,18 +83,7 @@ describe('Test to create a new account', function () {
 });
 
 // .get('/accounts')
-describe('Test to get all accounts', function () {
-  it('should return OK status', function () {
-    return request(app)
-      .get('/accounts')
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  });
-});
-
-// .get('/accounts/:id')
-describe('Test to get an account by id', function () {
+describe('Test to get accounts', function () {
   let id
   let owner
   before(function () {
@@ -105,16 +94,23 @@ describe('Test to get an account by id', function () {
         owner = response.body[0].owner
       })
   })
+  it('should return OK status', function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
   it('should return OK status when querying by id', function () {
     return request(app)
-      .get('/accounts/' + id + '?queryBy=id')
+      .get('/accounts/?id=' + id)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
   it('should return OK status when querying by owner', function () {
     return request(app)
-      .get('/accounts/' + owner + '?queryBy=owner')
+      .get('/accounts/?owner=' + owner)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
