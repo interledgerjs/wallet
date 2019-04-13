@@ -12,9 +12,9 @@ module.exports = app
 app.use(bodyParser.json())
 
 app.post('/transactions', createTransaction) // body.id?, body.debitAccount, body.creditAccount, body.amount
-app.get('/transactions/', readTransactions) // no required input
-app.get('/transactions/id/:id/', readTransactionById) // id as param
-app.get('/transactions/account/:id/', readTransactionByAccount) // account id as param
+app.get('/transactions', readTransactions) // no required input
+app.get('/transactions/id/:id', readTransactionById) // id as param
+app.get('/transactions/account/:id', readTransactionByAccount) // account id as param
 
 app.post('/accounts', createAccount) // body.balance , body.name, body.owner
 app.get('/accounts/:id', readAccountById) // id's as param
