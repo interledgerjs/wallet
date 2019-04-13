@@ -30,12 +30,16 @@ export async function createAccount (req: Request, res: Response) {
 }
 
 export async function readAccountById (req: Request, res: Response) {
+  const queryBy = req.query.queryBy
   try {
-    const result = await retrieveAccountById(req.params.id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
+    switch (queryBy) {
+      case ('id') :
+        const result = await retrieveAccountById(req.params.id)
+        if (result) {
+          res.send(result)
+        } else {
+          res.sendStatus(404)
+        }
     }
   } catch (error) {
     res.send(500)
