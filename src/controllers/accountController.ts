@@ -70,19 +70,6 @@ export async function readAccounts (req: Request, res: Response) {
   }
 }
 
-export async function readAccountByOwner (req: Request, res: Response) {
-  try {
-    const result = await retrieveAccountByOwner(req.params.id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
-  } catch (error) {
-    res.sendStatus(500)
-  }
-}
-
 export async function updateAccount (req: Request, res: Response) {
   if (
     req.params.id &&
