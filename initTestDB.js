@@ -77,7 +77,9 @@ if (process.env.ACTIVEDB === 'MySQL') {
   console.log('sqlite db building')
 
   const db = new sqlite3.Database('testdb')
-  db.run('DROP TABLE IF EXISTS users, accounts, transactions;', function(result, error) {
+  db.run('DROP TABLE IF EXISTS users;')
+  db.run('DROP TABLE IF EXISTS accounts;')
+  db.run('DROP TABLE IF EXISTS transactions;', function(result, error) {
     if (error) {
       console.log(error)
     } else {
