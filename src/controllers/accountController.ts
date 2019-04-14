@@ -49,23 +49,9 @@ export async function createAccount (req: Request, res: Response) {
   }
 }
 
-export async function readAccountById (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const result = await retrieveAccountById(req.params.id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
-  } catch (error) {
-    logger.error(error)
-    res.send(500)
-  }
-}
-
 export async function readAccounts (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
+  const queryBy = Object.keys(req.query)[0]
   try {
     switch (queryBy) {
       case ('id') :
@@ -91,21 +77,6 @@ export async function readAccounts (req: Request, res: Response) {
         } else {
           res.sendStatus(404)
         }
-    }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
-  }
-}
-
-export async function readAccountByOwner (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const result = await retrieveAccountByOwner(req.params.id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
     }
   } catch (error) {
     logger.error(error)
