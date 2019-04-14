@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import { createAccount, readAccountById, readAccounts, updateAccount, deleteAccount } from './controllers/accountController'
+import { createAccount, readAccounts, updateAccount, deleteAccount } from './controllers/accountController'
 import { createTransaction, readTransactions, readTransactionById, readTransactionByAccount } from './controllers/transactionController'
 import { readUser, readUserById, readUserByUserName, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'

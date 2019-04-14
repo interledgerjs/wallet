@@ -5,8 +5,8 @@ import * as app from '../build/app';
 import { response } from 'express';
 require('../initTestDB')
 
-// // this test uses a preset ID's
-// // change the test to use whichever ID is assigned by the database
+// this test uses a preset ID's
+// change the test to use whichever ID is assigned by the database
 
 // let token
 
@@ -94,7 +94,7 @@ describe('Test to get accounts', function () {
         owner = response.body[0].owner
       })
   })
-  it('should return OK status', function () {
+  it('should return OK status when querying all', function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
