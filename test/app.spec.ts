@@ -5,8 +5,8 @@ import * as app from '../build/app';
 import { response } from 'express';
 require('../initTestDB')
 
-// // this test uses a preset ID's
-// // change the test to use whichever ID is assigned by the database
+// this test uses a preset ID's
+// change the test to use whichever ID is assigned by the database
 
 // let token
 
@@ -83,38 +83,34 @@ describe('Test to create a new account', function () {
 });
 
 // .get('/accounts')
-describe('Test to get all accounts', function () {
-  it('should return OK status', function () {
-    return request(app)
-      .get('/accounts')
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  });
-});
-
-// .get('/accounts/:id')
-describe('Test to get an account by id', function () {
+describe('Test to get accounts', function () {
   let id
   let owner
   before(function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
-        id = 11 // response.body[0].id
+        id = response.body[0].id
         owner = response.body[0].owner
+      })
+  })
+  it('should return OK status when querying all', function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        assert.equal(response.status, 200)
       })
   })
   it('should return OK status when querying by id', function () {
     return request(app)
-      .get('/accounts/' + id + '?queryBy=id')
+      .get('/accounts/?id=' + id)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
   it('should return OK status when querying by owner', function () {
     return request(app)
-      .get('/accounts/' + owner + '?queryBy=owner')
+      .get('/accounts/?owner=' + owner)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
