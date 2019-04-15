@@ -50,7 +50,7 @@ export async function createAccount (req: Request, res: Response) {
 }
 
 export async function readAccounts (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
+  logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
   const queryBy = Object.keys(req.query)[0]
   try {
     switch (queryBy) {
