@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import { createAccount, readAccountById, readAccounts, readAccountByOwner, updateAccount, deleteAccount } from './controllers/accountController'
+import { createAccount, readAccounts, updateAccount, deleteAccount } from './controllers/accountController'
 import { createTransaction, readTransactions, readTransactionById, readTransactionByAccount } from './controllers/transactionController'
 import { readUser, readUserById, readUserByUserName, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
@@ -12,13 +12,11 @@ module.exports = app
 app.use(bodyParser.json())
 
 app.post('/transactions', createTransaction) // body.id?, body.debitAccount, body.creditAccount, body.amount
-app.get('/transactions/', readTransactions) // no required input
-app.get('/transactions/id/:id/', readTransactionById) // id as param
-app.get('/transactions/account/:id/', readTransactionByAccount) // account id as param
+app.get('/transactions', readTransactions) // no required input
+app.get('/transactions/id/:id', readTransactionById) // id as param
+app.get('/transactions/account/:id', readTransactionByAccount) // account id as param
 
 app.post('/accounts', createAccount) // body.balance , body.name, body.owner
-app.get('/accounts/id/:id', readAccountById) // id's as param
-app.get('/accounts/id/:id/', readAccountByOwner)
 app.get('/accounts', readAccounts) // no required input
 app.put('/accounts/:id', updateAccount) // id as param, body.name, body.owner, body.balance
 app.delete('/accounts/:id', deleteAccount) // id's as params

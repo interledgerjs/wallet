@@ -49,44 +49,34 @@ export async function createAccount (req: Request, res: Response) {
   }
 }
 
-export async function readAccountById (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const result = await retrieveAccountById(req.params.id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
-  } catch (error) {
-    logger.error(error)
-    res.send(500)
-  }
-}
-
 export async function readAccounts (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
+  logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
+  const queryBy = Object.keys(req.query)[0]
   try {
-    const result = await retrieveAccounts()
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
-  }
-}
-
-export async function readAccountByOwner (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const result = await retrieveAccountByOwner(req.params.id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
+    switch (queryBy) {
+      case ('id') :
+        const accountById = await retrieveAccountById(req.query.id)
+        if (accountById) {
+          res.send(accountById)
+        } else {
+          res.sendStatus(404)
+        }
+        break
+      case ('owner'):
+        const accountsByOwner = await retrieveAccountByOwner(req.query.owner)
+        if (accountsByOwner) {
+          res.send(accountsByOwner)
+        } else {
+          res.sendStatus(404)
+        }
+        break
+      default:
+        const result = await retrieveAccounts()
+        if (result) {
+          res.send(result)
+        } else {
+          res.sendStatus(404)
+        }
     }
   } catch (error) {
     logger.error(error)
