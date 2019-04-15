@@ -1,4 +1,4 @@
-import { query } from './dbModel'
+import { query } from '../services/dbService'
 import * as bcrypt from 'bcrypt'
 const saltRounds = 3
 
@@ -138,7 +138,7 @@ export function addAdmin (user: User): Promise<boolean> {
   })
 }
 
-export async function modifyUser (userExists: User, body: any): Promise<boolean> {
+export function modifyUser (userExists: User, body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (
     (body.userName === undefined || typeof body.userName === 'string') &&
@@ -176,7 +176,6 @@ export async function modifyUser (userExists: User, body: any): Promise<boolean>
         }
         const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE id = '${userObject.id}'`
         const result = await query(sql)
-        console.log(result)
         resolve(false)
       } catch (error) {
         reject(error)
@@ -200,7 +199,7 @@ export function removeUser (id: number): Promise<boolean> {
   })
 }
 
-export async function hashing (pssword: string, userName: string): Promise<User> {
+export function hashing (pssword: string, userName: string): Promise<User> {
   return new Promise(async function (resolve, reject) {
     try {
       const salt = await bcrypt.genSalt(saltRounds)

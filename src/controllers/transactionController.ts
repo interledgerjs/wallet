@@ -1,8 +1,27 @@
 import { Request, Response } from 'express'
 import { Transaction, addTransaction, retrieveTransactions, retrieveTransactionById, retrieveTransactionsByAccountId } from '../models/transactionModel'
+import { createLogger, transports, format } from 'winston'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+const logger = createLogger({
+  level: 'info',
+  format: format.combine(
+    format.timestamp(),
+    format.json()
+  ),
+  transports : []
+})
+if (process.env.CONSOLELOG === 'true') {
+  logger.add(new transports.Console())
+}
+if (process.env.LOGFILE === 'true') {
+  logger.add(new transports.File({ filename: 'logs.log' }))
+}
 
 // post /transactions #adds new transaction to table
 export async function createTransaction (req: Request, res: Response) {
+  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (
     req.body.debitAccount && typeof req.body.debitAccount === 'number' &&
     req.body.creditAccount && typeof req.body.creditAccount === 'number' &&
@@ -22,19 +41,20 @@ export async function createTransaction (req: Request, res: Response) {
     try {
       const failure = await addTransaction(transObject)
       if (!failure) {
-        res.send('Transaction added')
+        res.sendStatus(200)
       }
     } catch (error) {
-      res.status(500).send('unable to add transaction')
+      logger.error(error)
+      res.sendStatus(500)
     }
   } else {
-    res.status(400).send('Bad request')
+    res.sendStatus(400)
   }
 }
 
 // get /transactions #returns all transactions
 export async function readTransactions (req: Request, res: Response) {
-
+  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
     const result = await retrieveTransactions()
     if (result.length === 0) {
@@ -43,12 +63,14 @@ export async function readTransactions (req: Request, res: Response) {
       res.send(result)
     }
   } catch (error) {
-    res.status(500).send('Unable to retrieve transactions')
+    res.sendStatus(500)
+    logger.error(error)
   }
 }
 
 // get /transactions/id/:id #returns single transaction by id
 export async function readTransactionById (req: Request, res: Response) {
+  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (
     req.params.id &&
     !isNaN(parseInt(req.params.id, 10))
@@ -63,15 +85,17 @@ export async function readTransactionById (req: Request, res: Response) {
         res.send(result)
       }
     } catch (error) {
-      res.status(500).send('Unable to retrieve transaction')
+      res.sendStatus(500)
+      logger.error(error)
     }
   } else {
-    res.status(400).send('Bad request')
+    res.sendStatus(400)
   }
 }
 
 // get /transactions/account/:id #returns transaction array by account ids
 export async function readTransactionByAccount (req: Request, res: Response) {
+  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (
     req.params.id &&
     !isNaN(parseInt(req.params.id, 10))
@@ -85,9 +109,10 @@ export async function readTransactionByAccount (req: Request, res: Response) {
         res.send(result)
       }
     } catch (error) {
-      res.status(500).send('Unable to retrieve transactions')
+      res.sendStatus(500)
+      logger.error(error)
     }
   } else {
-    res.status(400).send('Bad request')
+    res.sendStatus(400)
   }
 }
