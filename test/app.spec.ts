@@ -53,11 +53,22 @@ describe('Test to get all transactions', function () {
   });
 });
 
-// .get('/transactions/id/:id')
+// .get('/transactions/?id=1')
 describe('Test to get a transaction by id', function () {
   it('should return OK status', function () {
     return request(app)
-      .get('/transactions/id/1')
+      .get('/transactions/?id=1')
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  });
+});
+
+// .get('/transactions/?account=1')
+describe('Test to get a transaction by id', function () {
+  it('should return OK status', function () {
+    return request(app)
+      .get('/transactions/?account=1')
       .then(function (response) {
         assert.equal(response.status, 200)
       })
