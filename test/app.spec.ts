@@ -3,7 +3,6 @@ import { expect } from 'chai'
 import * as request from 'supertest';
 import * as app from '../build/app';
 import { response } from 'express';
-require('../initTestDB')
 
 // this test uses a preset ID's
 // change the test to use whichever ID is assigned by the database
