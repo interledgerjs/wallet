@@ -34,7 +34,15 @@ app.delete('/users/:id', deleteUser) // id as param
 app.post('/admin', createAdmin) // body.userName, body.password
 app.post('/token', token) // body.userName, body.password
 
-app.get('/test', verifyToken(Roles.Admin))
+app.get('/testAdmin', verifyToken(Roles.Admin), function (req, res, next) {
+  res.sendStatus(200)
+  return 'hello'
+})
+
+app.get('/testUser', verifyToken(Roles.User), function (req, res, next) {
+  res.sendStatus(200)
+  return 'hello'
+})
 
 app.all('*', (req, res) => {
   res.sendStatus(404)
