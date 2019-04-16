@@ -363,30 +363,30 @@ describe('Test for catching unrecognised endpoint', function () {
 
 // })
 
-describe('Test to create a new user but have it be blocked by middleware', function () {
-  before(function () {
-    return request(app)
-      .get('/users/username/test_user')
-      .then(function (response) {
-        if (response.body.userName) {
-          const id = response.body.id
-          return request(app)
-            .delete('/users/' + response.body.id)
-        }
-      })
-  })
-  let data = {
-    "userName": "test_user",
-    "pssword": "123",
-    "role": "admin"
-  }
-  it('should return OK status', function () {
-    return request(app)
-      .post('/users')
-      .send(data)
-      .set('Authorization', 'Bearer ' + adminToken)
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
-})
+// describe('Test to create a new user but have it be blocked by middleware', function () {
+//   before(function () {
+//     return request(app)
+//       .get('/users/username/test_user')
+//       .then(function (response) {
+//         if (response.body.userName) {
+//           const id = response.body.id
+//           return request(app)
+//             .delete('/users/' + response.body.id)
+//         }
+//       })
+//   })
+//   let data = {
+//     "userName": "test_user",
+//     "pssword": "123",
+//     "role": "admin"
+//   }
+//   it('should return OK status', function () {
+//     return request(app)
+//       .post('/users')
+//       .send(data)
+//       .set('Authorization', 'Bearer ' + adminToken)
+//       .then(function (response) {
+//         assert.equal(response.status, 200)
+//       })
+//   })
+// })
