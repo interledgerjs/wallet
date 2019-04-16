@@ -37,10 +37,6 @@ jobs:
           command: npm run lint
      
       - run:
-          name: initDB.js
-          command: node initDB.js
-     
-      - run:
           name: Test
           command: npm test
      
