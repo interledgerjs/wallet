@@ -24,7 +24,7 @@ app.get('/accounts', readAccounts) // no required input
 app.put('/accounts/:id', updateAccount) // id as param, body.name, body.owner, body.balance
 app.delete('/accounts/:id', deleteAccount) // id's as params
 
-app.post('/users',verifyToken(Roles.Admin), createUser) // body.userName, body.password
+app.post('/users', createUser) // body.userName, body.password
 app.get('/users', readUser)
 app.get('/users/:id', readUserById) // id as param
 app.get('/users/username/:username', readUserByUserName) // userName as param, body.pssword
@@ -37,12 +37,12 @@ app.post('/token', token) // body.userName, body.password
 // current dummy endpoints for testing WIP
 app.get('/testAdmin', verifyToken(Roles.Admin), function (req, res, next) {
   res.sendStatus(200)
-  return 'hello'
+  return 'test'
 })
 
 app.get('/testUser', verifyToken(Roles.User), function (req, res, next) {
   res.sendStatus(200)
-  return 'hello'
+  return 'test'
 })
 
 app.all('*', (req, res) => {
