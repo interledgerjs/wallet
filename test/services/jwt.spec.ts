@@ -1,5 +1,5 @@
-import { assert } from 'chai';
-import { expect } from 'chai'
+import * as bodyParser from 'body-parser'
+import { assert, expect } from 'chai';
 import * as sinon from 'sinon'
 import { mockReq, mockRes} from 'sinon-express-mock'
 import * as request from 'supertest';
@@ -17,37 +17,9 @@ const userToken =
 const invalidToken= 
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoRGF0YSI6eyJpZCI6OTk5OTk5OTk5LCJ1c2VyTmFtZSI6IkZvb0FkbWluIiwidXNlclJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE1NTQ4MTM4MjIsImV4cCI6MzU1NDkwMDIyMn0.469fKHKKsRfMyPv_6jBrGmNVSsPqphWNT0PNa-Yv-mQ'
 
-describe('Test to create a new user but have it be blocked by middleware', function () {
-    before(function () {
-      return request(app)
-        .get('/users/username/test_user')
-        .then(function (response) {
-          if (response.body.userName) {
-            const id = response.body.id
-            return request(app)
-              .delete('/users/' + response.body.id)
-          }
-        })
-    })
-    let data = {
-      "userName": "test_user",
-      "pssword": "123",
-      "role": "user"
-    }
-    it('should return OK status', function () {
-      return request(app)
-        .post('/users')
-        .send(data)
-        .set('Authorization', 'Bearer ' + adminToken)
-        .then(function (response) {
-          assert.equal(response.status, 200)
-        })
-    })
-  })
-
   describe('Testing authorisation for admin role', function () {
     
-    it('admin token', function () {
+    it('admin token should succeed', function () {
       return request(app)
         .get('/testAdmin')
         // .send(data)
@@ -57,7 +29,7 @@ describe('Test to create a new user but have it be blocked by middleware', funct
         })
     })
 
-      it('user token', function () {
+      it('user token should fail', function () {
         return request(app)
           .get('/testAdmin')
           // .send(data)
@@ -67,7 +39,7 @@ describe('Test to create a new user but have it be blocked by middleware', funct
           })
       })
 
-      it('invalid token', function () {
+      it('invalid token should fail', function () {
         return request(app)
           .get('/testAdmin')
           // .send(data)
@@ -77,7 +49,7 @@ describe('Test to create a new user but have it be blocked by middleware', funct
           })
       })
 
-      it('no token', function () {
+      it('no token should fail', function () {
         return request(app)
           .get('/testAdmin')
           // .send(data)
@@ -90,7 +62,7 @@ describe('Test to create a new user but have it be blocked by middleware', funct
 
   describe('Testing authorisation for user role', function () {
     
-    it('admin token', function () {
+    it('admin token should succeed', function () {
       return request(app)
         .get('/testUser')
         // .send(data)
@@ -100,7 +72,7 @@ describe('Test to create a new user but have it be blocked by middleware', funct
         })
     })
 
-      it('user token', function () {
+      it('user token should succeed', function () {
         return request(app)
           .get('/testUser')
           // .send(data)
@@ -110,7 +82,7 @@ describe('Test to create a new user but have it be blocked by middleware', funct
           })
       })
 
-      it('invalid token', function () {
+      it('invalid token should fail', function () {
         return request(app)
           .get('/testUser')
           // .send(data)
@@ -120,7 +92,7 @@ describe('Test to create a new user but have it be blocked by middleware', funct
           })
       })
 
-      it('no token', function () {
+      it('no token should fail', function () {
         return request(app)
           .get('/testUser')
           // .send(data)
