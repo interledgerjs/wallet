@@ -1,12 +1,6 @@
-import * as bodyParser from 'body-parser'
-import { assert, expect } from 'chai';
-import * as sinon from 'sinon'
-import { mockReq, mockRes} from 'sinon-express-mock'
+import { assert } from 'chai';
 import * as request from 'supertest';
-import * as app from '../../build/app';
-import { response } from 'express';
-import { verifyToken, Roles, } from '../../build/services/jwtService'
-import { test } from 'shelljs';
+import * as app from '../../build/helpers/jwtTest';
 require('../../initTestDB')
 
 const adminToken = 
@@ -17,36 +11,6 @@ const userToken =
 
 const invalidToken= 
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoRGF0YSI6eyJpZCI6OTk5OTk5OTk5LCJ1c2VyTmFtZSI6IkZvb0FkbWluIiwidXNlclJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE1NTQ4MTM4MjIsImV4cCI6MzU1NDkwMDIyMn0.469fKHKKsRfMyPv_6jBrGmNVSsPqphWNT0PNa-Yv-mQ'
-
-// function next() {
-//     console.log('Herro Wordo')
-//     let testy= 'Hello World'
-//     return testy
-// }
-
-// describe('trying to get to next()', function() {
-//     before(function() {
-//         const req = { 
-//             body = {
-//                 Authorization = 'Bearer' + adminToken
-//             }
-//         }
-//     })
-//     it('should return hello world I guess', function() {
-//             let maybe = verifyToken(Roles.Admin)
-//             console.log(maybe(Roles.Admin))
-            
-//             assert.isFunction(verifyToken)
-//         })
-//     })
-
-    // describe('next()', function() {
-    //     it('should return hello world I guess', function() {
-    //             verifyToken(Roles.Admin)
-    //             assert.isFunction(test)
-    //         })
-    //     })
-
 
 describe('middleware test', function() {
     it('should return function that goes next() once', function () {

@@ -34,17 +34,6 @@ app.delete('/users/:id', deleteUser) // id as param
 app.post('/admin', createAdmin) // body.userName, body.password
 app.post('/token', token) // body.userName, body.password
 
-// current dummy endpoints for testing WIP
-app.get('/testAdmin', verifyToken(Roles.Admin), function (req, res, next) {
-  res.sendStatus(200)
-  return 'test'
-})
-
-app.get('/testUser', verifyToken(Roles.User), function (req, res, next) {
-  res.sendStatus(200)
-  return 'test'
-})
-
 app.all('*', (req, res) => {
   res.sendStatus(404)
 })
