@@ -58,6 +58,15 @@ describe('middleware test', function() {
             assert.ok(res)
         })
     })
+    
+    it('should not work without authorization bearer token set', function () {
+      return request(app)
+      .get('/testAdmin')
+      //.expect(403)
+      .then(function (response) {
+          assert.equal(response.status, 403)
+      })
+  })
 })
 
   describe('Testing authorisation for admin role', function () {
@@ -144,4 +153,5 @@ describe('middleware test', function() {
             assert.equal(response.status, 403)
           })
       })
-  }) 
+    
+    }) 
