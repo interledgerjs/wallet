@@ -19,50 +19,38 @@ if (process.env.LOGFILE === 'true') {
   logger.add(new transports.File({ filename: 'logs.log' }))
 }
 
-// get /user #returns all users
 export async function readUser (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
+  logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
+  const queryBy = Object.keys(req.query)[0]
+  console.log(queryBy)
   try {
-    const result = await retrieveUser()
-    if (result.length > 0) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
-  }
-}
-
-// get /users/id/:id #returns single user by id
-export async function readUserById (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  const id: number = req.params.id
-  try {
-    const result = await retrieveUserById(id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
-  }
-}
-
-// get /users/username/:username #returns single user by userName
-export async function readUserByUserName (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  const userName: string = req.params.username
-
-  try {
-    const result = await retrieveUserByUserName(userName)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
+    switch (queryBy) {
+      case (undefined):
+        const result = await retrieveUser()
+        if (result.length > 0) {
+          res.send(result)
+        } else {
+          res.sendStatus(404)
+        }
+        break
+      case ('id'):
+        const userById = await retrieveUserById(req.query.id)
+        if (userById) {
+          res.send(userById)
+        } else {
+          res.sendStatus(404)
+        }
+        break
+      case ('username'):
+        const userByUserName = await retrieveUserByUserName(req.query.username)
+        if (userByUserName) {
+          res.send(userByUserName)
+        } else {
+          res.sendStatus(404)
+        }
+        break
+      default:
+        res.sendStatus(404)
     }
   } catch (error) {
     logger.error(error)
