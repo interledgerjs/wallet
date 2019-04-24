@@ -1,5 +1,4 @@
 import { assert } from 'chai';
-import { expect } from 'chai'
 import * as request from 'supertest';
 import * as app from '../build/app';
 import { response } from 'express';
