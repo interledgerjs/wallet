@@ -42,7 +42,7 @@ describe('Test to create a new user', function () {
         })
     })
   })
-  describe('Negative test for creating a user that already eists', function () {
+  describe('Negative test for creating a user that already exists', function () {
     let data = {
       "userName": "test_user",
       "pssword": "123",
@@ -93,7 +93,7 @@ describe('Test to create a new admin', function () {
         })
     })
   })
-  describe('Negative test for creating a admin that already eists', function () {
+  describe('Negative test for creating a admin that already exists', function () {
     let data = {
       "userName": "test_admin",
       "pssword": "123",
@@ -138,7 +138,7 @@ describe('Test to get all users', function () {
   });
 });
 
-// .get('/users/id/:id')
+// .get('/users?id=id')
 describe('Test to get a user by id', function () {
 	describe('Positive test to get a user by id', function () {
 		let id
@@ -151,7 +151,7 @@ describe('Test to get a user by id', function () {
 		})
 		it('should return OK status', function () {
 			return request(app)
-				.get('/users/' + id)
+				.get('/users?id=' + id)
 				.then(function (response) {
 					assert.equal(response.status, 200)
 				})
@@ -160,7 +160,37 @@ describe('Test to get a user by id', function () {
   describe('Negative test to get a non-existant entry', function () {
 		it('should return 404 status', function () {
 			return request(app)
-				.get('/users/' + 9292929)
+				.get('/users?id=' + 9292929)
+				.then(function (response) {
+					assert.equal(response.status, 404)
+				})
+		})
+	})
+})
+
+// .get('/users?username=username')
+describe('Test to get a user by userName', function () {
+	describe('Positive test to get a user by userName', function () {
+		let userName
+		before(function () {
+			return request(app)
+				.get('/users')
+				.then(function (response) {
+					userName = response.body[0].userName
+				})
+		})
+		it('should return OK status', function () {
+			return request(app)
+				.get('/users?username=' + userName)
+				.then(function (response) {
+					assert.equal(response.status, 200)
+				})
+		})
+	})
+  describe('Negative test to get a non-existant entry', function () {
+		it('should return 404 status', function () {
+			return request(app)
+				.get('/users?username=' + 'jhfgsxhjb')
 				.then(function (response) {
 					assert.equal(response.status, 404)
 				})
