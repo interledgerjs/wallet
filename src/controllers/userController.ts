@@ -65,16 +65,8 @@ export async function createUser (req: Request, res: Response) {
   const userName: string = req.body.userName
   const pssword: string = req.body.pssword
   try {
-    const userExists = await retrieveUserByUserName(userName)
-    if (!userExists) {
-      const userObject = await hashing(pssword, userName)
-      if (userObject) {
-        const result = await addUser(userObject)
-        res.sendStatus(200)
-      }
-    } else {
-      res.sendStatus(400)
-    }
+    await addUser(req.body)
+    res.sendStatus(200)
   } catch (error) {
     logger.error(error)
     res.sendStatus(500)
