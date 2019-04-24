@@ -58,21 +58,21 @@ describe('Test to create a new user', function () {
         })
     })
   })
-//   describe('Negative test for creating a user with bad submitted data', function () {
-//     let data = {
-//       "userName": "test_user1",
-//       "role": "admin"
-//     }
-//     it('should return 400 status', function () {
-//       return request(app)
-//         .post('/users')
-//         .send(data)
-//         // .set('Authorization', 'Bearer ' + token)
-//         .then(function (response) {
-//           assert.equal(response.status, 400)
-//         })
-//     })
-//   })
+  describe('Negative test for creating a user with bad submitted data', function () {
+    let data = {
+      "userName": "test_user1",
+      "role": "admin"
+    }
+    it('should return 400 status', function () {
+      return request(app)
+        .post('/users')
+        .send(data)
+        // .set('Authorization', 'Bearer ' + token)
+        .then(function (response) {
+          assert.equal(response.status, 400)
+        })
+    })
+  })
 })
 
 // .post('/admin')
