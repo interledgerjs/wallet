@@ -1,6 +1,7 @@
 import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
+import expect = require('expect');
 
 // .get('/users')
 describe('Test to get all users', function () {
@@ -293,4 +294,51 @@ describe('Test to delete a user', function () {
 				})
 		})
 	})
+})
+
+describe('.post(/token) endpoint', function () {
+  let validUser = {
+    "userName": "TokenUser",
+    "pssword": "mypassword",
+    "id": ""
+  }
+  let invalidUser = {
+    "userName": "NotTokenUser",
+    "pssword": "mypassword",
+    "id": ""
+  }
+  before(function () {
+    return request(app)
+      .post('/users')
+      .send(validUser)
+      .then(function () {
+        return request(app)
+          .get('/users/?username=' + validUser.userName)
+          .then(function (response) {
+            //console.log(response)
+            validUser.id = response.body.id
+          })
+      })
+  })
+  it('should return a token when passed valid credentials', function () {
+    return request(app)
+      .post('/token')
+      .send(validUser)
+    .then(function (response) {
+      assert.equal(response.body.token.length, 185)
+      expect(response.body.token).not.toMatch("/ /")
+    })
+  })
+  it('should return a 404 when passed non-existent credentials', function () {
+    return request(app)
+      .post('/token')
+      .send(invalidUser)
+    .then(function (response) {
+      assert.equal(response.status, 404)
+    })
+  })
+  after(function () {
+    return request(app)
+      .delete('/users/' + validUser.id)
+  })
 })
