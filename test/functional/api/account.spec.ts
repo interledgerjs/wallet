@@ -81,6 +81,17 @@ describe('Test to update an account', function () {
         assert.equal(response.status, 200)
       })
   });
+
+  it('should return 400 status if no ID given', function () {
+    id = undefined
+    return request(app)
+      .put('/accounts/' + id)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  });
 });
 
 // .delete('/accounts/:id')
