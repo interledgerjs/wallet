@@ -119,6 +119,7 @@ describe('Test to update an account', function () {
     "owner": 1,
     "balance": 4069
   }
+  
   it('should return OK status', function () {
     return request(app)
       .put('/accounts/' + id)
@@ -177,6 +178,7 @@ describe('Test to delete an account', function () {
         id = response.body[0].id
       })
   })
+  
   it('should return OK status', function () {
     return request(app)
       .delete('/accounts/' + id)
