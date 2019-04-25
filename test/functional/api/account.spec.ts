@@ -1,7 +1,33 @@
 import { assert, expect } from 'chai';
 import * as request from 'supertest';
 import * as app from '../../../build/app';
-import { response } from 'express';
+
+describe('Testing switch statements pre-database', function () {
+  let id = 1
+  let owner = 1
+
+  it('should return 404 status when querying all', function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+  it('should return 404 status when querying by id', function () {
+    return request(app)
+      .get('/accounts/?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+  it('should return 404 status when querying by owner', function () {
+    return request(app)
+      .get('/accounts/?owner=' + owner)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+})
 
 // .post('/accounts')
 describe('Test to create a new account', function () {
@@ -221,4 +247,3 @@ describe('Test to delete an account', function () {
     process.env.DBNAME = database
   })
 });
-
