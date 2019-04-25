@@ -1,5 +1,4 @@
-import { assert } from 'chai';
-import { expect } from 'chai'
+import { assert, expect } from 'chai';
 import * as request from 'supertest';
 import * as app from '../../../build/app';
 import { response } from 'express';
@@ -60,6 +59,7 @@ describe('Test to get accounts', function () {
 // .put('/accounts/:id')
 describe('Test to update an account', function () {
   let id
+  let database = process.env.DBNAME
   before(function () {
     return request(app)
       .get('/accounts')
@@ -82,7 +82,7 @@ describe('Test to update an account', function () {
       })
   });
 
-  it('should return 400 status if no ID given', function () {
+  it('should return 400 if ID is undefined', function () {
     id = undefined
     return request(app)
       .put('/accounts/' + id)
@@ -92,11 +92,16 @@ describe('Test to update an account', function () {
         assert.equal(response.status, 400)
       })
   });
+
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
 });
 
 // .delete('/accounts/:id')
 describe('Test to delete an account', function () {
   let id
+  let database = process.env.DBNAME
   before(function () {
     return request(app)
       .get('/accounts')
@@ -112,5 +117,38 @@ describe('Test to delete an account', function () {
         assert.equal(response.status, 200)
       })
   });
+
+  it('should return 400 if ID is undefined', function () {
+    id = undefined
+    return request(app)
+    .delete('/accounts/' + id)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  });
+
+  it('should return 404 if account does not exist', function () {
+    id = (Math.random() * 1000) + 500
+    return request(app)
+    .delete('/accounts/' + id)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  });
+
+  it('should return 500 if an error with data layer', function () {
+    process.env.DBNAME = ''
+    return request(app)
+    .delete('/accounts/' + id)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  });
+
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
 });
 
