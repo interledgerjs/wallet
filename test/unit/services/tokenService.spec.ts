@@ -2,11 +2,10 @@ import { assert } from 'chai'
 import { compareHash } from '../../../build/services/tokenService'
 import { hashing } from '../../../build/models/userModel'
 import { doesNotReject } from 'assert'
+import {User} from '../../../build/models/userModel'
 
 describe('unit tests for tokenService', async function () {
-  let userObject = {
-    "pssword": ''
-  }
+  let userObject: User
   before(async function () {
     try {
       userObject = await hashing('panda', 'Harmun')
@@ -22,10 +21,9 @@ describe('unit tests for tokenService', async function () {
   })
   it('should resolve promise as false on password mismatch', async function () {
     try {
-    assert.equal(await compareHash(userObject, 'notpanda'), false) // remove try catch. under which circumstances does test fail?
+      assert.equal(await compareHash(userObject, 'notpanda'), false)
       } catch (err) {
         throw(err)
     }
   })
-  // add a test that pass when catching a rejected promise from compareHash
 })
