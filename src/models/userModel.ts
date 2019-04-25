@@ -103,7 +103,7 @@ export function addUser (body: any): Promise<boolean> {
       const user = await buildUser(body)
       if (user && isUser(user)) {
         const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'user', '${user.pssword}')`
-        const result = query(sql)
+        const result = await query(sql)
         resolve(false)
       } else {
         resolve(true)
@@ -121,7 +121,7 @@ export function addAdmin (body: any): Promise<boolean> {
       const user = await buildUser(body)
       if (user && isUser(user)) {
         const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
-        const result = query(sql)
+        const result = await query(sql)
         resolve(false)
       } else {
         resolve(true)

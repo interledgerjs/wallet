@@ -41,7 +41,7 @@ export function addAccount (body: any): Promise<boolean> {
       const account = await buildAccount(body)
       if (account && isAccount(account)) {
         const sql: string = `INSERT INTO accounts (name, balance, owner) VALUES ('${account.name}', ${account.balance}, ${account.owner})`
-        const result = query(sql)
+        const result = await query(sql)
         resolve(false)
       } else {
         resolve(true)
@@ -128,7 +128,7 @@ export function modifyAccount (accountExists: Account, body: any): Promise<boole
       try {
         const account = await buildAccount(body, accountExists)
         const sql: string = `UPDATE accounts SET name = '${account.name}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE id = ${account.id} AND owner = ${account.owner}`
-        const result = query(sql)
+        const result = await query(sql)
         resolve(false)
       } catch (error) {
         reject(error)
