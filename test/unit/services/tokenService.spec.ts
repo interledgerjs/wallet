@@ -1,14 +1,22 @@
 import { assert } from 'chai'
 import { compareHash } from '../../../build/services/tokenService'
-import { hashing } from '../../../build/models/userModel'
-import { doesNotReject } from 'assert'
-import {User} from '../../../build/models/userModel'
+import * as bcrypt from 'bcrypt'
+const saltRounds = 3
 
 describe('unit tests for tokenService', async function () {
-  let userObject: User
+  let userObject
   before(async function () {
     try {
-      userObject = await hashing('panda', 'Harmun')
+      const salt = await bcrypt.genSalt(saltRounds)
+      const hash = await bcrypt.hash('panda', salt)
+      userObject = {
+        id: -1,
+            userName: 'harmun',
+            dateCreated: new Date().toISOString(),
+            deletedAt: '',
+            role: '',
+            pssword: hash
+      }
     } catch (err) {
       throw(err)
     }
