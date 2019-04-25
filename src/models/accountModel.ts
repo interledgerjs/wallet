@@ -55,7 +55,7 @@ export function addAccount (body: any): Promise<boolean> {
 // function to handle retrieving a singular account by id
 export function retrieveAccountById (id: number): Promise<Account> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE id = ${id} AND deletedAt = ''`
+    const sql: string = `SELECT * FROM accounts WHERE id = '${id}' AND deletedAt = ''`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
