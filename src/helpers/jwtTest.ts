@@ -17,7 +17,3 @@ app.get('/testUser', verifyToken(Roles.User), function (req, res, next) {
   res.sendStatus(200)
   return 'test'
 })
-
-app.all('*', (req, res) => {
-  res.sendStatus(404)
-})
