@@ -17,12 +17,12 @@ describe('Test to get all transactions but return 404 due to no transactions', f
 
 // .post('/transaction')
 describe('Test to create a new transaction', function () {
-  describe('Positive test to create a new transaction', function() {
+  describe('Positive test to create a new transaction', function () {
     let data = {
-      "debitAccount": 1,
-      "creditAccount": 2,
-      "amount": 100
-      }
+      'debitAccount': 1,
+      'creditAccount': 2,
+      'amount': 100
+    }
     it('should return OK status', function () {
       return request(app)
         .post('/transactions')
@@ -32,12 +32,12 @@ describe('Test to create a new transaction', function () {
         })
     })
   })
-  describe('Negative test to create a transaction with invalid data', function() {
+  describe('Negative test to create a transaction with invalid data', function () {
     let data = {
-      "debitAccount": 1,
-      "creditAccount": 2,
-      "amount": 'asd'
-      }
+      'debitAccount': 1,
+      'creditAccount': 2,
+      'amount': 'asd'
+    }
     it('should return Bad user input status', function () {
       return request(app)
         .post('/transactions')
@@ -47,12 +47,12 @@ describe('Test to create a new transaction', function () {
         })
     })
   })
-  describe('Test to check if there is an error with the data layer', function() {
+  describe('Test to check if there is an error with the data layer', function () {
     let data = {
-      "debitAccount" : 1,
-      "creditAccount" : 2,
-      "amount" : 100
-      }
+      'debitAccount' : 1,
+      'creditAccount' : 2,
+      'amount' : 100
+    }
     it('should return 500 status', function () {
       process.env.DBNAME = ''
       return request(app)
@@ -91,7 +91,7 @@ describe('Test to get all transactions', function () {
 })
 
 // .get('/transactions/?id=1')
-describe('Tests for getting transactions by id', function() {
+describe('Tests for getting transactions by id', function () {
   describe('Positive test to get a transaction by id', function () {
     it('should return OK status', function () {
       return request(app)
@@ -126,7 +126,7 @@ describe('Tests for getting transactions by id', function() {
 })
 
 // .get('/transactions/?account=1')
-describe('Tests for getting transactions by account', function() {
+describe('Tests for getting transactions by account', function () {
   describe('Positive test to get a transaction by account', function () {
     it('should return OK status', function () {
       return request(app)
