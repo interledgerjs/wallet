@@ -1,6 +1,6 @@
-import { assert, expect } from 'chai';
-import * as request from 'supertest';
-import * as app from '../../../build/app';
+import { assert, expect } from 'chai'
+import * as request from 'supertest'
+import * as app from '../../../build/app'
 
 describe('Testing switch statements pre-database', function () {
   let id = 1
@@ -34,15 +34,15 @@ describe('Test to create a new account', function () {
   let database = process.env.DBNAME
 
   let data = {
-    "name": "test_account",
-    "owner": 1,
-    "balance": 100
+    'name': 'test_account',
+    'owner': 1,
+    'balance': 100
   }
 
   let baddata = {
-    "name": 123,
-    "owner": "one",
-    "balance": "one hundred"
+    'name': 123,
+    'owner': 'one',
+    'balance': 'one hundred'
   }
   it('should return OK status', function () {
     return request(app)
@@ -52,7 +52,7 @@ describe('Test to create a new account', function () {
       .then(function (response) {
         assert.equal(response.status, 200)
       })
-  });
+  })
 
   it('should return 400 status', function () {
     return request(app)
@@ -62,7 +62,7 @@ describe('Test to create a new account', function () {
       .then(function (response) {
         assert.equal(response.status, 400)
       })
-  });
+  })
 
   it('should return 500 if an error with data layer', function () {
     process.env.DBNAME = ''
@@ -73,12 +73,12 @@ describe('Test to create a new account', function () {
       .then(function (response) {
         assert.equal(response.status, 500)
       })
-  });
+  })
 
   afterEach(function () {
     process.env.DBNAME = database
   })
-});
+})
 
 // .get('/accounts')
 describe('Test to get accounts', function () {
@@ -122,7 +122,7 @@ describe('Test to get accounts', function () {
       .then(function (response) {
         assert.equal(response.status, 500)
       })
-  });
+  })
 
   afterEach(function () {
     process.env.DBNAME = database
@@ -141,11 +141,11 @@ describe('Test to update an account', function () {
       })
   })
   let data = {
-    "name": "test_account",
-    "owner": 1,
-    "balance": 4069
+    'name': 'test_account',
+    'owner': 1,
+    'balance': 4069
   }
-  
+
   it('should return OK status', function () {
     return request(app)
       .put('/accounts/' + id)
@@ -154,7 +154,7 @@ describe('Test to update an account', function () {
       .then(function (response) {
         assert.equal(response.status, 200)
       })
-  });
+  })
 
   it('should return 500 if an error with data layer', function () {
     process.env.DBNAME = ''
@@ -165,7 +165,7 @@ describe('Test to update an account', function () {
       .then(function (response) {
         assert.equal(response.status, 500)
       })
-  });
+  })
 
   it('should return 400 if ID is undefined', function () {
     id = undefined
@@ -176,7 +176,7 @@ describe('Test to update an account', function () {
       .then(function (response) {
         assert.equal(response.status, 404)
       })
-  });
+  })
 
   it('should return 404 if account does not exist', function () {
     id = (Math.random() * 1000) + 500
@@ -186,12 +186,12 @@ describe('Test to update an account', function () {
       .then(function (response) {
         assert.equal(response.status, 404)
       })
-  });
+  })
 
   afterEach(function () {
     process.env.DBNAME = database
   })
-});
+})
 
 // .delete('/accounts/:id')
 describe('Test to delete an account', function () {
@@ -204,7 +204,7 @@ describe('Test to delete an account', function () {
         id = response.body[0].id
       })
   })
-  
+
   it('should return OK status', function () {
     return request(app)
       .delete('/accounts/' + id)
@@ -212,7 +212,7 @@ describe('Test to delete an account', function () {
       .then(function (response) {
         assert.equal(response.status, 200)
       })
-  });
+  })
 
   it('should return 500 if an error with data layer', function () {
     process.env.DBNAME = ''
@@ -221,7 +221,7 @@ describe('Test to delete an account', function () {
       .then(function (response) {
         assert.equal(response.status, 500)
       })
-  });
+  })
 
   it('should return 400 if ID is undefined', function () {
     id = undefined
@@ -231,7 +231,7 @@ describe('Test to delete an account', function () {
       .then(function (response) {
         assert.equal(response.status, 400)
       })
-  });
+  })
 
   it('should return 404 if account does not exist', function () {
     id = (Math.random() * 1000) + 500
@@ -241,9 +241,9 @@ describe('Test to delete an account', function () {
       .then(function (response) {
         assert.equal(response.status, 404)
       })
-  });
+  })
 
   afterEach(function () {
     process.env.DBNAME = database
   })
-});
+})
