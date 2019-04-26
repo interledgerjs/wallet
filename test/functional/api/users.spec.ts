@@ -128,13 +128,25 @@ describe('Test to create a new admin', function () {
 })
 
 // .get('/users')
-describe('Test to get all users', function () {
+describe('.get/users endpoint', function () {
+  let dbname = process.env.DBNAME
   it('should return OK status', function () {
     return request(app)
       .get('/users')
       .then(function (response) {
         assert.equal(response.status, 200)
       })
+  })
+  it('should fail on bad database name', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+  after(function () {
+    process.env.DBNAME = dbname
   })
 })
 
