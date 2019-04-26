@@ -35,22 +35,19 @@ function isAccountArray (result: any): result is Account[] {
 }
 
 // function to handle adding an account
-export function addAccount (account: Account): Promise<boolean> {
+export function addAccount (body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    if (isAccount(account)) {
-      const sql: string = `INSERT INTO accounts (name, balance, owner) VALUES ('${account.name}', ${account.balance}, ${account.owner})`
-      try {
+    try {
+      const account = await buildAccount(body)
+      if (account && isAccount(account)) {
+        const sql: string = `INSERT INTO accounts (name, balance, owner) VALUES ('${account.name}', ${account.balance}, ${account.owner})`
         const result = await query(sql)
-        if (isAccountArray(result)) {
-          resolve(false)
-        } else {
-          resolve(true)
-        }
-      } catch (error) {
-        reject(error)
+        resolve(false)
+      } else {
+        resolve(true)
       }
-    } else {
-      resolve(true)
+    } catch (error) {
+      reject(error)
     }
   })
 }
@@ -58,7 +55,7 @@ export function addAccount (account: Account): Promise<boolean> {
 // function to handle retrieving a singular account by id
 export function retrieveAccountById (id: number): Promise<Account> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE id = ${id} AND deletedAt = ''`
+    const sql: string = `SELECT * FROM accounts WHERE id = '${id}' AND deletedAt = ''`
     try {
       const result = await query(sql)
       if (isAccountArray(result)) {
@@ -119,11 +116,18 @@ export function retrieveAccountByOwner (owner: number): Promise<Account[]> {
 }
 
 // function to handle the updating of account information
-export function modifyAccount (account: Account): Promise<boolean> {
+export function modifyAccount (accountExists: Account, body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    if (isAccount(account)) {
-      const sql: string = `UPDATE accounts SET name = '${account.name}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE id = ${account.id} AND owner = ${account.owner}`
+    console.log(body)
+    if (
+      (body.name === undefined || typeof body.name === 'string') &&
+      (body.owner === undefined || typeof body.owner === 'number') &&
+      (body.deletedAt === undefined || typeof body.deletedAt === 'string') &&
+      (body.balance === undefined || typeof body.balance === 'number')
+    ) {
       try {
+        const account = await buildAccount(body, accountExists)
+        const sql: string = `UPDATE accounts SET name = '${account.name}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE id = ${account.id} AND owner = ${account.owner}`
         const result = await query(sql)
         resolve(false)
       } catch (error) {
@@ -141,6 +145,48 @@ export function removeAccount (id: number): Promise<boolean> {
     try {
       const result = await query(sql)
       resolve(false)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+function buildAccount (body: any, baseObj: Account = undefined): Promise<Account> {
+  return new Promise(async function (resolve, reject) {
+    try {
+      if (baseObj === undefined) {
+        const accountObject: Account = {
+          id: 0,
+          name: body.name,
+          owner: body.owner,
+          balance: body.balance,
+          deletedAt: '',
+          lastUpdated: ''
+        }
+        resolve(accountObject)
+      } else {
+        const accountObject: Account = {
+          id: baseObj.id,
+          name: baseObj.name,
+          owner: baseObj.owner,
+          balance: baseObj.balance,
+          deletedAt: baseObj.deletedAt,
+          lastUpdated: new Date().toISOString()
+        }
+        if (body.name !== undefined) {
+          accountObject.name = body.name
+        }
+        if (body.dateCreated !== undefined) {
+          accountObject.owner = body.owner
+        }
+        if (body.balance !== undefined) {
+          accountObject.balance = body.balance
+        }
+        if (body.deletedAt !== undefined) {
+          accountObject.deletedAt = body.deletedAt
+        }
+        resolve(accountObject)
+      }
     } catch (error) {
       reject(error)
     }

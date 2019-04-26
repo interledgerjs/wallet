@@ -174,7 +174,7 @@ describe('Test to update an account', function () {
       .send(data)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
-        assert.equal(response.status, 400)
+        assert.equal(response.status, 404)
       })
   });
 

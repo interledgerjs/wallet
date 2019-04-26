@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { retrieveUser, retrieveUserById, retrieveUserByUserName, addUser, addAdmin, modifyUser, removeUser, User, hashing } from '../models/userModel'
+import { retrieveUser, retrieveUserById, retrieveUserByUserName, addUser, addAdmin, modifyUser, removeUser, User } from '../models/userModel'
 import { createLogger, transports, format } from 'winston'
 import * as dotenv from 'dotenv'
 
@@ -67,10 +67,11 @@ export async function createUser (req: Request, res: Response) {
   try {
     const userExists = await retrieveUserByUserName(userName)
     if (!userExists) {
-      const userObject = await hashing(pssword, userName)
-      if (userObject) {
-        const result = await addUser(userObject)
+      const result = await addUser(req.body)
+      if (!result) {
         res.sendStatus(200)
+      } else {
+        res.sendStatus(400)
       }
     } else {
       res.sendStatus(400)
@@ -90,10 +91,11 @@ export async function createAdmin (req: Request, res: Response) {
   try {
     const userExists = await retrieveUserByUserName(userName)
     if (!userExists) {
-      const userObject = await hashing(pssword, userName)
-      if (userObject) {
-        const result = await addAdmin(userObject)
+      const result = await addAdmin(req.body)
+      if (!result) {
         res.sendStatus(200)
+      } else {
+        res.sendStatus(400)
       }
     } else {
       res.sendStatus(400)

@@ -97,43 +97,37 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
 }
 
 // function to handle adding users
-export function addUser (user: User): Promise<boolean> {
+export function addUser (body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    if (isUser(user)) {
-      const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'user', '${user.pssword}')`
-      try {
-        const result = query(sql)
-        if (isUserArray(result)) {
-          resolve(false)
-        } else {
-          resolve(true)
-        }
-      } catch (error) {
-        reject(error)
+    try {
+      const user = await buildUser(body)
+      if (user && isUser(user)) {
+        const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'user', '${user.pssword}')`
+        const result = await query(sql)
+        resolve(false)
+      } else {
+        resolve(true)
       }
-    } else {
-      resolve(true)
+    } catch (error) {
+      reject(error)
     }
   })
 }
 
 // function to handle adding users
-export function addAdmin (user: User): Promise<boolean> {
+export function addAdmin (body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    if (isUser(user)) {
-      const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
-      try {
-        const result = query(sql)
-        if (isUserArray(result)) {
-          resolve(false)
-        } else {
-          resolve(true)
-        }
-      } catch (error) {
-        reject(error)
+    try {
+      const user = await buildUser(body)
+      if (user && isUser(user)) {
+        const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
+        const result = await query(sql)
+        resolve(false)
+      } else {
+        resolve(true)
       }
-    } else {
-      resolve(true)
+    } catch (error) {
+      reject(error)
     }
   })
 }
@@ -141,39 +135,13 @@ export function addAdmin (user: User): Promise<boolean> {
 export function modifyUser (userExists: User, body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     if (
-    (body.userName === undefined || typeof body.userName === 'string') &&
-    (body.dateCreated === undefined || typeof body.dateCreated === 'string') &&
-    (body.deletedAt === undefined || typeof body.deletedAt === 'string') &&
-    (body.pssword === undefined || typeof body.pssword === 'string')
-  ) {
+      (body.userName === undefined || typeof body.userName === 'string') &&
+      (body.dateCreated === undefined || typeof body.dateCreated === 'string') &&
+      (body.deletedAt === undefined || typeof body.deletedAt === 'string') &&
+      (body.pssword === undefined || typeof body.pssword === 'string')
+    ) {
       try {
-        const userObject: User = {
-          id: userExists.id,
-          userName: userExists.userName,
-          dateCreated: userExists.dateCreated,
-          deletedAt: userExists.deletedAt,
-          role: userExists.role,
-          pssword: userExists.pssword
-        }
-        if (body.userName !== undefined) {
-          const userNameExists = await retrieveUserByUserName(body.userName)
-          if (!userNameExists) {
-            userObject.userName = body.userName
-          } else {
-            reject(true)
-          }
-        }
-        if (body.dateCreated !== undefined) {
-          userObject.dateCreated = body.dateCreated
-        }
-        if (body.deletedAt !== undefined) {
-          userObject.deletedAt = body.deletedAt
-        }
-        if (body.pssword !== undefined) {
-          const salt = await bcrypt.genSalt(saltRounds)
-          const hash = await bcrypt.hash(body.pssword, salt)
-          userObject.pssword = hash
-        }
+        const userObject = await buildUser(body, userExists)
         const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE id = '${userObject.id}'`
         const result = await query(sql)
         resolve(false)
@@ -199,20 +167,55 @@ export function removeUser (id: number): Promise<boolean> {
   })
 }
 
-export function hashing (pssword: string, userName: string): Promise<User> {
+function buildUser (body: any, baseObj: User = undefined): Promise<User> {
   return new Promise(async function (resolve, reject) {
     try {
-      const salt = await bcrypt.genSalt(saltRounds)
-      const hash = await bcrypt.hash(pssword, salt)
-      const userObject: User = {
-        id: -1,
-        userName: userName,
-        dateCreated: new Date().toISOString(),
-        deletedAt: '',
-        role: '',
-        pssword: hash
+      if (baseObj === undefined) {
+        if (typeof(body.pssword) === 'string') {
+          const salt = await bcrypt.genSalt(saltRounds)
+          const hash = await bcrypt.hash(body.pssword, salt)
+          const userObject: User = {
+            id: -1,
+            userName: body.userName,
+            dateCreated: new Date().toISOString(),
+            deletedAt: '',
+            role: '',
+            pssword: hash
+          }
+          resolve(userObject)
+        } else {
+          resolve(undefined)
+        }
+      } else {
+        const userObject: User = {
+          id: baseObj.id,
+          userName: baseObj.userName,
+          dateCreated: baseObj.dateCreated,
+          deletedAt: baseObj.deletedAt,
+          role: baseObj.role,
+          pssword: baseObj.pssword
+        }
+        if (body.userName !== undefined) {
+          const userNameExists = await retrieveUserByUserName(body.userName)
+          if (!userNameExists) {
+            userObject.userName = body.userName
+          } else {
+            reject(true)
+          }
+        }
+        if (body.dateCreated !== undefined) {
+          userObject.dateCreated = body.dateCreated
+        }
+        if (body.deletedAt !== undefined) {
+          userObject.deletedAt = body.deletedAt
+        }
+        if (body.pssword !== undefined) {
+          const salt = await bcrypt.genSalt(saltRounds)
+          const hash = await bcrypt.hash(body.pssword, salt)
+          userObject.pssword = hash
+        }
+        resolve(userObject)
       }
-      resolve(userObject)
     } catch (error) {
       reject(error)
     }
