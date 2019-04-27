@@ -22,7 +22,7 @@ if (process.env.LOGFILE === 'true') {
 export async function readUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
   const queryBy = Object.keys(req.query)[0]
-  console.log(queryBy)
+  // console.log(queryBy)
   try {
     switch (queryBy) {
       case (undefined):

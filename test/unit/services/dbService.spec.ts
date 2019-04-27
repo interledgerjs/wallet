@@ -29,7 +29,7 @@ describe('Unit tests for dbService.ts', function () {
       try {
         await query('SELECT * FROM accounts')
       } catch (error) {
-        console.log(error)
+        // console.log(error)
         success = false
       }
       assert.equal(success, false)
