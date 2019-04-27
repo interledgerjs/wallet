@@ -137,7 +137,7 @@ describe('.get/users endpoint', function () {
         assert.equal(response.status, 200)
       })
   })
-  it('should fail on bad database name', function () {
+  it('should return 500 on bad database name', function () {
     process.env.DBNAME = ''
     return request(app)
       .get('/users')
@@ -152,31 +152,39 @@ describe('.get/users endpoint', function () {
 
 // .get('/users?id=id')
 describe('Test to get a user by id', function () {
-  describe('Positive test to get a user by id', function () {
-    let id
-    before(function () {
-      return request(app)
+  let id
+  let dbname = process.env.DBNAME
+  before(function () {
+    return request(app)
 				.get('/users')
 				.then(function (response) {
   id = response.body[0].id
 })
-    })
-    it('should return OK status', function () {
-      return request(app)
+  })
+  it('should return OK status', function () {
+    return request(app)
 				.get('/users?id=' + id)
 				.then(function (response) {
   assert.equal(response.status, 200)
 })
-    })
   })
-  describe('Negative test to get a non-existant entry', function () {
-    it('should return 404 status', function () {
-      return request(app)
+  it('should return 404 status', function () {
+    return request(app)
 				.get('/users?id=' + 9292929)
 				.then(function (response) {
   assert.equal(response.status, 404)
 })
-    })
+  })
+  it('should return 500 on bad dbname', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .get('/users?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+  after(function () {
+    process.env.DBNAME = dbname
   })
 })
 
