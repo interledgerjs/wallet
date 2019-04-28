@@ -67,6 +67,7 @@ build/
 accounts
 testdb
 my_db
+emptydb
 
 #vscode
 .vscode/
