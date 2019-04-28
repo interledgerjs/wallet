@@ -3,7 +3,7 @@ import { compareHash } from '../../../build/services/tokenService'
 import * as bcrypt from 'bcrypt'
 const saltRounds = 3
 
-describe('unit tests for tokenService', async function () {
+describe('tokenService', async function () {
   let userObject
   before(async function () {
     try {
