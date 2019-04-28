@@ -198,6 +198,61 @@ describe('.put/accounts', function () {
   })
 })
 
+describe('.delete/accounts', function () {
+  let id
+  let database = process.env.DBNAME
+
+  before(function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        id = response.body[0].id
+      })
+  })
+
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
+
+  it('should return HTTP 200 when called with a valid id', function () {
+    return request(app)
+      .delete('/accounts/' + id)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 400 when called with defining id', function () {
+    id = undefined
+    return request(app)
+    .delete('/accounts/' + id)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  })
+
+  it('should return HTTP 404 when called with non-existent id', function () {
+    id = (Math.random() * 1000) + 500
+    return request(app)
+    .delete('/accounts/' + id)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+    .delete('/accounts/' + id)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+})
+
 describe('Testing switch statements pre-database', function () {
   let id = 1
   let owner = 1
@@ -304,44 +359,6 @@ describe('Test to delete an account', function () {
       .get('/accounts')
       .then(function (response) {
         id = response.body[0].id
-      })
-  })
-
-  it('15. should return HTTP 200 when called with a valid id', function () {
-    return request(app)
-      .delete('/accounts/' + id)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
-
-  it('16. should return HTTP 500 when db cannot be found', function () {
-    process.env.DBNAME = ''
-    return request(app)
-    .delete('/accounts/' + id)
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
-
-  it('17. should return HTTP 400 when called with defining id', function () {
-    id = undefined
-    return request(app)
-    .delete('/accounts/' + id)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 400)
-      })
-  })
-
-  it('18. should return HTTP 404 when called with non-existent id', function () {
-    id = (Math.random() * 1000) + 500
-    return request(app)
-    .delete('/accounts/' + id)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 404)
       })
   })
 
