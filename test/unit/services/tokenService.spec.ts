@@ -5,6 +5,7 @@ const saltRounds = 3
 
 describe('tokenService', async function () {
   let userObject
+
   before(async function () {
     try {
       const salt = await bcrypt.genSalt(saltRounds)
@@ -21,6 +22,7 @@ describe('tokenService', async function () {
       throw(err)
     }
   })
+
   it('should resolve promise as true on password match', async function () {
     try {
       assert.equal(await compareHash(userObject, 'panda'), true)
@@ -28,6 +30,7 @@ describe('tokenService', async function () {
       throw(err)
     }
   })
+
   it('should resolve promise as false on password mismatch', async function () {
     try {
       assert.equal(await compareHash(userObject, 'notpanda'), false)
