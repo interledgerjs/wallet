@@ -266,6 +266,36 @@ describe('.put/users', function () {
   })
 })
 
+describe('.delete/users', function () {
+  let id
+
+  before(function () {
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        id = response.body[0].id
+      })
+  })
+
+  it('should return HTTP 200 when called with a valid id', function () {
+    return request(app)
+      .delete('/users/' + id)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 404 when called with a non-existent id', function () {
+    return request(app)
+      .delete('/users/' + 898989898)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+})
+
 // .post('/user')
 describe('Test to create a new user', function () {
   describe('positive test for creating a user', function () {
@@ -396,25 +426,8 @@ describe('Test to delete a user', function () {
   id = response.body[0].id
 })
     })
-    it('17. should return HTTP 200 when called with a valid id', function () {
-      return request(app)
-				.delete('/users/' + id)
-				// .set('Authorization', 'Bearer ' + token)
-				.then(function (response) {
-  assert.equal(response.status, 200)
-})
-    })
   })
-  describe('Negative test to delete a non-exisitant entry', function () {
-    it('18. should return HTTP 404 when called with a non-existent id', function () {
-      return request(app)
-				.delete('/users/' + 898989898)
-				// .set('Authorization', 'Bearer ' + token)
-				.then(function (response) {
-  assert.equal(response.status, 404)
-})
-    })
-  })
+
 })
 
 describe('.post(/token) endpoint', function () {
