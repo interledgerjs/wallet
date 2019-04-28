@@ -31,6 +31,7 @@ app.all('*', (req, res) => {
   res.sendStatus(404)
 })
 
+// istanbul ignore if
 if (!module.parent) {
   app.listen(process.env.PORT, () => {
     console.log('server running on port %d', process.env.PORT)
