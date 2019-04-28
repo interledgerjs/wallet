@@ -6,7 +6,7 @@ const database = process.env.DBNAME
 
 // .get('/transactions')
 describe('Test to get all transactions but return 404 due to no transactions', function () {
-  it('should return 404 status', function () {
+  it('1. should return HTTP 404 when db table is empty', function () {
     return request(app)
       .get('/transactions')
       .then(function (response) {
@@ -23,7 +23,7 @@ describe('Test to create a new transaction', function () {
       'creditAccount': 2,
       'amount': 100
     }
-    it('should return OK status', function () {
+    it('2. should return HTTP 200 when called with good data', function () {
       return request(app)
         .post('/transactions')
         .send(data)
@@ -38,7 +38,7 @@ describe('Test to create a new transaction', function () {
       'creditAccount': 2,
       'amount': 'asd'
     }
-    it('should return Bad user input status', function () {
+    it('3. should return HTTP 400 when called with bad data', function () {
       return request(app)
         .post('/transactions')
         .send(data)
@@ -53,7 +53,7 @@ describe('Test to create a new transaction', function () {
       'creditAccount' : 2,
       'amount' : 100
     }
-    it('should return 500 status', function () {
+    it('4. should return HTPP 500 when db cannot be found', function () {
       process.env.DBNAME = ''
       return request(app)
         .post('/transactions')
@@ -70,14 +70,14 @@ describe('Test to create a new transaction', function () {
 
 // .get('/transactions')
 describe('Test to get all transactions', function () {
-  it('should return OK status', function () {
+  it('5. should return HTTP 200 when db table contains data', function () {
     return request(app)
       .get('/transactions')
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
-  it('should return 500 if an error with data layer', function () {
+  it('6. should return HTTP 500 when db cannot be found', function () {
     process.env.DBNAME = ''
     return request(app)
       .get('/transactions')
@@ -93,7 +93,7 @@ describe('Test to get all transactions', function () {
 // .get('/transactions/?id=1')
 describe('Tests for getting transactions by id', function () {
   describe('Positive test to get a transaction by id', function () {
-    it('should return OK status', function () {
+    it('7. should return HTTP 200 when querying by valid id', function () {
       return request(app)
         .get('/transactions/?id=1')
         .then(function (response) {
@@ -102,7 +102,7 @@ describe('Tests for getting transactions by id', function () {
     })
   })
   describe('Negative test to get a transaction by id', function () {
-    it('should return 404 status', function () {
+    it('8. should return HTTP 404 when querying by non-existent id', function () {
       return request(app)
         .get('/transactions/?id=6')
         .then(function (response) {
@@ -111,7 +111,7 @@ describe('Tests for getting transactions by id', function () {
     })
   })
   describe('Test to check if there is an error with the data layer', function () {
-    it('should return 500 status', function () {
+    it('9. should return HTTP 500 when db cannot be found', function () {
       process.env.DBNAME = ''
       return request(app)
         .get('/transactions/?id=1')
@@ -128,7 +128,7 @@ describe('Tests for getting transactions by id', function () {
 // .get('/transactions/?account=1')
 describe('Tests for getting transactions by account', function () {
   describe('Positive test to get a transaction by account', function () {
-    it('should return OK status', function () {
+    it('10. should return HTTP 200 when querying by valid account', function () {
       return request(app)
         .get('/transactions/?account=1')
         .then(function (response) {
@@ -137,7 +137,7 @@ describe('Tests for getting transactions by account', function () {
     })
   })
   describe('Negative test to get a transaction by account', function () {
-    it('should return 404 status', function () {
+    it('11. should return HTTP 404 when querying by non-existent account', function () {
       return request(app)
         .get('/transactions/?account=6')
         .then(function (response) {
@@ -146,7 +146,7 @@ describe('Tests for getting transactions by account', function () {
     })
   })
   describe('Test to check if there is an error with the data layer', function () {
-    it('should return 500 status', function () {
+    it('12. should return HTTP 500 when db cannot be found', function () {
       process.env.DBNAME = ''
       return request(app)
         .get('/transactions/?account=1')
