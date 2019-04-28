@@ -216,6 +216,56 @@ describe('.get/users', function () {
   })
 })
 
+describe('.put/users', function () {
+  let id
+  let data = {
+    'userName': 'TEST_USER',
+    'pssword': '321'
+  }
+
+  before(function () {
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        id = response.body[0].id
+      })
+  })
+
+  it('should return HTTP 200 when querying with good data', function () {
+    return request(app)
+      .put('/users/' + id)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  // it('16. should return HTTP 400 when called with bad data', function () {
+  //   let data = {
+  //     'userName': 1,
+  //     'pssword': '321'
+  //   }
+  //   return request(app)
+  //     .put('/users/' + id)
+  //     .send(data)
+  //     // .set('Authorization', 'Bearer ' + token)
+  //     .then(function (response) {
+  //       assert.equal(response.status, 400)
+  //     })
+  // })
+
+  it('should return HTTP 404 when querying with a non-existent id', function () {
+    return request(app)
+      .put('/users/' + 7851365)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+})
+
 // .post('/user')
 describe('Test to create a new user', function () {
   describe('positive test for creating a user', function () {
@@ -308,60 +358,29 @@ describe('Test to update a user', function () {
     before(function () {
       return request(app)
 				.get('/users')
-				.then(function (response) {
-  id = response.body[0].id
-})
+        .then(function (response) {
+          id = response.body[0].id
+        })
     })
     let data = {
       'userName': 'TEST_USER',
       'pssword': '321'
     }
-    it('14. should return HTTP 200 when querying with good data', function () {
-      return request(app)
-				.put('/users/' + id)
-				.send(data)
-				// .set('Authorization', 'Bearer ' + token)
-				.then(function (response) {
-  assert.equal(response.status, 200)
-})
-    })
   })
   describe('Negative test to update a non-existant user', function () {
     let data = {
       'userName': 'TEST_USER',
       'pssword': '321'
     }
-    it('15. should return HTTP 404 when querying with a non-existent id', function () {
-      return request(app)
-				.put('/users/' + 7851365)
-				.send(data)
-				// .set('Authorization', 'Bearer ' + token)
-				.then(function (response) {
-  assert.equal(response.status, 404)
-})
-    })
   })
   describe('negative test to update a user with bad data', function () {
     let id
     before(function () {
       return request(app)
 				.get('/users')
-				.then(function (response) {
-  id = response.body[0].id
-})
-    })
-    let data = {
-      'userName': 1,
-      'pssword': '321'
-    }
-    it('16. should return HTTP 400 when called with bad data', function () {
-      return request(app)
-				.put('/users/' + id)
-				.send(data)
-				// .set('Authorization', 'Bearer ' + token)
-				.then(function (response) {
-  assert.equal(response.status, 400)
-})
+        .then(function (response) {
+          id = response.body[0].id
+        })
     })
   })
 })
