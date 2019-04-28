@@ -3,9 +3,41 @@ import * as request from 'supertest'
 import * as app from '../../../build/app'
 import expect = require('expect')
 
+describe('.post/admin', function () {
+  it('should return HTTP 200 when called with good data', function () {
+    let data = {
+      'userName': 'test_admin',
+      'pssword': '123',
+      'role': 'admin'
+    }
+    return request(app)
+      .post('/admin')
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 400 when userName matches an existing user', function () {
+    let data = {
+      'userName': 'test_admin',
+      'pssword': '123',
+      'role': 'admin'
+    }
+    return request(app)
+      .post('/admin')
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  })
+})
+
 // .get('/users')
 describe('Test to get all users', function () {
-  it('should return 404 status', function () {
+  it('1. should return HTTP 400 when db table is empty', function () {
     return request(app)
       .get('/users')
       .then(function (response) {
@@ -33,7 +65,7 @@ describe('Test to create a new user', function () {
       'pssword': '123',
       'role': 'admin'
     }
-    it('should return OK status', function () {
+    it('2. should return HTTP 200 when called with good data', function () {
       return request(app)
         .post('/users')
         .send(data)
@@ -49,7 +81,7 @@ describe('Test to create a new user', function () {
       'pssword': '123',
       'role': 'admin'
     }
-    it('should return 400 status', function () {
+    it('3. should return HTTP 400 when userName matches an existing user', function () {
       return request(app)
         .post('/users')
         .send(data)
@@ -64,7 +96,7 @@ describe('Test to create a new user', function () {
       'userName': 'test_user1',
       'role': 'admin'
     }
-    it('should return 400 status', function () {
+    it('4. should return HTTP 400 when called with bad data', function () {
       return request(app)
         .post('/users')
         .send(data)
@@ -78,44 +110,12 @@ describe('Test to create a new user', function () {
 
 // .post('/admin')
 describe('Test to create a new admin', function () {
-  describe('positive test for creating a admin', function () {
-    let data = {
-      'userName': 'test_admin',
-      'pssword': '123',
-      'role': 'admin'
-    }
-    it('should return OK status', function () {
-      return request(app)
-        .post('/admin')
-        .send(data)
-        // .set('Authorization', 'Bearer ' + token)
-        .then(function (response) {
-          assert.equal(response.status, 200)
-        })
-    })
-  })
-  describe('Negative test for creating a admin that already exists', function () {
-    let data = {
-      'userName': 'test_admin',
-      'pssword': '123',
-      'role': 'admin'
-    }
-    it('should return 400 status', function () {
-      return request(app)
-        .post('/admin')
-        .send(data)
-        // .set('Authorization', 'Bearer ' + token)
-        .then(function (response) {
-          assert.equal(response.status, 400)
-        })
-    })
-  })
 //   describe('Negative test for creating a admin with bad submitted data', function () {
 //     let data = {
 //       "userName": "test_admin1",
 //       "role": "admin"
 //     }
-//     it('should return 400 status', function () {
+//     it//('should return 400 status', function () {
 //       return request(app)
 //         .post('/admin')
 //         .send(data)
@@ -130,14 +130,14 @@ describe('Test to create a new admin', function () {
 // .get('/users')
 describe('.get/users endpoint', function () {
   let dbname = process.env.DBNAME
-  it('should return OK status', function () {
+  it('7. should return HTTP 200 when db table contains data', function () {
     return request(app)
       .get('/users')
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
-  it('should return 500 on bad database name', function () {
+  it('8. should return HTTP 500 when db cannot be found', function () {
     process.env.DBNAME = ''
     return request(app)
       .get('/users')
@@ -161,21 +161,21 @@ describe('Test to get a user by id', function () {
   id = response.body[0].id
 })
   })
-  it('should return OK status', function () {
+  it('9. should return HTTP 200 when querying by a valid id', function () {
     return request(app)
 				.get('/users?id=' + id)
 				.then(function (response) {
   assert.equal(response.status, 200)
 })
   })
-  it('should return 404 status', function () {
+  it('10. should return HTTP 404 when querying by a non-existent id', function () {
     return request(app)
 				.get('/users?id=' + 9292929)
 				.then(function (response) {
   assert.equal(response.status, 404)
 })
   })
-  it('should return 500 on bad dbname', function () {
+  it('11. should return HTTP 500 when db cannot be found', function () {
     process.env.DBNAME = ''
     return request(app)
       .get('/users?id=' + id)
@@ -199,7 +199,7 @@ describe('Test to get a user by userName', function () {
   userName = response.body[0].userName
 })
     })
-    it('should return OK status', function () {
+    it('12. should return HTTP 200 when querying by a valid userName', function () {
       return request(app)
 				.get('/users?username=' + userName)
 				.then(function (response) {
@@ -208,7 +208,7 @@ describe('Test to get a user by userName', function () {
     })
   })
   describe('Negative test to get a non-existant entry', function () {
-    it('should return 404 status', function () {
+    it('13. should return HTTP 404 when querying by a non-existing userName', function () {
       return request(app)
 				.get('/users?username=' + 'jhfgsxhjb')
 				.then(function (response) {
@@ -233,7 +233,7 @@ describe('Test to update a user', function () {
       'userName': 'TEST_USER',
       'pssword': '321'
     }
-    it('should return OK status', function () {
+    it('14. should return HTTP 200 when querying with good data', function () {
       return request(app)
 				.put('/users/' + id)
 				.send(data)
@@ -248,7 +248,7 @@ describe('Test to update a user', function () {
       'userName': 'TEST_USER',
       'pssword': '321'
     }
-    it('should return 404 status', function () {
+    it('15. should return HTTP 404 when querying with a non-existent id', function () {
       return request(app)
 				.put('/users/' + 7851365)
 				.send(data)
@@ -258,29 +258,29 @@ describe('Test to update a user', function () {
 })
     })
   })
-	// describe('negative test to update a user with bad data', function () {
-	// 	let id
-	// 	before(function () {
-	// 		return request(app)
-	// 			.get('/users')
-	// 			.then(function (response) {
-	// 				id = response.body[0].id
-	// 			})
-	// 	})
-	// 	let data = {
-	// 		"userName": 1,
-	// 		"pssword": "321"
-	// 	}
-	// 	it('should return 400 status', function () {
-	// 		return request(app)
-	// 			.put('/users/' + id)
-	// 			.send(data)
-	// 			// .set('Authorization', 'Bearer ' + token)
-	// 			.then(function (response) {
-	// 				assert.equal(response.status, 400)
-	// 			})
-	// 	})
-	// })
+  describe('negative test to update a user with bad data', function () {
+    let id
+    before(function () {
+      return request(app)
+				.get('/users')
+				.then(function (response) {
+  id = response.body[0].id
+})
+    })
+    let data = {
+      'userName': 1,
+      'pssword': '321'
+    }
+    it('16. should return HTTP 400 when called with bad data', function () {
+      return request(app)
+				.put('/users/' + id)
+				.send(data)
+				// .set('Authorization', 'Bearer ' + token)
+				.then(function (response) {
+  assert.equal(response.status, 400)
+})
+    })
+  })
 })
 
 // .delete('/users/:id')
@@ -294,7 +294,7 @@ describe('Test to delete a user', function () {
   id = response.body[0].id
 })
     })
-    it('should return OK status', function () {
+    it('17. should return HTTP 200 when called with a valid id', function () {
       return request(app)
 				.delete('/users/' + id)
 				// .set('Authorization', 'Bearer ' + token)
@@ -304,7 +304,7 @@ describe('Test to delete a user', function () {
     })
   })
   describe('Negative test to delete a non-exisitant entry', function () {
-    it('should return 404 status', function () {
+    it('18. should return HTTP 404 when called with a non-existent id', function () {
       return request(app)
 				.delete('/users/' + 898989898)
 				// .set('Authorization', 'Bearer ' + token)
@@ -339,7 +339,7 @@ describe('.post(/token) endpoint', function () {
           })
       })
   })
-  it('should return a token when passed valid credentials', function () {
+  it('19. should return a token when passed valid credentials', function () {
     return request(app)
       .post('/token')
       .send(validUser)
@@ -348,7 +348,7 @@ describe('.post(/token) endpoint', function () {
       expect(response.body.token).not.toMatch('/ /')
     })
   })
-  it('should return a 404 when passed non-existent credentials', function () {
+  it('20. should return HTTP 404 when passed non-existent credentials', function () {
     return request(app)
       .post('/token')
       .send(invalidUser)
