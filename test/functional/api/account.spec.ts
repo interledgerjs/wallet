@@ -133,6 +133,71 @@ describe('.get/accounts', function () {
   })
 })
 
+describe('.put/accounts', function () {
+  let id
+  let database = process.env.DBNAME
+
+  let data = {
+    'name': 'test_account',
+    'owner': 1,
+    'balance': 4069
+  }
+
+  before(function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        id = response.body[0].id
+      })
+  })
+
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
+
+  it('should return HTTP 200 when passed good data', function () {
+    return request(app)
+      .put('/accounts/' + id)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 400 when called without defining id', function () {
+    id = undefined
+    return request(app)
+      .put('/accounts/' + id)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+
+  it('should return HTTP 404 when called with a non-existent id', function () {
+    id = (Math.random() * 1000) + 500
+    return request(app)
+    .put('/accounts/' + id)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .put('/accounts/' + id)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+})
+
 describe('Testing switch statements pre-database', function () {
   let id = 1
   let owner = 1
@@ -224,48 +289,6 @@ describe('Test to update an account', function () {
     'owner': 1,
     'balance': 4069
   }
-
-  it('11. should return HTTP 200 when passed good data', function () {
-    return request(app)
-      .put('/accounts/' + id)
-      .send(data)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
-
-  it('12. should return HTTP 500 when db cannot be found', function () {
-    process.env.DBNAME = ''
-    return request(app)
-      .put('/accounts/' + id)
-      .send(data)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
-
-  it('13. should return HTTP 400 when called without defining id', function () {
-    id = undefined
-    return request(app)
-      .put('/accounts/' + id)
-      .send(data)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 404)
-      })
-  })
-
-  it('14. should return HTTP 404 when called with a non-existent id', function () {
-    id = (Math.random() * 1000) + 500
-    return request(app)
-    .put('/accounts/' + id)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 404)
-      })
-  })
 
   afterEach(function () {
     process.env.DBNAME = database
