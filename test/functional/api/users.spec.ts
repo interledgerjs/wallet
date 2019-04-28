@@ -1,7 +1,7 @@
 import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
-import expect = require('expect')
+import * as expect from 'expect'
 
 describe('.post/admin', function () {
   it('should return HTTP 200 when called with good data', function () {
@@ -130,11 +130,86 @@ describe('.post/users', function () {
   })
 })
 
-// .get('/users')
-describe('Test to get all users', function () {
-  it('1. should return HTTP 400 when db table is empty', function () {
+describe('.get/users', function () {
+  let dbname = process.env.DBNAME
+  let id
+  let userName
+
+  before(function () {
     return request(app)
       .get('/users')
+      .then(function (response) {
+        id = response.body[0].id
+        userName = response.body[0].userName
+      })
+  })
+
+  afterEach(function () {
+    process.env.DBNAME = dbname
+  })
+
+  it('should return HTTP 200 when db table contains data', function () {
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 400 when db table is empty', function () {
+    process.env.DBNAME = 'emptydb'
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .get('/users')
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+
+  it('should return HTTP 200 when querying by a valid id', function () {
+    return request(app)
+      .get('/users?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 404 when querying by a non-existent id', function () {
+    return request(app)
+  		.get('/users?id=' + 9292929)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .get('/users?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+
+  it('should return HTTP 200 when querying by a valid userName', function () {
+    return request(app)
+			.get('/users?username=' + userName)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 404 when querying by a non-existing userName', function () {
+    return request(app)
+      .get('/users?username=' + 'jhfgsxhjb')
       .then(function (response) {
         assert.equal(response.status, 404)
       })
@@ -198,21 +273,6 @@ describe('Test to create a new admin', function () {
 // .get('/users')
 describe('.get/users endpoint', function () {
   let dbname = process.env.DBNAME
-  it('7. should return HTTP 200 when db table contains data', function () {
-    return request(app)
-      .get('/users')
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
-  it('8. should return HTTP 500 when db cannot be found', function () {
-    process.env.DBNAME = ''
-    return request(app)
-      .get('/users')
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
   after(function () {
     process.env.DBNAME = dbname
   })
@@ -222,35 +282,6 @@ describe('.get/users endpoint', function () {
 describe('Test to get a user by id', function () {
   let id
   let dbname = process.env.DBNAME
-  before(function () {
-    return request(app)
-				.get('/users')
-				.then(function (response) {
-  id = response.body[0].id
-})
-  })
-  it('9. should return HTTP 200 when querying by a valid id', function () {
-    return request(app)
-				.get('/users?id=' + id)
-				.then(function (response) {
-  assert.equal(response.status, 200)
-})
-  })
-  it('10. should return HTTP 404 when querying by a non-existent id', function () {
-    return request(app)
-				.get('/users?id=' + 9292929)
-				.then(function (response) {
-  assert.equal(response.status, 404)
-})
-  })
-  it('11. should return HTTP 500 when db cannot be found', function () {
-    process.env.DBNAME = ''
-    return request(app)
-      .get('/users?id=' + id)
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
   after(function () {
     process.env.DBNAME = dbname
   })
@@ -265,22 +296,6 @@ describe('Test to get a user by userName', function () {
 				.get('/users')
 				.then(function (response) {
   userName = response.body[0].userName
-})
-    })
-    it('12. should return HTTP 200 when querying by a valid userName', function () {
-      return request(app)
-				.get('/users?username=' + userName)
-				.then(function (response) {
-  assert.equal(response.status, 200)
-})
-    })
-  })
-  describe('Negative test to get a non-existant entry', function () {
-    it('13. should return HTTP 404 when querying by a non-existing userName', function () {
-      return request(app)
-				.get('/users?username=' + 'jhfgsxhjb')
-				.then(function (response) {
-  assert.equal(response.status, 404)
 })
     })
   })
