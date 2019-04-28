@@ -87,6 +87,49 @@ describe('.post/token', function () {
   })
 })
 
+describe('.post/users', function () {
+  let data = {
+    'userName': 'test_user',
+    'pssword': '123',
+    'role': 'admin'
+  }
+
+  let badData = {
+    'userName': 'test_user1',
+    'role': 'admin'
+  }
+
+  it('should return HTTP 200 when called with good data', function () {
+    return request(app)
+      .post('/users')
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 400 when called with bad data', function () {
+    return request(app)
+      .post('/users')
+      .send(badData)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  })
+
+  it('should return HTTP 400 when userName matches an existing user', function () {
+    return request(app)
+      .post('/users')
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  })
+})
+
 // .get('/users')
 describe('Test to get all users', function () {
   it('1. should return HTTP 400 when db table is empty', function () {
@@ -117,15 +160,6 @@ describe('Test to create a new user', function () {
       'pssword': '123',
       'role': 'admin'
     }
-    it('2. should return HTTP 200 when called with good data', function () {
-      return request(app)
-        .post('/users')
-        .send(data)
-        // .set('Authorization', 'Bearer ' + token)
-        .then(function (response) {
-          assert.equal(response.status, 200)
-        })
-    })
   })
   describe('Negative test for creating a user that already exists', function () {
     let data = {
@@ -133,30 +167,12 @@ describe('Test to create a new user', function () {
       'pssword': '123',
       'role': 'admin'
     }
-    it('3. should return HTTP 400 when userName matches an existing user', function () {
-      return request(app)
-        .post('/users')
-        .send(data)
-        // .set('Authorization', 'Bearer ' + token)
-        .then(function (response) {
-          assert.equal(response.status, 400)
-        })
-    })
   })
   describe('Negative test for creating a user with bad submitted data', function () {
     let data = {
       'userName': 'test_user1',
       'role': 'admin'
     }
-    it('4. should return HTTP 400 when called with bad data', function () {
-      return request(app)
-        .post('/users')
-        .send(data)
-        // .set('Authorization', 'Bearer ' + token)
-        .then(function (response) {
-          assert.equal(response.status, 400)
-        })
-    })
   })
 })
 
