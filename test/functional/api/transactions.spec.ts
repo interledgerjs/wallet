@@ -53,7 +53,7 @@ describe('Test to create a new transaction', function () {
       'creditAccount' : 2,
       'amount' : 100
     }
-    it('4. should return HTPP 500 when db cannot be found', function () {
+    it('4. should return HTTP 500 when db cannot be found', function () {
       process.env.DBNAME = ''
       return request(app)
         .post('/transactions')
