@@ -134,17 +134,3 @@ describe('.get/transactions', function () {
       })
   })
 })
-
-// .get('/transactions/?id=1')
-describe('Tests for getting transactions by id', function () {
-  afterEach(function () {
-    process.env.DBNAME = database
-  })
-})
-
-// .get('/transactions/?account=1')
-describe('Tests for getting transactions by account', function () {
-  afterEach(function () {
-    process.env.DBNAME = database
-  })
-})
