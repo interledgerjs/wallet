@@ -35,6 +35,58 @@ describe('.post/admin', function () {
   })
 })
 
+describe('.post/token', function () {
+  let validUser = {
+    'userName': 'TokenUser',
+    'pssword': 'mypassword',
+    'id': ''
+  }
+
+  let invalidUser = {
+    'userName': 'NotTokenUser',
+    'pssword': 'mypassword',
+    'id': ''
+  }
+
+  before(function () {
+    return request(app)
+      .post('/users')
+      .send(validUser)
+      .then(function () {
+        return request(app)
+          .get('/users/?username=' + validUser.userName)
+          .then(function (response) {
+            // console.log(response)
+            validUser.id = response.body.id
+          })
+      })
+  })
+
+  it('should return a token when passed valid credentials', function () {
+    return request(app)
+      .post('/token')
+      .send(validUser)
+    .then(function (response) {
+      assert.equal(response.body.token.length, 185)
+      expect(response.body.token).not.toMatch('/ /')
+    })
+  })
+
+  it('should return HTTP 404 when passed non-existent credentials', function () {
+    return request(app)
+      .post('/token')
+      .send(invalidUser)
+    .then(function (response) {
+      assert.equal(response.status, 404)
+    })
+  })
+
+  after(function () {
+    return request(app)
+      .delete('/users/' + validUser.id)
+  })
+})
+
 // .get('/users')
 describe('Test to get all users', function () {
   it('1. should return HTTP 400 when db table is empty', function () {
@@ -338,26 +390,5 @@ describe('.post(/token) endpoint', function () {
             validUser.id = response.body.id
           })
       })
-  })
-  it('19. should return a token when passed valid credentials', function () {
-    return request(app)
-      .post('/token')
-      .send(validUser)
-    .then(function (response) {
-      assert.equal(response.body.token.length, 185)
-      expect(response.body.token).not.toMatch('/ /')
-    })
-  })
-  it('20. should return HTTP 404 when passed non-existent credentials', function () {
-    return request(app)
-      .post('/token')
-      .send(invalidUser)
-    .then(function (response) {
-      assert.equal(response.status, 404)
-    })
-  })
-  after(function () {
-    return request(app)
-      .delete('/users/' + validUser.id)
   })
 })
