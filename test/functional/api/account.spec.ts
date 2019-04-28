@@ -53,31 +53,90 @@ describe('.post/accounts', function () {
   })
 })
 
-describe('Testing switch statements pre-database', function () {
-  let id = 1
-  let owner = 1
+describe('.get/accounts', function () {
+  let database = process.env.DBNAME
+  let id
+  let owner
 
-  it('1. should return HTTP 404 when db table is empty', function () {
+  before(function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
+        id = response.body[0].id
+        owner = response.body[0].owner
+      })
+  })
+
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
+
+  it('should return HTTP 200 when db table contains data', function () {
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 404 when db table is empty', function () {
+    process.env.DBNAME = 'emptydb'
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        console.log(response.body)
         assert.equal(response.status, 404)
       })
   })
-  it('2. should return HTTP 404 when querying by non-existent id', function () {
+
+  it('should return HTTP 200 when querying by valid id', function () {
+    return request(app)
+      .get('/accounts/?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 404 when querying by non-existent id', function () {
+    process.env.DBNAME = 'emptydb'
     return request(app)
       .get('/accounts/?id=' + 1)
       .then(function (response) {
         assert.equal(response.status, 404)
       })
   })
-  it('3. should return HTTP 404 status when querying by non-existent owner', function () {
+
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .get('/accounts/?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+
+  it('should return HTTP 200 when querying by valid owner', function () {
+    return request(app)
+      .get('/accounts/?owner=' + owner)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
+
+  it('should return HTTP 404 status when querying by non-existent owner', function () {
+    process.env.DBNAME = 'emptydb'
     return request(app)
       .get('/accounts/?owner=' + 1)
       .then(function (response) {
         assert.equal(response.status, 404)
       })
   })
+})
+
+describe('Testing switch statements pre-database', function () {
+  let id = 1
+  let owner = 1
+
 })
 
 // .post('/accounts')
@@ -144,37 +203,6 @@ describe('Test to get accounts', function () {
         owner = response.body[0].owner
       })
   })
-  it('7. should return HTTP 200 when db table contains data', function () {
-    return request(app)
-      .get('/accounts')
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
-  it('8. should return HTTP 200 when querying by valid id', function () {
-    return request(app)
-      .get('/accounts/?id=' + id)
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
-  it('9. should return HTTP 200 when querying by valid owner', function () {
-    return request(app)
-      .get('/accounts/?owner=' + owner)
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
-
-  it('10. should return HTTP 500 when db cannot be found', function () {
-    process.env.DBNAME = ''
-    return request(app)
-      .get('/accounts/?id=' + id)
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
-
   afterEach(function () {
     process.env.DBNAME = database
   })
