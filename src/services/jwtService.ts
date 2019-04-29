@@ -28,7 +28,7 @@ export enum Roles {
   User = 'user'
 }
 
-// #returns req.authdata object
+/** @returns req.authdata object */
 export function verifyToken (roles: Roles) {
 
   return function (req: Request, res: Response, next: any) {
