@@ -7,8 +7,6 @@ export function query (sqlQuery: string): Promise<object[]> {
       const db = new sqlite3.Database(process.env.DBNAME)
       db.all(sqlQuery, function (err: Error, data: object[]) {
         if (err) {
-          // console.log(sqlQuery)
-          // console.log(err)
           reject(err)
         } else {
           resolve(data)

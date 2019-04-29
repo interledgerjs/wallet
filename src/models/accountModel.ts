@@ -23,7 +23,7 @@ function isAccount (account: any): account is Account {
 function isAccountArray (result: any): result is Account[] {
   let isAccountArray: boolean = true
   if (result.length) {
-    result.forEach(function (element) {
+    result.forEach(function (element: any) {
       if (!isAccount(element)) {
         isAccountArray = false
       }

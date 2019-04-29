@@ -20,8 +20,8 @@ if (process.env.CONSOLELOG === 'true') {
 if (process.env.LOGFILE === 'true') {
   logger.add(new transports.File({ filename: 'logs.log' }))
 }
-// to add token middleware add verifyToken(Roles.User/Admin) to an endpoint
 
+// to add token middleware add verifyToken(Roles.User/Admin) to an endpoint
 // roles to be used for authorisation
 export enum Roles {
   Admin = 'admin',
