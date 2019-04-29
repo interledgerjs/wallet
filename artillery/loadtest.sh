@@ -1,0 +1,1 @@
+artillery run -o report.json walletLoadTest.yml && artillery report report.json
