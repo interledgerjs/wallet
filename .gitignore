@@ -80,3 +80,4 @@ emptydb
 
 # load test report
 report.json.html
+report.json
