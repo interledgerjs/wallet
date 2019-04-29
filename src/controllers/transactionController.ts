@@ -23,7 +23,6 @@ if (process.env.LOGFILE === 'true') {
 export async function createTransaction (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
-      // const failure = await addTransaction(transObject)
     const failure = await addTransaction(req.body)
     if (!failure) {
       res.sendStatus(200)
