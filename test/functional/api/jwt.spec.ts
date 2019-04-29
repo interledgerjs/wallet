@@ -11,13 +11,13 @@ const userToken =
 const invalidToken =
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoRGF0YSI6eyJpZCI6OTk5OTk5OTk5LCJ1c2VyTmFtZSI6IkZvb0FkbWluIiwidXNlclJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE1NTQ4MTM4MjIsImV4cCI6MzU1NDkwMDIyMn0.469fKHKKsRfMyPv_6jBrGmNVSsPqphWNT0PNa-Yv-mQ'
 
-describe('middleware test', function () {
+describe('verifyToken', function () {
   it('should return function that goes next() once', function () {
     return request(app)
         .get('/testAdmin')
         .set('Authorization', 'Bearer ' + adminToken)
         .expect(200)
-        .then(res => {
+        .then(function (res) {
           assert.ok(res)
         })
   })
@@ -32,9 +32,8 @@ describe('middleware test', function () {
   })
 })
 
-describe('Testing authorisation for admin role', function () {
-
-  it('admin token should succeed', function () {
+describe('Admin authorisation', function () {
+  it('should return HTTP 200 when called with a valid admin token', function () {
     return request(app)
         .get('/testAdmin')
         // .send(data)
@@ -44,7 +43,7 @@ describe('Testing authorisation for admin role', function () {
         })
   })
 
-  it('user token should fail', function () {
+  it('should return HTTP 401 when called with a valid user token', function () {
     return request(app)
           .get('/testAdmin')
           // .send(data)
@@ -54,7 +53,7 @@ describe('Testing authorisation for admin role', function () {
           })
   })
 
-  it('invalid token should fail', function () {
+  it('should return HTTP 403 when called with an invalid token', function () {
     return request(app)
           .get('/testAdmin')
           // .send(data)
@@ -64,7 +63,7 @@ describe('Testing authorisation for admin role', function () {
           })
   })
 
-  it('no token should fail', function () {
+  it('should return HTTP 403 when called without any token', function () {
     return request(app)
           .get('/testAdmin')
           // .send(data)
@@ -75,9 +74,8 @@ describe('Testing authorisation for admin role', function () {
   })
 })
 
-describe('Testing authorisation for user role', function () {
-
-  it('admin token should succeed', function () {
+describe('User authorisation', function () {
+  it('should return HTTP 200 when called with a valid admin token', function () {
     return request(app)
         .get('/testUser')
         // .send(data)
@@ -87,7 +85,7 @@ describe('Testing authorisation for user role', function () {
         })
   })
 
-  it('user token should succeed', function () {
+  it('should return HTTP 200 when called with a valid user token', function () {
     return request(app)
           .get('/testUser')
           // .send(data)
@@ -97,7 +95,7 @@ describe('Testing authorisation for user role', function () {
           })
   })
 
-  it('invalid token should fail', function () {
+  it('should return HTTP 403 when called with an invalid token', function () {
     return request(app)
           .get('/testUser')
           // .send(data)
@@ -107,7 +105,7 @@ describe('Testing authorisation for user role', function () {
           })
   })
 
-  it('no token should fail', function () {
+  it('should return HTTP 403 when called without any token', function () {
     return request(app)
           .get('/testUser')
           // .send(data)
@@ -116,5 +114,4 @@ describe('Testing authorisation for user role', function () {
             assert.equal(response.status, 403)
           })
   })
-
 })

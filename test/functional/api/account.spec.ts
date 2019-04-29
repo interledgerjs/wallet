@@ -2,35 +2,7 @@ import { assert, expect } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
 
-describe('Testing switch statements pre-database', function () {
-  let id = 1
-  let owner = 1
-
-  it('should return 404 status when querying all', function () {
-    return request(app)
-      .get('/accounts')
-      .then(function (response) {
-        assert.equal(response.status, 404)
-      })
-  })
-  it('should return 404 status when querying by id', function () {
-    return request(app)
-      .get('/accounts/?id=' + id)
-      .then(function (response) {
-        assert.equal(response.status, 404)
-      })
-  })
-  it('should return 404 status when querying by owner', function () {
-    return request(app)
-      .get('/accounts/?owner=' + owner)
-      .then(function (response) {
-        assert.equal(response.status, 404)
-      })
-  })
-})
-
-// .post('/accounts')
-describe('Test to create a new account', function () {
+describe('.post/accounts', function () {
   let database = process.env.DBNAME
 
   let data = {
@@ -44,7 +16,8 @@ describe('Test to create a new account', function () {
     'owner': 'one',
     'balance': 'one hundred'
   }
-  it('should return OK status', function () {
+
+  it('should return HTTP 200 when passed good data', function () {
     return request(app)
       .post('/accounts')
       .send(data)
@@ -54,7 +27,7 @@ describe('Test to create a new account', function () {
       })
   })
 
-  it('should return 400 status', function () {
+  it('should return HTTP 400 when passed bad data', function () {
     return request(app)
       .post('/accounts')
       .send(baddata)
@@ -64,7 +37,7 @@ describe('Test to create a new account', function () {
       })
   })
 
-  it('should return 500 if an error with data layer', function () {
+  it('should return HTTP 500 when db cannot be found', function () {
     process.env.DBNAME = ''
     return request(app)
       .post('/accounts')
@@ -80,11 +53,11 @@ describe('Test to create a new account', function () {
   })
 })
 
-// .get('/accounts')
-describe('Test to get accounts', function () {
+describe('.get/accounts', function () {
+  let database = process.env.DBNAME
   let id
   let owner
-  let database = process.env.DBNAME
+
   before(function () {
     return request(app)
       .get('/accounts')
@@ -93,21 +66,56 @@ describe('Test to get accounts', function () {
         owner = response.body[0].owner
       })
   })
-  it('should return OK status when querying all', function () {
+
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
+
+  it('should return HTTP 200 when db table contains data', function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
-  it('should return OK status when querying by id', function () {
+
+  it('should return HTTP 404 when db table is empty', function () {
+    process.env.DBNAME = 'emptydb'
+    return request(app)
+      .get('/accounts')
+      .then(function (response) {
+        console.log(response.body)
+        assert.equal(response.status, 404)
+      })
+  })
+
+  it('should return HTTP 200 when querying by valid id', function () {
     return request(app)
       .get('/accounts/?id=' + id)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
-  it('should return OK status when querying by owner', function () {
+
+  it('should return HTTP 404 when querying by non-existent id', function () {
+    process.env.DBNAME = 'emptydb'
+    return request(app)
+      .get('/accounts/?id=' + 1)
+      .then(function (response) {
+        assert.equal(response.status, 404)
+      })
+  })
+
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .get('/accounts/?id=' + id)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
+  })
+
+  it('should return HTTP 200 when querying by valid owner', function () {
     return request(app)
       .get('/accounts/?owner=' + owner)
       .then(function (response) {
@@ -115,24 +123,26 @@ describe('Test to get accounts', function () {
       })
   })
 
-  it('should return 500 if an error with data layer', function () {
-    process.env.DBNAME = ''
+  it('should return HTTP 404 status when querying by non-existent owner', function () {
+    process.env.DBNAME = 'emptydb'
     return request(app)
-      .get('/accounts/?id=' + id)
+      .get('/accounts/?owner=' + 1)
       .then(function (response) {
-        assert.equal(response.status, 500)
+        assert.equal(response.status, 404)
       })
-  })
-
-  afterEach(function () {
-    process.env.DBNAME = database
   })
 })
 
-// .put('/accounts/:id')
-describe('Test to update an account', function () {
+describe('.put/accounts', function () {
   let id
   let database = process.env.DBNAME
+
+  let data = {
+    'name': 'test_account',
+    'owner': 1,
+    'balance': 4069
+  }
+
   before(function () {
     return request(app)
       .get('/accounts')
@@ -140,13 +150,12 @@ describe('Test to update an account', function () {
         id = response.body[0].id
       })
   })
-  let data = {
-    'name': 'test_account',
-    'owner': 1,
-    'balance': 4069
-  }
 
-  it('should return OK status', function () {
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
+
+  it('should return HTTP 200 when passed good data', function () {
     return request(app)
       .put('/accounts/' + id)
       .send(data)
@@ -156,18 +165,7 @@ describe('Test to update an account', function () {
       })
   })
 
-  it('should return 500 if an error with data layer', function () {
-    process.env.DBNAME = ''
-    return request(app)
-      .put('/accounts/' + id)
-      .send(data)
-      // .set('Authorization', 'Bearer ' + token)
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
-
-  it('should return 400 if ID is undefined', function () {
+  it('should return HTTP 400 when called without defining id', function () {
     id = undefined
     return request(app)
       .put('/accounts/' + id)
@@ -178,7 +176,7 @@ describe('Test to update an account', function () {
       })
   })
 
-  it('should return 404 if account does not exist', function () {
+  it('should return HTTP 404 when called with a non-existent id', function () {
     id = (Math.random() * 1000) + 500
     return request(app)
     .put('/accounts/' + id)
@@ -188,15 +186,22 @@ describe('Test to update an account', function () {
       })
   })
 
-  afterEach(function () {
-    process.env.DBNAME = database
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+      .put('/accounts/' + id)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
   })
 })
 
-// .delete('/accounts/:id')
-describe('Test to delete an account', function () {
+describe('.delete/accounts', function () {
   let id
   let database = process.env.DBNAME
+
   before(function () {
     return request(app)
       .get('/accounts')
@@ -205,7 +210,11 @@ describe('Test to delete an account', function () {
       })
   })
 
-  it('should return OK status', function () {
+  afterEach(function () {
+    process.env.DBNAME = database
+  })
+
+  it('should return HTTP 200 when called with a valid id', function () {
     return request(app)
       .delete('/accounts/' + id)
       // .set('Authorization', 'Bearer ' + token)
@@ -214,16 +223,7 @@ describe('Test to delete an account', function () {
       })
   })
 
-  it('should return 500 if an error with data layer', function () {
-    process.env.DBNAME = ''
-    return request(app)
-    .delete('/accounts/' + id)
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
-
-  it('should return 400 if ID is undefined', function () {
+  it('should return HTTP 400 when called with defining id', function () {
     id = undefined
     return request(app)
     .delete('/accounts/' + id)
@@ -233,7 +233,7 @@ describe('Test to delete an account', function () {
       })
   })
 
-  it('should return 404 if account does not exist', function () {
+  it('should return HTTP 404 when called with non-existent id', function () {
     id = (Math.random() * 1000) + 500
     return request(app)
     .delete('/accounts/' + id)
@@ -243,7 +243,12 @@ describe('Test to delete an account', function () {
       })
   })
 
-  afterEach(function () {
-    process.env.DBNAME = database
+  it('should return HTTP 500 when db cannot be found', function () {
+    process.env.DBNAME = ''
+    return request(app)
+    .delete('/accounts/' + id)
+      .then(function (response) {
+        assert.equal(response.status, 500)
+      })
   })
 })

@@ -11,9 +11,9 @@
     "watch-node": "nodemon app.js --ignore ./test/",
     "lint": "tslint --project .",
     "prepublishOnly": "npm run lint && npm test && npm run doc",
-    "pretest": "node initTestDB.js && tsc --build",
+    "pretest": "node initTestDB.js && node initEmptyDB.js && tsc --build",
     "preversion": "npm run lint && npm test",
-    "test": "nyc mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register 'test/**/*.spec.ts'",
+    "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register 'test/**/*.spec.ts'",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "watch-ts": "tsc -w"
   },
@@ -71,10 +71,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheReasonWhy/wallet.git"
+    "url": "git+https://github.com/interledgerjs/wallet.git"
   },
   "bugs": {
-    "url": "https://github.com/TheReasonWhy/wallet/issues"
+    "url": "https://github.com/interledgerjs/wallet/issues"
   },
-  "homepage": "https://github.com/TheReasonWhy/wallet#readme"
+  "homepage": "https://github.com/interledgerjs/wallet#readme"
 }

@@ -22,7 +22,7 @@ function isUser (user: any): user is User {
   )
 }
 
-function isUserArray (result: any): result is User[] {
+export function isUserArray (result: any): result is User[] {
   let isUserArray: boolean = true
   if (result.length) {
     result.forEach(function (element: any) {
@@ -149,7 +149,7 @@ export function modifyUser (userExists: User, body: any): Promise<boolean> {
         reject(error)
       }
     } else {
-      reject(true)
+      resolve(true)
     }
 
   })
