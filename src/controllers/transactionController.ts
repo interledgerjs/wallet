@@ -22,33 +22,17 @@ if (process.env.LOGFILE === 'true') {
 // post /transactions #adds new transaction to table
 export async function createTransaction (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (
-    req.body.debitAccount && typeof req.body.debitAccount === 'number' &&
-    req.body.creditAccount && typeof req.body.creditAccount === 'number' &&
-    req.body.amount && typeof req.body.amount === 'number'
-  ) {
-    const transObject: Transaction = {
-      id: -1,
-      debitAccount: req.body.debitAccount,
-      creditAccount: req.body.creditAccount,
-      amount: req.body.amount,
-      date: new Date().toISOString()
+  try {
+      // const failure = await addTransaction(transObject)
+    const failure = await addTransaction(req.body)
+    if (!failure) {
+      res.sendStatus(200)
+    } else {
+      res.sendStatus(400)
     }
-    if (req.body.id && typeof req.body.debitAccount === 'number') {
-      transObject.id = req.body.id
-    }
-
-    try {
-      const failure = await addTransaction(transObject)
-      if (!failure) {
-        res.sendStatus(200)
-      }
-    } catch (error) {
-      logger.error(error)
-      res.sendStatus(500)
-    }
-  } else {
-    res.sendStatus(400)
+  } catch (error) {
+    logger.error(error)
+    res.sendStatus(500)
   }
 }
 
