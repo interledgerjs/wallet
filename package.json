@@ -7,15 +7,15 @@
     "build": "tsc",
     "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "codecov": "codecov",
-    "watch-node": "nodemon app.js --ignore ./test/",
+    "docs": "typedoc --out docs/  src --module commonjs --readme README.md --name wallet",
     "lint": "tslint --project .",
     "prepublishOnly": "npm run lint && npm test && npm run doc",
     "pretest": "node initTestDB.js && node initEmptyDB.js && tsc --build",
     "preversion": "npm run lint && npm test",
     "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register 'test/**/*.spec.ts'",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "watch-node": "nodemon app.js --ignore ./test/",
     "watch-ts": "tsc -w",
-    "docs": "typedoc --out docs/  src --module commonjs --readme README.md --name wallet"
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\""
   },
   "author": "",
   "license": "ISC",
