@@ -1,0 +1,76 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+scenarios:
+  - name: "transactions"
+    flow:
+      - post:
+          url: "/transactions"
+          json:
+            debitAccount: 1
+            creditAccount: 2
+            amount: 100
+      - get:
+          url: "/transactions/"
+          capture:
+            - json: "$[0].id"
+              as: "id"
+            - json: "$[0].creditAccount"
+              as: "creditAccount"
+      - get:
+          url: "/transactions/?id={{ id }}"
+      - get:
+          url: "/transactions/?account={{ creditAccount }}"
+  - name: "Users"
+    flow:
+      - post:
+          url: "/users"
+          json:
+            userName: "Name"
+            pssword: "password"
+      - get:
+          url: "/users/"
+          capture:
+            - json: "$[0].id"
+              as: "id"
+            - json: "$[0].userName"
+              as: "userName"
+      - get:
+          url: "/users/?id={{ id }}"
+      - get:
+          url: "/users/?username={{ userName }}"
+      - put:
+          url: "/users/{{ id }}"
+          json:
+            userName: "Name1"
+            pssword: "passwordz"
+      - delete:
+          url: "/users/{{ id }}"
+  - name: "Accounts"
+    flow:
+      - post:
+          url: "/accounts"
+          json:
+            name: "Name"
+            owner: 1
+            balance: 100
+      - get:
+          url: "/accounts/"
+          capture:
+            - json: "$[0].id"
+              as: "id"
+            - json: "$[0].owner"
+              as: "owner"
+      - get:
+          url: "/accounts/?id={{ id }}"
+      - get:
+          url: "/accouns/?owner={{ owner }}"
+      - put:
+          url: "/accounts/{{ id }}"
+          json:
+            owner: 5
+            balance: 3
+      - delete:
+          url: "/accounts/{{ id }}"
