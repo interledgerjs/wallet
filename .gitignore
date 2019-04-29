@@ -77,3 +77,6 @@ emptydb
 
 #log files
 *.log
+
+# load test report
+report.json.html
