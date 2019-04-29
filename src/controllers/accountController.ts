@@ -100,7 +100,7 @@ export async function deleteAccount (req: Request, res: Response) {
       if (accountExists) {
         const result = await removeAccount(req.params.id)
         if (!result) {
-          res.send('Successfully deleted account')
+          res.sendStatus(200)
         }
       } else {
         res.sendStatus(404)
