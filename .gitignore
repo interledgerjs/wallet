@@ -60,6 +60,9 @@ typings/
 # compiled js files
 build/
 
+# compiled documentation
+docs/
+
 # it's a mac thing
 .DS_Store
 

@@ -23,4 +23,4 @@ The NPM package will not contain any TypeScript files (`*.ts`) but will have typ
   - `build` : Build the project
   - `lint`  : Run the linter over the project
   - `test`  : Run the unit tests and produce a code coverage report
-  - `doc`   : Build the docs
+  - `docs`   : Build the docs
