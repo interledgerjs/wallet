@@ -35,7 +35,6 @@ export function isUserArray (result: any): result is User[] {
     isUserArray || result === null
   )
 }
-// functions
 
 // function to handle getting all users
 export function retrieveUser (): Promise<User[]> {
