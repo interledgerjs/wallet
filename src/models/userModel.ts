@@ -149,7 +149,7 @@ export function modifyUser (userExists: User, body: any): Promise<boolean> {
         reject(error)
       }
     } else {
-      reject(true)
+      resolve(true)
     }
 
   })

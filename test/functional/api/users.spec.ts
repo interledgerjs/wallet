@@ -241,19 +241,19 @@ describe('.put/users', function () {
       })
   })
 
-  // it('16. should return HTTP 400 when called with bad data', function () {
-  //   let data = {
-  //     'userName': 1,
-  //     'pssword': '321'
-  //   }
-  //   return request(app)
-  //     .put('/users/' + id)
-  //     .send(data)
-  //     // .set('Authorization', 'Bearer ' + token)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 400)
-  //     })
-  // })
+  it('16. should return HTTP 400 when called with bad data', function () {
+    let data = {
+      'userName': 1,
+      'pssword': '321'
+    }
+    return request(app)
+      .put('/users/' + id)
+      .send(data)
+      // .set('Authorization', 'Bearer ' + token)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  })
 
   it('should return HTTP 404 when querying with a non-existent id', function () {
     return request(app)

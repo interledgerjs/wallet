@@ -116,7 +116,7 @@ export async function updateUser (req: Request, res: Response) {
       if (!result) {
         res.sendStatus(200)
       } else {
-        res.sendStatus(404)
+        res.sendStatus(400)
       }
     } else {
       res.sendStatus(404)
