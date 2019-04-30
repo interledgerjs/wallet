@@ -9,7 +9,7 @@
     "codecov": "codecov",
     "docs": "typedoc --out docs/  src --module commonjs --readme README.md --name wallet",
     "lint": "tslint --project .",
-    "loadtest": "concurrently 'npm run watch-node' 'sleep 5 && artillery run -o artillery/report.json artillery/walletLoadTest.yml && artillery report artillery/report.json'",
+    "loadtest": "concurrently 'node initTestDB.js' 'npm run watch-node' 'sleep 5 && artillery run -o artillery/report.json artillery/walletLoadTest.yml && artillery report artillery/report.json'",
     "prepublishOnly": "npm run lint && npm test && npm run doc",
     "pretest": "node initTestDB.js && node initEmptyDB.js && tsc --build",
     "preversion": "npm run lint && npm test",
