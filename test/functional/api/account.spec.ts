@@ -84,7 +84,6 @@ describe('.get/accounts', function () {
     return request(app)
       .get('/accounts')
       .then(function (response) {
-        console.log(response.body)
         assert.equal(response.status, 404)
       })
   })
