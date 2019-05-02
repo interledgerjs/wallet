@@ -9,20 +9,20 @@ scenarios:
       - post:
           url: "/transactions"
           json:
-            debitAccount: 1
-            creditAccount: 2
+            debitAccountId: 1
+            creditAccountId: 2
             amount: 100
       - get:
           url: "/transactions/"
           capture:
             - json: "$[0].id"
               as: "id"
-            - json: "$[0].creditAccount"
-              as: "creditAccount"
+            - json: "$[0].creditAccountId"
+              as: "creditAccountId"
       - get:
           url: "/transactions/?id={{ id }}"
       - get:
-          url: "/transactions/?account={{ creditAccount }}"
+          url: "/transactions/?account={{ creditAccountId }}"
   - name: "Users"
     flow:
       - post:

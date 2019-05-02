@@ -3,7 +3,7 @@ const dotenv = require('dotenv').config()
 
 console.log('sqlite db building')
 
-const db = new sqlite3.Database('emptydb')
+const db = new sqlite3.Database('./database/testdb')
 db.run('DROP TABLE IF EXISTS users;')
 db.run('DROP TABLE IF EXISTS accounts;')
 db.run('DROP TABLE IF EXISTS transactions;', function(result, error) {
@@ -21,13 +21,14 @@ db.run('DROP TABLE IF EXISTS transactions;', function(result, error) {
       db.run('CREATE TABLE IF NOT EXISTS accounts (\
         id INTEGER PRIMARY KEY AUTOINCREMENT,\
         name VARCHAR(255),\
-        owner INT, balance INT,\
+        owner INTEGER,\
+        balance INT,\
         deletedAt DATETIME NOT NULL DEFAULT "",\
         lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
       db.run('CREATE TABLE IF NOT EXISTS transactions (\
         id INTEGER PRIMARY KEY AUTOINCREMENT,\
-        debitAccount INTEGER,\
-        creditAccount INT,\
+        debitAccountId INTEGER,\
+        creditAccountId INTEGER,\
         amount INTEGER,\
         date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
     })

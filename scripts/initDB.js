@@ -3,7 +3,7 @@ const dotenv = require('dotenv').config()
 
 console.log('sqlite db building')
 
-const db = new sqlite3.Database(process.env.DBNAME)
+const db = new sqlite3.Database(`${process.env.DBFOLDER}${process.env.DBNAME}`)
 
 db.serialize(function () {
   db.run('CREATE TABLE IF NOT EXISTS users (\
@@ -16,13 +16,14 @@ db.serialize(function () {
   db.run('CREATE TABLE IF NOT EXISTS accounts (\
     id INTEGER PRIMARY KEY AUTOINCREMENT,\
     name VARCHAR(255),\
-    owner INT, balance INT,\
+    owner INTEGER,\
+    balance INTEGER,\
     deletedAt DATETIME NOT NULL DEFAULT "",\
     lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
   db.run('CREATE TABLE IF NOT EXISTS transactions (\
     id INTEGER PRIMARY KEY AUTOINCREMENT,\
-    debitAccount INTEGER,\
-    creditAccount INT,\
+    debitAccountId INTEGER,\
+    creditAccountId INTEGER,\
     amount INTEGER,\
     date datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
 })
