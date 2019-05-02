@@ -3,7 +3,7 @@ const dotenv = require('dotenv').config()
 
 console.log('sqlite db building')
 
-const db = new sqlite3.Database('./database/testdb')
+const db = new sqlite3.Database(`${process.env.DBFOLDER}${process.env.DBNAME}`)
 db.run('DROP TABLE IF EXISTS users;')
 db.run('DROP TABLE IF EXISTS accounts;')
 db.run('DROP TABLE IF EXISTS transactions;', function(result, error) {
