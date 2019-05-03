@@ -21,7 +21,7 @@ if (process.env.LOGFILE === 'true') {
 }
 
 // get /user #returns all users
-export async function readUsers (req: Request, res: Response) { // missing authentication --------------------------------------------------------------------------
+export async function readUsers (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (isAuthorized(req.authData, req.params.id)) {
     try {
