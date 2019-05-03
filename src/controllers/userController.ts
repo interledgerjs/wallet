@@ -23,20 +23,16 @@ if (process.env.LOGFILE === 'true') {
 // get /user #returns all users
 export async function readUsers (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, req.params.id)) {
-    try {
-      const result = await retrieveUser()
-      if (result.length > 0) {
-        res.send(result)
-      } else {
-        res.sendStatus(404)
-      }
-    } catch (error) {
-      logger.error(error)
-      res.sendStatus(500)
+  try {
+    const result = await retrieveUser()
+    if (result.length > 0) {
+      res.send(result)
+    } else {
+      res.sendStatus(404)
     }
-  } else {
-    res.sendStatus(401)
+  } catch (error) {
+    logger.error(error)
+    res.sendStatus(500)
   }
 }
 
