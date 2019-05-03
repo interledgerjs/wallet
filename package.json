@@ -14,7 +14,7 @@
     "prepublishOnly": "npm run lint && npm test && npm run doc",
     "pretest": "npm run mkdir && node scripts/initTestDB.js && node scripts/initEmptyDB.js && tsc --build",
     "preversion": "npm run lint && npm test",
-    "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register 'test/**/*.spec.ts'",
+    "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register test/index.test.ts",
     "watch-node": "nodemon app.js --ignore ./test/",
     "watch-ts": "tsc -w",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\""
