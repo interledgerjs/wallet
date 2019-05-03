@@ -2,8 +2,8 @@ import { query } from '../services'
 
 export interface Transaction {
   id: number,
-  debitAccount: number,
-  creditAccount: number,
+  debitAccountId: number,
+  creditAccountId: number,
   amount: number,
   date: string
 }
@@ -11,8 +11,8 @@ export interface Transaction {
 export function isTransaction (transaction: any): transaction is Transaction {
   return (
     typeof transaction.id === 'number' &&
-    typeof transaction.debitAccount === 'number' &&
-    typeof transaction.creditAccount === 'number' &&
+    typeof transaction.debitAccountId === 'number' &&
+    typeof transaction.creditAccountId === 'number' &&
     typeof transaction.amount === 'number' &&
     typeof transaction.date === 'string'
   )
@@ -36,7 +36,7 @@ export function addTransaction (body: any): Promise<boolean> {
     try {
       const transaction = await buildTransaction(body)
       if (transaction && isTransaction(transaction)) {
-        const sql: string = `INSERT INTO transactions (debitAccount, creditAccount, amount, date) VALUES ('${transaction.debitAccount}', '${transaction.creditAccount}', '${transaction.amount}', '${transaction.date}')`
+        const sql: string = `INSERT INTO transactions (debitAccountId, creditAccountId, amount, date) VALUES ('${transaction.debitAccountId}', '${transaction.creditAccountId}', '${transaction.amount}', '${transaction.date}')`
         const result = await query(sql)
         resolve(false)
       } else {
@@ -89,7 +89,7 @@ export function retrieveTransactionById (id: number): Promise<Transaction> {
 // function to handle getting transactions by account id
 export function retrieveTransactionsByAccountId (id: number): Promise<Transaction[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM transactions where (debitAccount = '${id}' OR creditAccount = '${id}')`
+    const sql: string = `SELECT * FROM transactions where (debitAccountId = '${id}' OR creditAccountId = '${id}')`
     try {
       const result = await query(sql)
       if (isTransactionArray(result)) {
@@ -109,8 +109,8 @@ function buildTransaction (body: any, baseObj: Transaction = undefined): Promise
       if (baseObj === undefined) {
         const transactionObject: Transaction = {
           id: -1,
-          debitAccount: body.debitAccount,
-          creditAccount: body.creditAccount,
+          debitAccountId: body.debitAccountId,
+          creditAccountId: body.creditAccountId,
           amount: body.amount,
           date: new Date().toISOString()
         }

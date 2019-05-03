@@ -11,8 +11,8 @@ describe('.post/transactions', function () {
 
   it('should return HTTP 200 when called with good data', function () {
     let data = {
-      'debitAccount': 1,
-      'creditAccount': 2,
+      'debitAccountId': 1,
+      'creditAccountId': 2,
       'amount': 100
     }
     return request(app)
@@ -25,8 +25,8 @@ describe('.post/transactions', function () {
 
   it('should return HTTP 400 when called with bad data', function () {
     let data = {
-      'debitAccount': 1,
-      'creditAccount': 2,
+      'debitAccountId': 1,
+      'creditAccountId': 2,
       'amount': 'asd'
     }
     return request(app)
@@ -40,8 +40,8 @@ describe('.post/transactions', function () {
   it('should return HTTP 500 when db cannot be found', function () {
     process.env.DBNAME = ''
     let data = {
-      'debitAccount' : 1,
-      'creditAccount' : 2,
+      'debitAccountId' : 1,
+      'creditAccountId' : 2,
       'amount' : 100
     }
     return request(app)
