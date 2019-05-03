@@ -1,4 +1,4 @@
-import { query } from '../services/dbService'
+import { query } from '../services'
 
 export interface Account {
   id: number,
@@ -118,7 +118,6 @@ export function retrieveAccountByOwner (owner: number): Promise<Account[]> {
 // function to handle the updating of account information
 export function modifyAccount (accountExists: Account, body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    // console.log(body)
     if (
       (body.name === undefined || typeof body.name === 'string') &&
       (body.owner === undefined || typeof body.owner === 'number') &&

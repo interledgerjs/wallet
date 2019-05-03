@@ -1,7 +1,7 @@
-import { Request, Response } from 'express'
-import { Account, addAccount, retrieveAccountById, retrieveAccounts, retrieveAccountByOwner, modifyAccount, removeAccount } from '../models/accountModel'
-import { createLogger, transports, format } from 'winston'
 import * as dotenv from 'dotenv'
+import { Request, Response } from 'express'
+import { createLogger, format, transports } from 'winston'
+import { addAccount, modifyAccount, removeAccount, retrieveAccountById, retrieveAccountByOwner, retrieveAccounts } from '../models'
 
 dotenv.config()
 const logger = createLogger({
