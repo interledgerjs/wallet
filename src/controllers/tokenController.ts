@@ -1,9 +1,9 @@
+import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import * as jwt from 'jsonwebtoken'
-import { retrieveUserByUserName } from '../models/userModel'
-import { compareHash } from '../services/tokenService'
-import { createLogger, transports, format } from 'winston'
-import * as dotenv from 'dotenv'
+import { createLogger, format, transports } from 'winston'
+import { retrieveUserByUserName } from '../models'
+import { compareHash } from '../services'
 
 dotenv.config()
 const logger = createLogger({

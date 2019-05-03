@@ -1,7 +1,7 @@
-import { Request, Response } from 'express'
-import { retrieveUser, retrieveUserById, retrieveUserByUserName, addUser, addAdmin, modifyUser, removeUser, User } from '../models/userModel'
-import { createLogger, transports, format } from 'winston'
 import * as dotenv from 'dotenv'
+import { Request, Response } from 'express'
+import { createLogger, format, transports } from 'winston'
+import { addAdmin, addUser, modifyUser, removeUser, retrieveUser, retrieveUserById, retrieveUserByUserName } from '../models'
 
 dotenv.config()
 const logger = createLogger({

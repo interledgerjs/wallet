@@ -1,6 +1,5 @@
-import { User, retrieveUserByUserName } from '../models/userModel'
 import * as bcrypt from 'bcrypt'
-import { token } from '../controllers/tokenController'
+import { User } from '../models'
 
 export function compareHash (userExists: User, pssword: string) {
   return new Promise(function (resolve, reject) {

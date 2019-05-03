@@ -1,10 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import { createAccount, readAccounts, updateAccount, deleteAccount } from './controllers/accountController'
-import { createTransaction, readTransactions } from './controllers/transactionController'
-import { readUser, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
-import { token } from './controllers/tokenController'
+import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readTransactions, readUser, token, updateAccount, updateUser } from './controllers'
 
 dotenv.config()
 const app = express()

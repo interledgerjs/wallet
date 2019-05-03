@@ -1,4 +1,4 @@
-import { query } from '../services/dbService'
+import { query } from '../services'
 
 export interface Transaction {
   id: number,
