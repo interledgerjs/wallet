@@ -32,7 +32,8 @@ export async function token (req: Request, res: Response) {
       if (result) {
         const authData = {
           id: userExists.id,
-          userName: userExists.userName
+          userName: userExists.userName,
+          role: userExists.role
         }
         logger.info(authData)
         jwt.sign({ authData }, 'secret',{ expiresIn: '1d' }, (_err, token) => {

@@ -43,7 +43,7 @@ export function verifyToken (roles: Roles) {
       jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, tokenData: any) => {
         if (err) {
           res.sendStatus(403)
-        } else if (tokenData.authData.userRole !== roles && tokenData.authData.userRole !== Roles.Admin) {
+        } else if (tokenData.authData.role !== roles && tokenData.authData.role !== Roles.Admin) {
           res.sendStatus(401)
         } else {
           req.authData = tokenData.authData

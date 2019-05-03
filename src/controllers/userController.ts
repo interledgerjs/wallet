@@ -35,20 +35,22 @@ export async function readUsers (req: Request, res: Response) {
   }
 }
 
-// get /users/id/:id #returns single user by id
 export async function readUserById (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  const id: number = req.params.id
-  try {
-    const result = await retrieveUserById(id)
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
+  logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
+  if (isAuthorized(req.authData, req.params.id)) {
+    try {
+      const userById = await retrieveUserById(req.params.id)
+      if (userById) {
+        res.send(userById)
+      } else {
+        res.sendStatus(404)
+      }
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
     }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
+  } else {
+    res.sendStatus(401)
   }
 }
 
@@ -103,39 +105,47 @@ export async function createAdmin (req: Request, res: Response) {
 // put /user/:id
 export async function updateUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const userExists = await retrieveUserById(req.params.id)
-    if (userExists) {
-      const result = await modifyUser(userExists, req.body)
-      if (!result) {
-        res.sendStatus(200)
+  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+    try {
+      const userExists = await retrieveUserById(req.params.id)
+      if (userExists) {
+        const result = await modifyUser(userExists, req.body)
+        if (!result) {
+          res.sendStatus(200)
+        } else {
+          res.sendStatus(400)
+        }
       } else {
-        res.sendStatus(400)
+        res.sendStatus(404)
       }
-    } else {
-      res.sendStatus(404)
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
     }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
+  } else {
+    res.sendStatus(401)
   }
 }
 
 // delete /user/:id
 export async function deleteUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const userExists = await retrieveUserById(req.params.id)
-    if (userExists) {
-      const result = await removeUser(req.params.id)
-      if (!result) {
-        res.sendStatus(200)
+  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+    try {
+      const userExists = await retrieveUserById(req.params.id)
+      if (userExists) {
+        const result = await removeUser(req.params.id)
+        if (!result) {
+          res.sendStatus(200)
+        }
+      } else {
+        res.sendStatus(404)
       }
-    } else {
-      res.sendStatus(404)
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
     }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
+  } else {
+    res.sendStatus(401)
   }
 }

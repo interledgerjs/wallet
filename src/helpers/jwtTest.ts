@@ -2,6 +2,8 @@ import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
 import { Roles, verifyToken } from '../services'
+import { createUser } from '../controllers/userController'
+import { token } from '../controllers/tokenController'
 
 dotenv.config()
 const app = express()
@@ -17,3 +19,7 @@ app.get('/testUser', verifyToken(Roles.User), function (req, res, next) {
   res.sendStatus(200)
   return 'test'
 })
+
+app.post('/token', token) // body.userName, body.password
+
+app.post('/users', createUser)
