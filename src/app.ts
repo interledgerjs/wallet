@@ -3,8 +3,9 @@ import * as dotenv from 'dotenv'
 import * as express from 'express'
 import { createAccount, readAccounts, updateAccount, deleteAccount } from './controllers/accountController'
 import { createTransaction, readTransactions } from './controllers/transactionController'
-import { readUser, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
+import { readUser, createUser, createAdmin, updateUser, deleteUser, readUserById } from './controllers/userController'
 import { token } from './controllers/tokenController'
+import { verifyToken, Roles } from './services/jwtService'
 
 dotenv.config()
 const app = express()
@@ -20,11 +21,12 @@ app.put('/accounts/:id', updateAccount) // id as param, body.name, body.owner, b
 app.delete('/accounts/:id', deleteAccount) // id's as params
 
 app.post('/users', createUser) // body.userName, body.password
-app.get('/users', readUser) // no required input
-app.put('/users/:id', updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.role?
-app.delete('/users/:id', deleteUser) // id as param
+app.get('/users', verifyToken(Roles.Admin), readUser) // no required input
+app.get('/users/:id', verifyToken(Roles.User), readUserById)
+app.put('/users/:id', verifyToken(Roles.User), updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.role?
+app.delete('/users/:id', verifyToken(Roles.User), deleteUser) // id as param
 
-app.post('/admin', createAdmin) // body.userName, body.password
+app.post('/admin', verifyToken(Roles.Admin), createAdmin) // body.userName, body.password
 app.post('/token', token) // body.userName, body.password
 
 app.all('*', (req, res) => {

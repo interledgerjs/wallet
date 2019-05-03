@@ -4,15 +4,31 @@ import * as app from '../../../build/app'
 import * as expect from 'expect'
 
 describe('.post/admin', function () {
+  let token
+
+  before(function () {
+    return request(app)
+      .post('/token')
+      .send({
+        'userName': 'admin',
+        'pssword': 'admin'
+      })
+      .then(function (response) {
+        token = response.body.token
+      })
+  })
+
   it('should return HTTP 200 when called with good data', function () {
     let data = {
       'userName': 'test_admin',
       'pssword': '123',
       'role': 'admin'
     }
+
     return request(app)
       .post('/admin')
       .send(data)
+      .set('Authorization', 'Bearer ' + token)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
@@ -67,7 +83,7 @@ describe('.post/token', function () {
       .post('/token')
       .send(validUser)
     .then(function (response) {
-      assert.equal(response.body.token.length, 185)
+      assert.equal(response.body.token.length, 204)
       expect(response.body.token).not.toMatch('/ /')
     })
   })

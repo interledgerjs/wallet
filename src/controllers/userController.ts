@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { retrieveUser, retrieveUserById, retrieveUserByUserName, addUser, addAdmin, modifyUser, removeUser, User } from '../models/userModel'
 import { createLogger, transports, format } from 'winston'
+import { isAuthorized } from '../services/authorizeService'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -26,34 +27,31 @@ export async function readUser (req: Request, res: Response) {
     switch (queryBy) {
       case (undefined):
         const result = await retrieveUser()
-        if (result.length > 0) {
-          res.send(result)
-        } else {
-          res.sendStatus(404)
-        }
+        res.send(result)
         break
-      case ('id'):
-        const userById = await retrieveUserById(req.query.id)
-        if (userById) {
-          res.send(userById)
-        } else {
-          res.sendStatus(404)
-        }
-        break
-      case ('username'):
-        const userByUserName = await retrieveUserByUserName(req.query.username)
-        if (userByUserName) {
-          res.send(userByUserName)
-        } else {
-          res.sendStatus(404)
-        }
-        break
-      default:
-        res.sendStatus(404)
     }
   } catch (error) {
     logger.error(error)
     res.sendStatus(500)
+  }
+}
+
+export async function readUserById (req: Request, res: Response) {
+  logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
+  if (isAuthorized(req.authData, req.params.id)) {
+    try {
+      const userById = await retrieveUserById(req.params.id)
+      if (userById) {
+        res.send(userById)
+      } else {
+        res.sendStatus(404)
+      }
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
+    }
+  } else {
+    res.sendStatus(401)
   }
 }
 
@@ -108,39 +106,47 @@ export async function createAdmin (req: Request, res: Response) {
 // put /user/:id
 export async function updateUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const userExists = await retrieveUserById(req.params.id)
-    if (userExists) {
-      const result = await modifyUser(userExists, req.body)
-      if (!result) {
-        res.sendStatus(200)
+  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+    try {
+      const userExists = await retrieveUserById(req.params.id)
+      if (userExists) {
+        const result = await modifyUser(userExists, req.body)
+        if (!result) {
+          res.sendStatus(200)
+        } else {
+          res.sendStatus(400)
+        }
       } else {
-        res.sendStatus(400)
+        res.sendStatus(404)
       }
-    } else {
-      res.sendStatus(404)
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
     }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
+  } else {
+    res.sendStatus(401)
   }
 }
 
 // delete /user/:id
 export async function deleteUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  try {
-    const userExists = await retrieveUserById(req.params.id)
-    if (userExists) {
-      const result = await removeUser(req.params.id)
-      if (!result) {
-        res.sendStatus(200)
+  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+    try {
+      const userExists = await retrieveUserById(req.params.id)
+      if (userExists) {
+        const result = await removeUser(req.params.id)
+        if (!result) {
+          res.sendStatus(200)
+        }
+      } else {
+        res.sendStatus(404)
       }
-    } else {
-      res.sendStatus(404)
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
     }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
+  } else {
+    res.sendStatus(401)
   }
 }
