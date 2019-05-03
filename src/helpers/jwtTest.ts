@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import { verifyToken, Roles } from '../services/jwtService'
+import { Roles, verifyToken } from '../services'
 import { createUser } from '../controllers/userController'
 import { token } from '../controllers/tokenController'
 
