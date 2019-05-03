@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv'
 import * as express from 'express'
 import { createAccount, readAccounts, updateAccount, deleteAccount } from './controllers/accountController'
 import { createTransaction, readTransactions } from './controllers/transactionController'
-import { readUser, createUser, createAdmin, updateUser, deleteUser, readUserById } from './controllers/userController'
+import { readUsers, readUserById, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
 import { verifyToken, Roles } from './services/jwtService'
 
@@ -21,7 +21,7 @@ app.put('/accounts/:id', updateAccount) // id as param, body.name, body.owner, b
 app.delete('/accounts/:id', deleteAccount) // id's as params
 
 app.post('/users', createUser) // body.userName, body.password
-app.get('/users', verifyToken(Roles.Admin), readUser) // no required input
+app.get('/users', verifyToken(Roles.Admin), readUsers) // no required input
 app.get('/users/:id', verifyToken(Roles.User), readUserById)
 app.put('/users/:id', verifyToken(Roles.User), updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.role?
 app.delete('/users/:id', verifyToken(Roles.User), deleteUser) // id as param

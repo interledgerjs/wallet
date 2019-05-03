@@ -20,19 +20,23 @@ if (process.env.LOGFILE === 'true') {
   logger.add(new transports.File({ filename: 'logs.log' }))
 }
 
-export async function readUser (req: Request, res: Response) {
-  logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
-  const queryBy = Object.keys(req.query)[0]
-  try {
-    switch (queryBy) {
-      case (undefined):
-        const result = await retrieveUser()
+// get /user #returns all users
+export async function readUsers (req: Request, res: Response) { // missing authentication --------------------------------------------------------------------------
+  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
+  if (isAuthorized(req.authData, req.params.id)) {
+    try {
+      const result = await retrieveUser()
+      if (result.length > 0) {
         res.send(result)
-        break
+      } else {
+        res.sendStatus(404)
+      }
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
     }
-  } catch (error) {
-    logger.error(error)
-    res.sendStatus(500)
+  } else {
+    res.sendStatus(401)
   }
 }
 
