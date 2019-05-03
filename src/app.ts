@@ -12,7 +12,7 @@ const app = express()
 module.exports = app
 app.use(bodyParser.json())
 
-app.post('/transactions', createTransaction) // body.debitAccount, body.creditAccount, body.amount
+app.post('/transactions', createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
 app.get('/transactions/', readTransactions) // no required input
 
 app.post('/accounts', createAccount) // body.balance , body.name, body.owner
