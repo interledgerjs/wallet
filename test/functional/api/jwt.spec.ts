@@ -1,15 +1,53 @@
 import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/helpers/jwtTest'
+import * as dotenv from 'dotenv'
 
-const adminToken =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoRGF0YSI6eyJpZCI6OTk5OTk5OTk5LCJ1c2VyTmFtZSI6IkZvb0FkbWluIiwidXNlclJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE1NTQ4MTM4MjIsImV4cCI6MzU1NDkwMDIyMn0.3BJG7rfkGOwsaZo-34ZAAcCjHhfRF-fEnqfErl8JF6Q'
+dotenv.config()
+let adminName = 'admin'
+let adminPassword = 'admin'
+if (process.env.ADMINNAME) {
+  adminName = process.env.ADMINNAME
+}
+if (process.env.ADMINPASSWORD) {
+  adminPassword = process.env.ADMINPASSWORD
+}
+const adminUser = {
+  'userName': adminName,
+  'pssword': adminPassword
+}
 
-const userToken =
-'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoRGF0YSI6eyJpZCI6OTk5OTk5OTk4LCJ1c2VyTmFtZSI6IkZvb1VzZXIiLCJ1c2VyUm9sZSI6InVzZXIifSwiaWF0IjoxNTU0ODEzODIyLCJleHAiOjM1NTQ5MDAyMjJ9.BpE-AsIt-5QLr1YssjMjP7S4NGmtcaV_oOIvKQsNlIA'
-
+let adminToken
+let userToken
 const invalidToken =
 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoRGF0YSI6eyJpZCI6OTk5OTk5OTk5LCJ1c2VyTmFtZSI6IkZvb0FkbWluIiwidXNlclJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE1NTQ4MTM4MjIsImV4cCI6MzU1NDkwMDIyMn0.469fKHKKsRfMyPv_6jBrGmNVSsPqphWNT0PNa-Yv-mQ'
+before(function () {
+  return request(app)
+    .post('/token')
+    .send(adminUser)
+    .then(function (response) {
+      adminToken = response.body.token
+    })
+})
+before(function () {
+  return request(app)
+    .post('/users')
+    .send({
+      'userName': 'user',
+      'pssword': 'userPassword'
+    })
+    .then(function (response) {
+      return request(app)
+      .post('/token')
+      .send({
+        'userName': 'user',
+        'pssword': 'userPassword'
+      })
+      .then(function (response) {
+        userToken = response.body.token
+      })
+    })
+})
 
 describe('verifyToken', function () {
   it('should return function that goes next() once', function () {

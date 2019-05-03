@@ -2,17 +2,44 @@ import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
 import * as expect from 'expect'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+let adminName = 'admin'
+let adminPassword = 'admin'
+if (process.env.ADMINNAME) {
+  adminName = process.env.ADMINNAME
+}
+if (process.env.ADMINPASSWORD) {
+  adminPassword = process.env.ADMINPASSWORD
+}
+
+let adminToken
+before(function () {
+  return request(app)
+    .post('/token')
+    .send({
+      'userName': adminName,
+      'pssword': adminPassword
+    })
+    .then(function (response) {
+      adminToken = response.body.token
+    })
+})
 
 describe('.post/admin', function () {
+
   it('should return HTTP 200 when called with good data', function () {
     let data = {
       'userName': 'test_admin',
       'pssword': '123',
       'role': 'admin'
     }
+
     return request(app)
       .post('/admin')
       .send(data)
+      .set('Authorization', 'Bearer ' + adminToken)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 200)
@@ -28,6 +55,7 @@ describe('.post/admin', function () {
     return request(app)
       .post('/admin')
       .send(data)
+      .set('Authorization', 'Bearer ' + adminToken)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
         assert.equal(response.status, 400)
@@ -48,29 +76,33 @@ describe('.post/token', function () {
     'id': ''
   }
 
-  // before(function () {
-  //   return request(app)
-  //     .post('/users')
-  //     .send(validUser)
-  //     .then(function () {
-  //       return request(app)
-  //         .get('/users/?username=' + validUser.userName)
-  //         .then(function (response) {
-  //           // console.log(response)
-  //           validUser.id = response.body.id
-  //         })
-  //     })
-  // })
+  before(function () {
+    return request(app)
+      .post('/users')
+      .send(validUser)
+      .then(function () {
+        return request(app)
+          .get('/users')
+          .set('Authorization', 'Bearer ' + adminToken)
+          .then(function (response) {
+            response.body.forEach(element => {
+              if (element.userName === validUser.userName) {
+                validUser.id = element.id
+              }
+            })
+          })
+      })
+  })
 
-  // it('should return a token when passed valid credentials', function () {
-  //   return request(app)
-  //     .post('/token')
-  //     .send(validUser)
-  //   .then(function (response) {
-  //     assert.equal(response.body.token.length, 185)
-  //     expect(response.body.token).not.toMatch('/ /')
-  //   })
-  // })
+  it('should return a token when passed valid credentials', function () {
+    return request(app)
+      .post('/token')
+      .send(validUser)
+    .then(function (response) {
+      assert.equal(response.body.token.length, 204)
+      expect(response.body.token).not.toMatch('/ /')
+    })
+  })
 
   it('should return HTTP 404 when passed non-existent credentials', function () {
     return request(app)
@@ -138,9 +170,10 @@ describe('.get/users', function () {
   before(function () {
     return request(app)
       .get('/users')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[0].id
-        userName = response.body[0].userName
+        id = response.body[1].id
+        userName = response.body[1].userName
       })
   })
 
@@ -151,6 +184,7 @@ describe('.get/users', function () {
   it('should return HTTP 200 when db table contains data', function () {
     return request(app)
       .get('/users')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -160,6 +194,7 @@ describe('.get/users', function () {
     process.env.DBNAME = 'emptydb'
     return request(app)
       .get('/users')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 404)
       })
@@ -169,6 +204,7 @@ describe('.get/users', function () {
     process.env.DBNAME = ''
     return request(app)
       .get('/users')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 500)
       })
@@ -177,6 +213,7 @@ describe('.get/users', function () {
   it('should return HTTP 200 when querying by a valid id', function () {
     return request(app)
       .get('/users/' + id)
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -185,6 +222,7 @@ describe('.get/users', function () {
   it('should return HTTP 404 when querying by a non-existent id', function () {
     return request(app)
   		.get('/users/' + 9292929)
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 404)
       })
@@ -194,6 +232,7 @@ describe('.get/users', function () {
     process.env.DBNAME = ''
     return request(app)
       .get('/users/' + id)
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 500)
       })
@@ -226,14 +265,16 @@ describe('.put/users', function () {
   before(function () {
     return request(app)
       .get('/users')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[0].id
+        id = response.body[1].id
       })
   })
 
   it('should return HTTP 200 when querying with good data', function () {
     return request(app)
       .put('/users/' + id)
+      .set('Authorization', 'Bearer ' + adminToken)
       .send(data)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
@@ -248,6 +289,7 @@ describe('.put/users', function () {
     }
     return request(app)
       .put('/users/' + id)
+      .set('Authorization', 'Bearer ' + adminToken)
       .send(data)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
@@ -258,6 +300,7 @@ describe('.put/users', function () {
   it('should return HTTP 404 when querying with a non-existent id', function () {
     return request(app)
       .put('/users/' + 7851365)
+      .set('Authorization', 'Bearer ' + adminToken)
       .send(data)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
@@ -272,15 +315,16 @@ describe('.delete/users', function () {
   before(function () {
     return request(app)
       .get('/users')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[0].id
+        id = response.body[1].id
       })
   })
 
   it('should return HTTP 200 when called with a valid id', function () {
     return request(app)
       .delete('/users/' + id)
-      // .set('Authorization', 'Bearer ' + token)
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -289,7 +333,7 @@ describe('.delete/users', function () {
   it('should return HTTP 404 when called with a non-existent id', function () {
     return request(app)
       .delete('/users/' + 898989898)
-      // .set('Authorization', 'Bearer ' + token)
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 404)
       })
