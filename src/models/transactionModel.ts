@@ -78,6 +78,14 @@ export function retrieveTransactionById (id: number): Promise<Transaction> {
     const sql: string = `SELECT * FROM transactions where id = '${id}'`
     try {
       const result = await query(sql)
+      // let result: Transaction
+      // knex.select()
+      //   .from('transactions')
+      //   .where('id', id)
+      //   .then(function (res) {
+      //     result = Object.assign({}, res[0])
+      //     console.log(result)
+      //   })
       if (isTransactionArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
