@@ -282,7 +282,7 @@ describe('.put/users', function () {
       })
   })
 
-  it('16. should return HTTP 400 when called with bad data', function () {
+  it('should return HTTP 400 when called with bad data', function () {
     let data = {
       'userName': 1,
       'pssword': '321'
