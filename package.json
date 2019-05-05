@@ -12,7 +12,7 @@
     "mkdir": "mkdirp './database'",
     "loadtest": "concurrently 'node scripts/initTestDB.js' 'npm run watch-node' 'sleep 5 && artillery run -o artillery/report.json artillery/walletLoadTest.yml && artillery report artillery/report.json'",
     "prepublishOnly": "npm run lint && npm test && npm run doc",
-    "pretest": "npm run mkdir && node scripts/initTestDB.js && node scripts/initEmptyDB.js && tsc --build",
+    "pretest": "npm run mkdir && node scripts/initTestDB.js && node scripts/initEmptyDB.js && knex migrate:rollback && knex migrate:latest && knex seed:run && tsc --build",
     "preversion": "npm run lint && npm test",
     "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register test/index.test.ts",
     "watch-node": "nodemon app.js --ignore ./test/",
