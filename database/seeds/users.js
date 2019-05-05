@@ -20,7 +20,8 @@ exports.seed = function(knex, Promise) {
       return knex('users').insert({
         userName: adminName,
         role: 'admin',
-        pssword: await hash()
+        pssword: await hash(),
+        // deletedAt: knex.fn.now()
           });
     });
 };

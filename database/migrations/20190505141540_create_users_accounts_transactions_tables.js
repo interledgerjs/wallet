@@ -3,7 +3,7 @@ exports.up = function(knex, Promise) {
     table.increments('id')
     table.string('userName')
     table.timestamp('dateCreated').notNullable().defaultTo(knex.fn.now())
-    table.string('deletedAt').notNullable().defaultTo('')
+    table.timestamp('deletedAt').nullable()
     table.string('role')
     table.string('pssword')
   })
@@ -12,7 +12,7 @@ exports.up = function(knex, Promise) {
     table.string('name')
     table.integer('owner')
     table.integer('balance')
-    table.timestamp('deletedAt').defaultTo(null) //fix this
+    table.timestamp('deletedAt').nullable()
     table.timestamp('lastUpdated').notNullable().defaultTo(knex.fn.now())
 
     // table.integer('userId').references('id').inTable('users')
