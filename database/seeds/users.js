@@ -3,16 +3,8 @@ const dotenv = require('dotenv').config()
 const bcrypt = require('bcrypt')
 const saltRounds = 3
 
-if (process.env.ADMINNAME) {
-  adminName = process.env.ADMINNAME
-} else {
-  adminName = 'admin'
-}
-if (process.env.ADMINPASSWORD) {
-  adminPassword = process.env.ADMINPASSWORD
-} else {
-  adminPassword = 'admin'
-}
+adminName = process.env.ADMINNAME || 'admin'
+adminPassword = process.env.ADMINPASSWORD || 'admin'
 
 async function hash () {
   const salt = await bcrypt.genSalt(saltRounds)
