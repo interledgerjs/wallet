@@ -1,4 +1,5 @@
 import { query } from '../services'
+import * as knex from '../../database/knex'
 
 export interface Transaction {
   id: number,
@@ -34,10 +35,16 @@ export function isTransactionArray (result: any): result is Transaction[] {
 export function addTransaction (body: any): Promise<boolean> {
   return new Promise(async function (resolve: any, reject) {
     try {
-      const transaction = await buildTransaction(body)
-      if (transaction && isTransaction(transaction)) {
-        const sql: string = `INSERT INTO transactions (debitAccountId, creditAccountId, amount, date) VALUES ('${transaction.debitAccountId}', '${transaction.creditAccountId}', '${transaction.amount}', '${transaction.date}')`
-        const result = await query(sql)
+      const transaction = await buildTransaction(body) // planned for deprication; replace with transaction proto-object typeguard
+      if (transaction && isTransaction(transaction)) { // planned for deprication; replace with transaction proto-object typeguard
+        const sql: string = `INSERT INTO transactions (debitAccountId, creditAccountId, amount, date) VALUES ('${transaction.debitAccountId}', '${transaction.creditAccountId}', '${transaction.amount}', '${transaction.date}')` // planned for deprication; replace with transaction proto-object typeguard
+        const result = await query(sql) // planned for deprication; replace with transaction proto-object typeguard
+        knex('testdb')
+        .insert(body)
+        .into('transactions')
+        .then(function (id) {
+          console.log(id[0])
+        })
         resolve(false)
       } else {
         resolve(true)

@@ -1,5 +1,6 @@
 import * as sqlite3 from 'sqlite3'
 require('dotenv').config()
+import * as knex from '../../database/knex'
 
 export function query (sqlQuery: string): Promise<object[]> {
   return new Promise(function (resolve, reject) {

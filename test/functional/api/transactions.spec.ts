@@ -1,12 +1,17 @@
 import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
+import * as knex from '../../../database/knex'
 
 const database = process.env.DBNAME
 
 describe('.post/transactions', function () {
   afterEach(function () {
     process.env.DBNAME = database
+  })
+
+  after(function () {
+    knex.destroy()
   })
 
   it('should return HTTP 200 when called with good data', function () {
