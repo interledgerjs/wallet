@@ -41,7 +41,6 @@ export function retrieveUser (): Promise<User[]> {
   return new Promise(async function (resolve, reject) {
     try {
       let result = await knexSelectAll('users')
-      result = JSON.parse(JSON.stringify(result))
       if (isUserArray(result)) {
         resolve(result)
       } else {
@@ -60,7 +59,6 @@ export function retrieveUserById (id: number): Promise<User> {
     try {
       // const result = await query(sql)
       let result = await knexSelectById(id, 'users')
-      result = JSON.parse(JSON.stringify(result))
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -83,7 +81,6 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
     try {
       // const result = await query(sql)
       let result = await knexSelectByUserName(userName, 'users')
-      result = JSON.parse(JSON.stringify(result))
       // console.log('parsing done')
       // Object.keys(result[0]).forEach(function (key) {
       //   console.log(key)

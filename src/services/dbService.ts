@@ -24,6 +24,7 @@ export function knexSelectByUserName (userName: string, targetTable: string) {
           .from(targetTable)
           .where('userName', userName)
           .then(function (result: []) {
+            result = JSON.parse(JSON.stringify(result))
             return result
           })
 }
@@ -40,6 +41,7 @@ export function knexSelectAll (targetTable: string) {
   return knex.select()
           .from(targetTable)
           .then(function (result: []) {
+            result = JSON.parse(JSON.stringify(result))
             return result
           })
 }
@@ -49,6 +51,7 @@ export function knexSelectById (id: number, targetTable: string) {
           .from(targetTable)
           .where('id', id)
           .then(function (result) {
+            result = JSON.parse(JSON.stringify(result))
             return result
           })
 }
