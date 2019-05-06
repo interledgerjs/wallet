@@ -175,8 +175,8 @@ describe('.get/users', function () {
       .get('/users')
       .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[1].id
-        userName = response.body[1].userName
+        id = response.body[0].id
+        userName = response.body[0].userName
       })
   })
 
