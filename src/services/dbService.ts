@@ -35,3 +35,11 @@ export function knexInsert (body, targetTable) {
       return result
     })
 }
+
+export function knexSelectAll (targetTable: string) {
+  return knex.select()
+          .from(targetTable)
+          .then(function (result: []) {
+            return result
+          })
+}

@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt'
-import { query, knexSelectByUserName, knexInsert } from '../services'
+import { query, knexSelectByUserName, knexInsert, knexSelectAll } from '../services'
 const saltRounds = 3
 
 export interface User {
@@ -39,9 +39,9 @@ export function isUserArray (result: any): result is User[] {
 // function to handle getting all users
 export function retrieveUser (): Promise<User[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users WHERE deletedAt = ''`
     try {
-      const result = await query(sql)
+      let result = await knexSelectAll('users')
+      result = JSON.parse(JSON.stringify(result))
       if (isUserArray(result)) {
         resolve(result)
       } else {
