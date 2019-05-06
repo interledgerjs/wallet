@@ -16,7 +16,7 @@ function isUser (user: any): user is User {
     typeof user.id === 'number' &&
     typeof user.userName === 'string' &&
     typeof user.dateCreated === 'string' &&
-    typeof user.deletedAt === 'string' &&
+    (typeof user.deletedAt === 'object' || typeof user.deletedAt === 'string') &&
     typeof user.role === 'string' &&
     typeof user.pssword === 'string'
   )
@@ -80,7 +80,13 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
     // const sql: string = `SELECT * FROM users WHERE username = '${userName}' AND deletedAt = ''`
     try {
       // const result = await query(sql)
-      const result = await knexSelectByUserName(userName, 'users')
+      let result = await knexSelectByUserName(userName, 'users')
+      result = JSON.parse(JSON.stringify(result))
+      // console.log('parsing done')
+      // Object.keys(result[0]).forEach(function (key) {
+      //   console.log(key)
+      //   console.log(typeof result[0][key])
+      // })
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
