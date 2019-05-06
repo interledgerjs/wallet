@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import { createAccount, readAccounts, updateAccount, deleteAccount } from './controllers/accountController'
+import { createAccount, readAccounts, updateAccount, deleteAccount, readAccountById } from './controllers/accountController'
 import { createTransaction, readTransactions } from './controllers/transactionController'
 import { readUsers, readUserById, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
 import { token } from './controllers/tokenController'
@@ -15,10 +15,11 @@ app.use(bodyParser.json())
 app.post('/transactions', createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
 app.get('/transactions/', readTransactions) // no required input
 
-app.post('/accounts', createAccount) // body.balance , body.name, body.owner
-app.get('/accounts', readAccounts) // no required input
-app.put('/accounts/:id', updateAccount) // id as param, body.name, body.owner, body.balance
-app.delete('/accounts/:id', deleteAccount) // id's as params
+app.post('/accounts', verifyToken(Roles.User), createAccount) // body.name, body.owner
+app.get('/accounts', verifyToken(Roles.User), readAccounts) // no required input
+app.get('/accouunts/:id', verifyToken(Roles.User), readAccountById)
+app.put('/accounts/:id', verifyToken(Roles.Admin), updateAccount) // id as param, body.name, body.owner
+app.delete('/accounts/:id', verifyToken(Roles.Admin), deleteAccount) // id's as params
 
 app.post('/users', createUser) // body.userName, body.password
 app.get('/users', verifyToken(Roles.Admin), readUsers) // no required input

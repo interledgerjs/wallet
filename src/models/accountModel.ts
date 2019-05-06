@@ -4,7 +4,6 @@ export interface Account {
   id: number,
   name: string,
   owner: number,
-  balance: number,
   deletedAt: string,
   lastUpdated: string
 }
@@ -14,7 +13,6 @@ function isAccount (account: any): account is Account {
     typeof account.id === 'number' &&
     typeof account.name === 'string' &&
     typeof account.owner === 'number' &&
-    typeof account.balance === 'number' &&
     typeof account.deletedAt === 'string' &&
     typeof account.lastUpdated === 'string'
   )
@@ -35,16 +33,18 @@ function isAccountArray (result: any): result is Account[] {
 }
 
 // function to handle adding an account
-export function addAccount (body: any): Promise<boolean> {
+export function addAccount (body: any): Promise<any> {
   return new Promise(async function (resolve, reject) {
     try {
-      const account = await buildAccount(body)
-      if (account && isAccount(account)) {
-        const sql: string = `INSERT INTO accounts (name, balance, owner) VALUES ('${account.name}', ${account.balance}, ${account.owner})`
+      if (
+        typeof(body.name) === 'string' &&
+        typeof(body.owner) === 'number'
+      ) {
+        const sql: string = `INSERT INTO accounts (name, owner) VALUES ('${body.name}', ${body.owner})`
         const result = await query(sql)
-        resolve(false)
+        resolve(result)
       } else {
-        resolve(true)
+        resolve(undefined)
       }
     } catch (error) {
       reject(error)
@@ -121,12 +121,11 @@ export function modifyAccount (accountExists: Account, body: any): Promise<boole
     if (
       (body.name === undefined || typeof body.name === 'string') &&
       (body.owner === undefined || typeof body.owner === 'number') &&
-      (body.deletedAt === undefined || typeof body.deletedAt === 'string') &&
-      (body.balance === undefined || typeof body.balance === 'number')
+      (body.deletedAt === undefined || typeof body.deletedAt === 'string')
     ) {
       try {
         const account = await buildAccount(body, accountExists)
-        const sql: string = `UPDATE accounts SET name = '${account.name}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE id = ${account.id} AND owner = ${account.owner}`
+        const sql: string = `UPDATE accounts SET name = '${account.name}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE id = ${account.id} AND owner = ${account.owner}`
         const result = await query(sql)
         resolve(false)
       } catch (error) {
@@ -158,7 +157,6 @@ function buildAccount (body: any, baseObj: Account = undefined): Promise<Account
           id: 0,
           name: body.name,
           owner: body.owner,
-          balance: body.balance,
           deletedAt: '',
           lastUpdated: ''
         }
@@ -168,7 +166,6 @@ function buildAccount (body: any, baseObj: Account = undefined): Promise<Account
           id: baseObj.id,
           name: baseObj.name,
           owner: baseObj.owner,
-          balance: baseObj.balance,
           deletedAt: baseObj.deletedAt,
           lastUpdated: new Date().toISOString()
         }
@@ -177,9 +174,6 @@ function buildAccount (body: any, baseObj: Account = undefined): Promise<Account
         }
         if (body.dateCreated !== undefined) {
           accountObject.owner = body.owner
-        }
-        if (body.balance !== undefined) {
-          accountObject.balance = body.balance
         }
         if (body.deletedAt !== undefined) {
           accountObject.deletedAt = body.deletedAt

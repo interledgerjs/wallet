@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { Transaction, addTransaction, retrieveTransactions, retrieveTransactionById, retrieveTransactionsByAccountId } from '../models/transactionModel'
 import { createLogger, transports, format } from 'winston'
+import { isAuthorized } from '../services/authorizeService'
 import * as dotenv from 'dotenv'
 
 dotenv.config()

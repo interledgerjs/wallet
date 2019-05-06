@@ -55,7 +55,6 @@ scenarios:
           json:
             name: "Name"
             owner: 1
-            balance: 100
       - get:
           url: "/accounts/"
           capture:
@@ -71,6 +70,5 @@ scenarios:
           url: "/accounts/{{ id }}"
           json:
             owner: 5
-            balance: 3
       - delete:
           url: "/accounts/{{ id }}"

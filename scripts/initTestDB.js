@@ -41,7 +41,6 @@ db.run('DROP TABLE IF EXISTS transactions;', function(result, error) {
         id INTEGER PRIMARY KEY AUTOINCREMENT,\
         name VARCHAR(255),\
         owner INTEGER,\
-        balance INT,\
         deletedAt DATETIME NOT NULL DEFAULT "",\
         lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
       db.run('CREATE TABLE IF NOT EXISTS transactions (\
