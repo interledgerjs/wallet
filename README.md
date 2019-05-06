@@ -17,10 +17,39 @@ All source code is expected to be TypeScript and is placed in the `src` folder. 
 
 The NPM package will not contain any TypeScript files (`*.ts`) but will have typings and source maps.
 
-### Scripts
+### Environmental variables
+The environmental variable file, in the root folder, is used to store and configure variables for database management, development and deployment. This repo is supplied with an `example.env`.
+
+Please change the example variables to suit your needs.
+
+## Scripts
 
   - `clean` : Cleans the build folder and test output
   - `build` : Build the project
   - `lint`  : Run the linter over the project
   - `test`  : Run the unit tests and produce a code coverage report
+  - `loadtest`: Run the loadtest and produces an artillery report afterwards
   - `docs`   : Build the docs
+
+
+
+- `consolelog` will show Winston logging for debugging
+
+## Endpoints
+
+### Users
+|        | Path                        | Description                                                         | Expected Output                                                  | Expected Body Input                                         |
+|--------|-----------------------------|---------------------------------------------------------------------|------------------------------------------------------------------|-------------------------------------------------------------|
+| post   | /users                      | Check for duplicate users, create a new user in db, hashes password | 200                                                              | { userName, password }                                      |
+| get    | /users                      | Return all users as an array of objects                             | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ] | None                                                        |
+| get    | /users/?id=[id]             | Return a user specified by id as an object                          | { id, userName, dateCreated, deletedAt, role, pssword }          | None                                                        |
+| get    | /users/?username=[username] | Return a user specified by username as an object                    | { id, userName, dateCreated, deletedAt, role, pssword }          | None                                                        |
+| put    | /user/:id                   | Update a user specified by id                                       | 200                                                              | At least one: { userName, dateCreated, deletedAt,,pssword } |
+| delete | /user/:id                   | Soft delete a user specified by id                                  | 200                                                              | None                                                        |
+### Accounts
+TODO
+
+### Transactions
+TODO
+
+### Services
