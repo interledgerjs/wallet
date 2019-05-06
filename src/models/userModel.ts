@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcrypt'
 import { query, knexSelectByUserName, knexInsert, knexSelectAll, knexSelectById, knexUpdateById } from '../services'
+import * as knex from '../../database/knex'
 const saltRounds = 3
 
 export interface User {
@@ -163,8 +164,12 @@ export function modifyUser (userExists: User, body: any): Promise<boolean> {
 export function removeUser (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     try {
-      const sql: string = `UPDATE users SET deletedAt = '${new Date().toISOString()}' where id = '${id}'`
-      const result = await query(sql)
+      // const sql: string = `UPDATE users SET deletedAt = '${new Date().toISOString()}' where id = '${id}'`
+      // const result = await query(sql)
+      let body = {
+        deletedAt: knex.fn.now()
+      }
+      let result = await knexUpdateById(body, id, 'users')
       resolve(false)
     } catch (error) {
       reject(error)
