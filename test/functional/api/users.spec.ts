@@ -241,7 +241,7 @@ describe('.get/users', function () {
   //     })
   // })
 
-  // it('should return HTTP 404 when querying by a non-existing userName', function () {
+  // it('should return HTTP 404 when querying by a non-existing userName', function () { // test suspended; route currently not supported
   //   return request(app)
   //     .get('/users?username=' + 'jhfgsxhjb')
   //     .then(function (response) {
