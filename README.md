@@ -28,7 +28,7 @@ Please change the example variables to suit your needs.
   - `build` : Build the project
   - `lint`  : Run the linter over the project
   - `test`  : Run the unit tests and produce a code coverage report
-  - `loadtest`: Run the loadtest and produces an artillery report afterwards
+  - `loadtest` : Run the loadtest and produces an artillery report afterwards
   - `docs`   : Build the docs
   - `consolelog`  : will show Winston logging for debugging
 
