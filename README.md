@@ -44,7 +44,7 @@ Endpoints for user data
 | *get* | /users | Return all users as an array of objects | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ] | None |
 | *get* | /users/?id=[id] | Return a user specified by id | { id, userName, dateCreated, deletedAt, role, pssword } | None |
 | *get* | /users/?username=[username] | Return a user specified by username | { id, userName, dateCreated, deletedAt, role, pssword } | None |
-| *put* | /user/:id | Update a user specified by id | 200 | At least one: { userName, dateCreated, deletedAt,,pssword } |
+| *put* | /user/:id | Update a user specified by id | 200 | At least one: { userName, dateCreated, deletedAt,pssword } |
 | *delete* | /user/:id | Soft delete a user specified by id | 200 | None |
 
 ### Accounts
