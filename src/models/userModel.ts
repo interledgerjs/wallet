@@ -1,5 +1,5 @@
-import { query } from '../services/dbService'
 import * as bcrypt from 'bcrypt'
+import { query } from '../services'
 const saltRounds = 3
 
 export interface User {

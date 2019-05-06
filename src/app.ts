@@ -1,11 +1,8 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import { createAccount, readAccounts, updateAccount, deleteAccount, readAccountById } from './controllers/accountController'
-import { createTransaction, readTransactions } from './controllers/transactionController'
-import { readUsers, readUserById, createUser, createAdmin, updateUser, deleteUser } from './controllers/userController'
-import { token } from './controllers/tokenController'
-import { verifyToken, Roles } from './services/jwtService'
+import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readAccountById, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
+import { verifyToken, Roles } from './services'
 
 dotenv.config()
 const app = express()

@@ -1,8 +1,7 @@
-import { Request, Response } from 'express'
-import { Transaction, addTransaction, retrieveTransactions, retrieveTransactionById, retrieveTransactionsByAccountId } from '../models/transactionModel'
-import { createLogger, transports, format } from 'winston'
-import { isAuthorized } from '../services/authorizeService'
 import * as dotenv from 'dotenv'
+import { Request, Response } from 'express'
+import { createLogger, format, transports } from 'winston'
+import { addTransaction, retrieveTransactionById, retrieveTransactions, retrieveTransactionsByAccountId } from '../models'
 
 dotenv.config()
 const logger = createLogger({
