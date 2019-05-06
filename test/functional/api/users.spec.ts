@@ -3,6 +3,7 @@ import * as request from 'supertest'
 import * as app from '../../../build/app'
 import * as expect from 'expect'
 import * as dotenv from 'dotenv'
+import * as knex from '../../../database/knex'
 
 dotenv.config()
 let adminName = 'admin'
@@ -27,7 +28,9 @@ before(function () {
     })
 })
 
-describe('.post/admin', function () {
+after(function () {
+  knex.destroy()
+})
 
   it('should return HTTP 200 when called with good data', function () {
     let data = {
