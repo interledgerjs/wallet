@@ -203,15 +203,15 @@ describe('.get/users', function () {
   //     })
   // })
 
-  it('should return HTTP 500 when db cannot be found', function () {
-    process.env.DBNAME = ''
-    return request(app)
-      .get('/users')
-      .set('Authorization', 'Bearer ' + adminToken)
-      .then(function (response) {
-        assert.equal(response.status, 500)
-      })
-  })
+  // it('should return HTTP 500 when db cannot be found', function () { // test suspended; changing target db during test not yet implemented
+  //   process.env.DBNAME = ''
+  //   return request(app)
+  //     .get('/users')
+  //     .set('Authorization', 'Bearer ' + adminToken)
+  //     .then(function (response) {
+  //       assert.equal(response.status, 500)
+  //     })
+  // })
 
   it('should return HTTP 200 when querying by a valid id', function () {
     return request(app)
