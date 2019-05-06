@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt'
-import { query, knexSelectByUserName, knexInsert, knexSelectAll } from '../services'
+import { query, knexSelectByUserName, knexInsert, knexSelectAll, knexSelectById, knexUpdateById } from '../services'
 const saltRounds = 3
 
 export interface User {
@@ -56,9 +56,11 @@ export function retrieveUser (): Promise<User[]> {
 // function to handle get user by id
 export function retrieveUserById (id: number): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users where id = '${id}' AND deletedAt = ''`
+    // const sql: string = `SELECT * FROM users where id = '${id}' AND deletedAt = ''`
     try {
-      const result = await query(sql)
+      // const result = await query(sql)
+      let result = await knexSelectById(id, 'users')
+      result = JSON.parse(JSON.stringify(result))
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -146,9 +148,10 @@ export function modifyUser (userExists: User, body: any): Promise<boolean> {
       (body.pssword === undefined || typeof body.pssword === 'string')
     ) {
       try {
-        const userObject = await buildUser(body, userExists)
-        const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE id = '${userObject.id}'`
-        const result = await query(sql)
+        // const userObject = await buildUser(body, userExists)
+        // const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE id = '${userObject.id}'`
+        // const result = await query(sql)
+        let result = await knexUpdateById(body, userExists.id, 'users')
         resolve(false)
       } catch (error) {
         reject(error)

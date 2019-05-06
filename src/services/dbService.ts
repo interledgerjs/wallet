@@ -43,3 +43,21 @@ export function knexSelectAll (targetTable: string) {
             return result
           })
 }
+
+export function knexSelectById (id: number, targetTable: string) {
+  return knex.select()
+          .from(targetTable)
+          .where('id', id)
+          .then(function (result) {
+            return result
+          })
+}
+
+export function knexUpdateById (body, id, targetTable) {
+  return knex(targetTable)
+    .where('id', id)
+    .update(body)
+    .then(function () {
+      return knexSelectById(id, 'users')
+    })
+}
