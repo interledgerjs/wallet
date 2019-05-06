@@ -18,3 +18,20 @@ export function query (sqlQuery: string): Promise<object[]> {
     }
   })
 }
+
+export function knexSelectByUserName (userName: string, targetTable: string) {
+  return knex.select()
+          .from(targetTable)
+          .where('userName', userName)
+          .then(function (result: []) {
+            return result
+          })
+}
+
+export function knexInsert (body, targetTable) {
+  return knex(targetTable)
+    .insert(body)
+    .then(function (result) {
+      return result
+    })
+}

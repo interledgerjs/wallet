@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt'
-import { query } from '../services'
+import { query, knexSelectByUserName, knexInsert } from '../services'
 const saltRounds = 3
 
 export interface User {
@@ -77,9 +77,10 @@ export function retrieveUserById (id: number): Promise<User> {
 // function to handle get user by userName
 export function retrieveUserByUserName (userName: string): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM users WHERE username = '${userName}' AND deletedAt = ''`
+    // const sql: string = `SELECT * FROM users WHERE username = '${userName}' AND deletedAt = ''`
     try {
-      const result = await query(sql)
+      // const result = await query(sql)
+      const result = await knexSelectByUserName(userName, 'users')
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -99,10 +100,9 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
 export function addUser (body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     try {
-      const user = await buildUser(body)
-      if (user && isUser(user)) {
-        const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'user', '${user.pssword}')`
-        const result = await query(sql)
+      if (body) { // add proto object checker
+        const result = await knexInsert(body, 'users')
+        // console.log(result) // this shows return value of knexInsert()
         resolve(false)
       } else {
         resolve(true)
