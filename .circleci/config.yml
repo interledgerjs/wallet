@@ -30,7 +30,7 @@ jobs:
           name: Install MySQL
           command: sudo apt install -y mysql-client
           
-      - run: ping server_ip_address
+      - run: ping 127.0.0.1
       
       - run:
           name: Mysql database
