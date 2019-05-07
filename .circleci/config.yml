@@ -11,10 +11,6 @@ defaults: &defaults
     - image: circleci/node:8.12
 
     - image: mysql:14.14
-        command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
-        environment:
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
 
 jobs:
   test:
@@ -29,6 +25,10 @@ jobs:
             - "node-v1-{{ .Branch }}-{{ checksum \"package-lock.json\" }}"
             - "node-v1-{{ .Branch }}-"
             - "node-v1-"
+
+      - run: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
+          environment:
+            MYSQL_ALLOW_EMPTY_PASSWORD: true
 
       - run:
           name: Install MySQL
