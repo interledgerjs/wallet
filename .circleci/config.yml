@@ -30,7 +30,7 @@ jobs:
           name: Install MySQL
           command: sudo apt install -y mysql-client
           
-      - run: mysql --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
+      - run: mysqladmin -u root password ''
           
       - run:
           name: Mysql database
