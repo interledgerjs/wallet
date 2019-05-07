@@ -25,10 +25,6 @@ jobs:
             - "node-v1-"
           
       - run:
-          name: Install KNEX
-          command: npm install -g knex
-      
-      - run:
           name: NPM Install
           command: npm install
      
