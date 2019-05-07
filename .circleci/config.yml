@@ -27,9 +27,7 @@ jobs:
             - "node-v1-"
 
       - run: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
-          environment:
-            MYSQL_ALLOW_EMPTY_PASSWORD: true
-
+          
       - run:
           name: Install MySQL
           command: sudo apt install -y mysql-client
