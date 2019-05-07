@@ -76,7 +76,7 @@ export async function readAccounts (req: Request, res: Response) {
 
 export async function readAccountById (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, req.params.id)) {
+  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
     try {
       const userById = await retrieveAccountById(req.params.id)
       if (userById) {

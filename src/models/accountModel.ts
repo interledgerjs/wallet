@@ -1,4 +1,5 @@
 import { query } from '../services'
+import { retrieveTransactionsByAccountId } from './'
 
 export interface Account {
   id: number,
@@ -30,6 +31,25 @@ function isAccountArray (result: any): result is Account[] {
   return (
     isAccountArray || result === null
   )
+}
+
+export function calculateBalance (accountId: number): Promise<number> {
+  return new Promise(async function (resolve, reject) {
+    let balance: number = 0
+    try {
+      const transactions = await retrieveTransactionsByAccountId(accountId)
+      transactions.forEach(element => {
+        if (element.debitAccountId === accountId) {
+          balance -= element.amount
+        } else {
+          balance += element.amount
+        }
+      })
+      resolve(balance)
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 // function to handle adding an account
@@ -65,7 +85,7 @@ export function retrieveAccountById (id: number): Promise<Account> {
           resolve(null)
         }
       } else {
-        reject(true)
+        reject('Not account array')
       }
     } catch (error) {
       reject(error)
@@ -86,7 +106,7 @@ export function retrieveAccounts (): Promise<Account[]> {
           resolve(null)
         }
       } else {
-        reject(true)
+        reject('Not account array')
       }
     } catch (error) {
       reject(error)
@@ -107,7 +127,7 @@ export function retrieveAccountByOwner (owner: number): Promise<Account[]> {
           resolve(null)
         }
       } else {
-        reject(true)
+        reject('Not account array')
       }
     } catch (error) {
       reject(error)

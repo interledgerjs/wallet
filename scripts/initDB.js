@@ -37,7 +37,13 @@ db.serialize(function () {
     name VARCHAR(255),\
     owner INTEGER,\
     deletedAt DATETIME NOT NULL DEFAULT "",\
-    lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
+    lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', async function(err) {
+      if (err) {
+        console.log(err)
+      } else {
+        db.run(`INSERT INTO accounts (name, owner, deletedAt, lastUpdated) VALUES ('equity', 1, '', '${new Date().toISOString()}')`)
+      }
+    })
   db.run('CREATE TABLE IF NOT EXISTS transactions (\
     id INTEGER PRIMARY KEY AUTOINCREMENT,\
     debitAccountId INTEGER,\

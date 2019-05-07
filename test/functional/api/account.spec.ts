@@ -89,8 +89,8 @@ describe('.get/accounts', function () {
       .get('/accounts')
       .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[0].id
-        owner = response.body[0].owner
+        id = response.body[2].id
+        owner = response.body[2].owner
       })
   })
 
@@ -180,7 +180,7 @@ describe('.put/accounts', function () {
       .get('/accounts')
       .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[0].id
+        id = response.body[2].id
       })
   })
 
@@ -242,7 +242,7 @@ describe('.delete/accounts', function () {
       .get('/accounts')
       .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[0].id
+        id = response.body[2].id
       })
   })
 

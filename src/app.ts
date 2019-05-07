@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser'
 import * as dotenv from 'dotenv'
 import * as express from 'express'
-import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readAccountById, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
+import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readAccountById, readTransactionById, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
 import { verifyToken, Roles } from './services'
 
 dotenv.config()
@@ -9,8 +9,9 @@ const app = express()
 module.exports = app
 app.use(bodyParser.json())
 
-app.post('/transactions', createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
-app.get('/transactions/', readTransactions) // no required input
+app.post('/transactions', verifyToken(Roles.User), createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
+app.get('/transactions/', verifyToken(Roles.User), readTransactions) // no required input
+app.get('/transactions/:id', verifyToken(Roles.User), readTransactionById)
 
 app.post('/accounts', verifyToken(Roles.User), createAccount) // body.name, body.owner
 app.get('/accounts', verifyToken(Roles.User), readAccounts) // no required input
