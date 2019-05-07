@@ -17,7 +17,8 @@
     "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register test/index.test.ts",
     "watch-node": "nodemon app.js --ignore ./test/",
     "watch-ts": "tsc -w",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\""
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "dothething": "knex migrate:make time_to_start"
   },
   "author": "",
   "license": "ISC",
@@ -39,7 +40,6 @@
     "express": "^4.16.4",
     "joi": "^14.3.1",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.16.5",
     "mkdirp": "^0.5.1",
     "mysql": "^2.17.1",
     "nock": "^10.0.6",
@@ -61,6 +61,7 @@
     "concurrently": "^4.1.0",
     "dotenv": "^7.0.0",
     "expect": "^24.8.0",
+    "knex": "^0.16.5",
     "mocha": "^5.2.0",
     "mocha-typescript": "^1.1.17",
     "nodemon": "^1.19.0",
