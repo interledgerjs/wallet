@@ -1,4 +1,5 @@
-import { query } from '../services'
+import { knexInsert, knexSelectById, knexSelectAll, knexSelectByOwner, knexUpdateById } from '../services'
+import * as knex from '../../database/knex'
 
 export interface Account {
   id: number,
@@ -15,7 +16,7 @@ function isAccount (account: any): account is Account {
     typeof account.name === 'string' &&
     typeof account.owner === 'number' &&
     typeof account.balance === 'number' &&
-    typeof account.deletedAt === 'string' &&
+    (typeof account.deletedAt === 'string' || typeof account.deletedAt === 'object') &&
     typeof account.lastUpdated === 'string'
   )
 }
@@ -38,10 +39,9 @@ function isAccountArray (result: any): result is Account[] {
 export function addAccount (body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     try {
-      const account = await buildAccount(body)
-      if (account && isAccount(account)) {
-        const sql: string = `INSERT INTO accounts (name, balance, owner) VALUES ('${account.name}', ${account.balance}, ${account.owner})`
-        const result = await query(sql)
+      let result
+      if (body) {
+        result = await knexInsert(body, 'accounts')
         resolve(false)
       } else {
         resolve(true)
@@ -55,9 +55,8 @@ export function addAccount (body: any): Promise<boolean> {
 // function to handle retrieving a singular account by id
 export function retrieveAccountById (id: number): Promise<Account> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE id = '${id}' AND deletedAt = ''`
     try {
-      const result = await query(sql)
+      let result = await knexSelectById(id, 'accounts')
       if (isAccountArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -76,9 +75,8 @@ export function retrieveAccountById (id: number): Promise<Account> {
 // function to handle the retrieval of all accounts
 export function retrieveAccounts (): Promise<Account[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE deletedAt = ''`
     try {
-      const result = await query(sql)
+      let result = await knexSelectAll('accounts')
       if (isAccountArray(result)) {
         if (result.length > 0) {
           resolve(result)
@@ -97,9 +95,8 @@ export function retrieveAccounts (): Promise<Account[]> {
 // function to handle the retrieval of all accounts by specific owner
 export function retrieveAccountByOwner (owner: number): Promise<Account[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM accounts WHERE owner = ${owner} AND deletedAt = ''`
     try {
-      const result = await query(sql)
+      let result = await knexSelectByOwner(owner, 'accounts')
       if (isAccountArray(result)) {
         if (result.length > 0) {
           resolve(result)
@@ -125,9 +122,7 @@ export function modifyAccount (accountExists: Account, body: any): Promise<boole
       (body.balance === undefined || typeof body.balance === 'number')
     ) {
       try {
-        const account = await buildAccount(body, accountExists)
-        const sql: string = `UPDATE accounts SET name = '${account.name}', balance = '${account.balance}', lastUpdated = '${account.lastUpdated}', deletedAt = '${account.deletedAt}' WHERE id = ${account.id} AND owner = ${account.owner}`
-        const result = await query(sql)
+        let result = await knexUpdateById(body, accountExists.id, 'accounts')
         resolve(false)
       } catch (error) {
         reject(error)
@@ -140,9 +135,11 @@ export function modifyAccount (accountExists: Account, body: any): Promise<boole
 
 export function removeAccount (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `UPDATE accounts SET deletedAt = '${new Date().toISOString()}' WHERE id = ${id}`
     try {
-      const result = await query(sql)
+      let body = {
+        deletedAt: knex.fn.now()
+      }
+      let result = await knexUpdateById(body, id, 'users')
       resolve(false)
     } catch (error) {
       reject(error)
