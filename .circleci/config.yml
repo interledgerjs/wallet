@@ -25,8 +25,8 @@ jobs:
             - "node-v1-"
           
       - run:
-          name: Install MySQL-Client
-          command: sudo apt-get install mysql-server
+          name: Install KNEX
+          command: sudo apt-get install -g knex
       
       - run:
           name: NPM Install
