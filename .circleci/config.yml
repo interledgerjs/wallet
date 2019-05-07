@@ -10,7 +10,7 @@ defaults: &defaults
       # Use active LTS release: https://github.com/nodejs/Release#release-schedule 
     - image: circleci/node:8.12
 
-    - image: mysql:5.7
+    - image: mysql:14.14
         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_bin --innodb-large-prefix=true --innodb-file-format=Barracuda
         environment:
           MYSQL_USER: root
