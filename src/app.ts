@@ -44,8 +44,8 @@ const start = async () => {
 }
 // instabul ignore if
 if (!module.parent) {
-  start().catch(e => {
-    const errInfo = (e && typeof e === 'object' && e.stack) ? e.stack : e
-    winston.error(errInfo)
+  start().catch(err => {
+    console.log(err)
+    process.exit(1)
   })
 }
