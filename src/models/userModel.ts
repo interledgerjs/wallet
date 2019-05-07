@@ -82,11 +82,10 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
     try {
       // const result = await query(sql)
       let result = await knexSelectByUserName(userName, 'users')
-      // console.log('parsing done')
       // Object.keys(result[0]).forEach(function (key) {
-      //   console.log(key)
-      //   console.log(typeof result[0][key])
-      // })
+        //   console.log(key)
+        //   console.log(typeof result[0][key])
+        // })
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -125,8 +124,9 @@ export function addAdmin (body: any): Promise<boolean> {
     try {
       const user = await buildUser(body)
       if (user && isUser(user)) {
-        const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
-        const result = await query(sql)
+        // const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
+        // const result = await query(sql)
+        let result = await knexInsert(body, 'users')
         resolve(false)
       } else {
         resolve(true)

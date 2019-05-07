@@ -33,7 +33,7 @@ export function knexInsert (body, targetTable) {
   return knex(targetTable)
     .insert(body)
     .then(function (result) {
-      return result
+      return knexSelectById(result[0], 'users')
     })
 }
 
