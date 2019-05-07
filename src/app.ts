@@ -30,7 +30,6 @@ app.post('/token', token) // body.userName, body.password
 app.all('*', (req, res) => {
   res.sendStatus(404)
 })
-// istanbul ignore if
 
 const start = async () => {
   const port = process.env.PORT || 5000
@@ -43,14 +42,10 @@ const start = async () => {
     process.exit(1)
   }
 }
+// instabul ignore if
 if (!module.parent) {
   start().catch(e => {
     const errInfo = (e && typeof e === 'object' && e.stack) ? e.stack : e
     winston.error(errInfo)
   })
 }
-// if (!module.parent) {
-//   app.listen(port, () => {
-//     console.log('server running on port %d', process.env.PORT)
-//   })
-// }
