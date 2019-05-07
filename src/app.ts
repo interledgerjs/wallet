@@ -3,7 +3,6 @@ import * as dotenv from 'dotenv'
 import * as express from 'express'
 import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
 import { verifyToken, Roles } from './services/jwtService'
-import * as winston from 'winston'
 
 dotenv.config()
 const app = express()
