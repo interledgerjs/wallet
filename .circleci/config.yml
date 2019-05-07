@@ -25,7 +25,11 @@ jobs:
             - "node-v1-"
           
       - run:
-          name: Install
+          name: Install MySQL-Client
+          command: sudo apt install -y mysql-client
+      
+      - run:
+          name: NPM Install
           command: npm install
      
       - run:
