@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv'
 import * as express from 'express'
 import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
 import { verifyToken, Roles } from './services/jwtService'
+import * as winston from 'winston'
 
 dotenv.config()
 const app = express()
@@ -30,9 +31,21 @@ app.all('*', (req, res) => {
   res.sendStatus(404)
 })
 
-// istanbul ignore if
+const start = async () => {
+  const port = process.env.PORT || 5000
+  try {
+    app.listen(port, () => {
+      console.log('server running on port %d', port)
+    })
+  } catch (err) {
+    console.log(err)
+    process.exit(1)
+  }
+}
+// instabul ignore if
 if (!module.parent) {
-  app.listen(process.env.PORT, () => {
-    console.log('server running on port %d', process.env.PORT)
+  start().catch(err => {
+    console.log(err)
+    process.exit(1)
   })
 }
