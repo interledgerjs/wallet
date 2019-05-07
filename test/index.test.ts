@@ -12,6 +12,6 @@ describe('Functional Tests on Model Layer', () => {
 })
 
 describe('Unit Tests on Services', () => {
-  require('./unit/services/dbService.spec')
+  // require('./unit/services/dbService.spec') // test suspended; current version tests deprecated code
   require('./unit/services/tokenService.spec')
 })

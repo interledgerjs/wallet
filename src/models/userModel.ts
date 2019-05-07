@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt'
-import { query, knexSelectByUserName, knexInsert, knexSelectAll, knexSelectById, knexUpdateById } from '../services'
+import { knexSelectByUserName, knexInsert, knexSelectAll, knexSelectById, knexUpdateById } from '../services'
 import * as knex from '../../database/knex'
 const saltRounds = 3
 
@@ -56,9 +56,7 @@ export function retrieveUser (): Promise<User[]> {
 // function to handle get user by id
 export function retrieveUserById (id: number): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    // const sql: string = `SELECT * FROM users where id = '${id}' AND deletedAt = ''`
     try {
-      // const result = await query(sql)
       let result = await knexSelectById(id, 'users')
       if (isUserArray(result)) {
         if (result.length > 0) {
@@ -78,14 +76,8 @@ export function retrieveUserById (id: number): Promise<User> {
 // function to handle get user by userName
 export function retrieveUserByUserName (userName: string): Promise<User> {
   return new Promise(async function (resolve, reject) {
-    // const sql: string = `SELECT * FROM users WHERE username = '${userName}' AND deletedAt = ''`
     try {
-      // const result = await query(sql)
       let result = await knexSelectByUserName(userName, 'users')
-      // Object.keys(result[0]).forEach(function (key) {
-        //   console.log(key)
-        //   console.log(typeof result[0][key])
-        // })
       if (isUserArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -105,9 +97,8 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
 export function addUser (body: any): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     try {
-      if (body) { // add proto object checker
+      if (body) {
         const result = await knexInsert(body, 'users')
-        // console.log(result) // this shows return value of knexInsert()
         resolve(false)
       } else {
         resolve(true)
@@ -124,8 +115,6 @@ export function addAdmin (body: any): Promise<boolean> {
     try {
       const user = await buildUser(body)
       if (user && isUser(user)) {
-        // const sql: string = `INSERT INTO users (userName, dateCreated, deletedAt, role, pssword) VALUES ('${user.userName}', '${user.dateCreated}', '', 'admin', '${user.pssword}')`
-        // const result = await query(sql)
         let result = await knexInsert(body, 'users')
         resolve(false)
       } else {
@@ -146,9 +135,6 @@ export function modifyUser (userExists: User, body: any): Promise<boolean> {
       (body.pssword === undefined || typeof body.pssword === 'string')
     ) {
       try {
-        // const userObject = await buildUser(body, userExists)
-        // const sql: string = `UPDATE users SET userName = '${userObject.userName}', deletedAt = '${userObject.deletedAt}', pssword = '${userObject.pssword}' WHERE id = '${userObject.id}'`
-        // const result = await query(sql)
         let result = await knexUpdateById(body, userExists.id, 'users')
         resolve(false)
       } catch (error) {
@@ -164,8 +150,6 @@ export function modifyUser (userExists: User, body: any): Promise<boolean> {
 export function removeUser (id: number): Promise<boolean> {
   return new Promise(async function (resolve, reject) {
     try {
-      // const sql: string = `UPDATE users SET deletedAt = '${new Date().toISOString()}' where id = '${id}'`
-      // const result = await query(sql)
       let body = {
         deletedAt: knex.fn.now()
       }

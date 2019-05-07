@@ -15,13 +15,12 @@ async function hash () {
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
   return knex('users').del()
-    .then(async function () {
-      // Inserts seed entries
-      return knex('users').insert({
-        userName: adminName,
-        role: 'admin',
-        pssword: await hash(),
-        // deletedAt: knex.fn.now()
-          });
+  .then(async function () {
+    // Inserts seed entries
+    return knex('users').insert({
+      userName: adminName,
+      role: 'admin',
+      pssword: await hash(),
     });
+  });
 };

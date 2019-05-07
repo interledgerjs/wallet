@@ -42,7 +42,7 @@ export async function readTransactions (req: Request, res: Response) {
   try {
     switch (queryVal) {
       case ('id'):
-        const idResult = await retrieveTransactionById(req.query.id) // add knex
+        const idResult = await retrieveTransactionById(req.query.id)
         if (!idResult) {
           res.sendStatus(404)
         } else {
@@ -50,7 +50,7 @@ export async function readTransactions (req: Request, res: Response) {
         }
         break
       case ('account'):
-        const result = await retrieveTransactionsByAccountId(req.query.account) // add knex
+        const result = await retrieveTransactionsByAccountId(req.query.account)
         if (result.length === 0) {
           res.sendStatus(404)
         } else {
@@ -58,7 +58,7 @@ export async function readTransactions (req: Request, res: Response) {
         }
         break
       default:
-        const allResult = await retrieveTransactions() // add knex
+        const allResult = await retrieveTransactions()
         if (allResult.length === 0) {
           res.sendStatus(404)
         } else {
