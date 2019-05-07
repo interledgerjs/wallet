@@ -17,6 +17,9 @@ defaults: &defaults
         MYSQL_PASSWORD:
 
     - image: mysql:5.7
+      environment:
+        MYSQL_USER: root
+        MYSQL_ALLOW_EMPTY_PASSWORD: true
 
 jobs:
   test:
