@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
 import { addAdmin, addUser, modifyUser, removeUser, retrieveUser, retrieveUserById, retrieveUserByUserName } from '../models'
-import { isAuthorized, knexSelectByUserName } from '../services'
+import { isAuthorized } from '../services'
 
 dotenv.config()
 const logger = createLogger({
@@ -86,8 +86,8 @@ export async function createAdmin (req: Request, res: Response) {
   const userName: string = req.body.userName
   const pssword: string = req.body.pssword
   try {
-    const userExists = await knexSelectByUserName(userName, 'users')
-    if (!userExists[0]) {
+    const userExists = await retrieveUserByUserName(userName)
+    if (!userExists) {
       const result = await addAdmin(req.body)
       if (!result) {
         res.sendStatus(200)
