@@ -11,6 +11,9 @@ defaults: &defaults
     - image: circleci/node:8.12
 
     - image: mysql:5.7
+        environment:
+          MYSQL_USER: root
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
 
 jobs:
   test:
