@@ -30,8 +30,6 @@ jobs:
           name: Install MySQL
           command: sudo apt install -y mysql-client
           
-      - run: mysqladmin -u root password ''
-          
       - run:
           name: Mysql database
           command: mysql  -h 127.0.0.1 -u root -e "create database testdb;"
