@@ -33,7 +33,7 @@ export function knexInsert (body, targetTable) {
   return knex(targetTable)
     .insert(body)
     .then(function (result) {
-      return knexSelectById(result[0], 'users')
+      return knexSelectById(result[0], targetTable)
     })
 }
 
@@ -62,5 +62,15 @@ export function knexUpdateById (body, id, targetTable) {
     .update(body)
     .then(function () {
       return knexSelectById(id, 'users')
+    })
+}
+
+export function knexSelectByOwner (owner, targetTable) {
+  return knex.select()
+   .from(targetTable)
+    .where('owner', owner)
+    .then(function (result) {
+      result = JSON.parse(JSON.stringify(result))
+      return result
     })
 }
