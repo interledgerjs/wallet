@@ -1,6 +1,11 @@
 import { assert, expect } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
+import * as knex from '../../../database/knex'
+
+after(function () {
+  knex.destroy()
+})
 
 describe('.post/accounts', function () {
   let database = process.env.DBNAME

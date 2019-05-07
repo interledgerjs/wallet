@@ -40,7 +40,7 @@ export function knexInsert (body, targetTable) {
 export function knexSelectAll (targetTable: string) {
   return knex.select()
           .from(targetTable)
-          .then(function (result: []) {
+          .then(function (result) {
             result = JSON.parse(JSON.stringify(result))
             return result
           })
@@ -73,4 +73,15 @@ export function knexSelectByOwner (owner, targetTable) {
       result = JSON.parse(JSON.stringify(result))
       return result
     })
+}
+
+export function knexSelectTransactionByEitherAccount (id, targetTable) {
+  return knex.select()
+          .from(targetTable)
+          .where('debitAccountId', id)
+          .orWhere('creditAccountId', id)
+          .then(function (result) {
+            result = JSON.parse(JSON.stringify(result))
+            return result
+          })
 }

@@ -1,5 +1,4 @@
-import { query } from '../services'
-import * as knex from '../../database/knex'
+import { knexInsert, knexSelectAll, knexSelectById, knexSelectTransactionByEitherAccount } from '../services'
 
 export interface Transaction {
   id: number,
@@ -35,16 +34,11 @@ export function isTransactionArray (result: any): result is Transaction[] {
 export function addTransaction (body: any): Promise<boolean> {
   return new Promise(async function (resolve: any, reject) {
     try {
-      const transaction = await buildTransaction(body) // planned for deprication; replace with transaction proto-object typeguard
-      if (transaction && isTransaction(transaction)) { // planned for deprication; replace with transaction proto-object typeguard
-        const sql: string = `INSERT INTO transactions (debitAccountId, creditAccountId, amount, date) VALUES ('${transaction.debitAccountId}', '${transaction.creditAccountId}', '${transaction.amount}', '${transaction.date}')` // planned for deprication; replace with transaction proto-object typeguard
-        const result = await query(sql) // planned for deprication; replace with transaction proto-object typeguard
-        knex('testdb')
-        .insert(body)
-        .into('transactions')
-        .then(function (id) {
-          console.log(id[0])
-        })
+      // const transaction = await buildTransaction(body) // planned for deprication; replace with transaction proto-object typeguard
+      if (body) { // && isTransaction(transaction)) { // planned for deprication; replace with transaction proto-object typeguard
+        // const sql: string = `INSERT INTO transactions (debitAccountId, creditAccountId, amount, date) VALUES ('${transaction.debitAccountId}', '${transaction.creditAccountId}', '${transaction.amount}', '${transaction.date}')` // planned for deprication; replace with transaction proto-object typeguard
+        // const result = await query(sql) // planned for deprication; replace with transaction proto-object typeguard
+        let result = await knexInsert(body, 'transactions')
         resolve(false)
       } else {
         resolve(true)
@@ -58,9 +52,10 @@ export function addTransaction (body: any): Promise<boolean> {
 // function to handle getting all transactions
 export function retrieveTransactions (): Promise<Transaction[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM transactions`
+    // const sql: string = `SELECT * FROM transactions`
     try {
-      const result = await query(sql)
+      // const result = await query(sql)
+      let result = await knexSelectAll('transactions')
       if (isTransactionArray(result)) {
         resolve(result)
       } else {
@@ -75,17 +70,10 @@ export function retrieveTransactions (): Promise<Transaction[]> {
 // function to handle getting transactions by id
 export function retrieveTransactionById (id: number): Promise<Transaction> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM transactions where id = '${id}'`
+    // const sql: string = `SELECT * FROM transactions where id = '${id}'`
     try {
-      const result = await query(sql)
-      // let result: Transaction
-      // knex.select()
-      //   .from('transactions')
-      //   .where('id', id)
-      //   .then(function (res) {
-      //     result = Object.assign({}, res[0])
-      //     console.log(result)
-      //   })
+      // const result = await query(sql)
+      let result = await knexSelectById(id, 'transactions')
       if (isTransactionArray(result)) {
         if (result.length > 0) {
           resolve(result[0])
@@ -104,9 +92,10 @@ export function retrieveTransactionById (id: number): Promise<Transaction> {
 // function to handle getting transactions by account id
 export function retrieveTransactionsByAccountId (id: number): Promise<Transaction[]> {
   return new Promise(async function (resolve, reject) {
-    const sql: string = `SELECT * FROM transactions where (debitAccountId = '${id}' OR creditAccountId = '${id}')`
+    // const sql: string = `SELECT * FROM transactions where (debitAccountId = '${id}' OR creditAccountId = '${id}')`
     try {
-      const result = await query(sql)
+      // const result = await query(sql)
+      let result = await knexSelectTransactionByEitherAccount(id, 'transactions')
       if (isTransactionArray(result)) {
         resolve(result)
       } else {
