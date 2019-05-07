@@ -10,6 +10,8 @@ defaults: &defaults
       # Use active LTS release: https://github.com/nodejs/Release#release-schedule 
     - image: circleci/node:8.12
 
+    - image: mysql:5.7
+
 jobs:
   test:
     <<: *defaults  
@@ -23,6 +25,10 @@ jobs:
             - "node-v1-{{ .Branch }}-{{ checksum \"package-lock.json\" }}"
             - "node-v1-{{ .Branch }}-"
             - "node-v1-"
+
+      - run:
+          name: Install MySQL
+          command: sudo apt install -y mysql-client
           
       - run:
           name: NPM Install
