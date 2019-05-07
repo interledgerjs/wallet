@@ -10,7 +10,7 @@ defaults: &defaults
       # Use active LTS release: https://github.com/nodejs/Release#release-schedule 
     - image: circleci/node:8.12
 
-    #- image: mysql:5.7
+    - image: mysql:5.7
 
 jobs:
   test:
