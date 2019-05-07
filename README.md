@@ -17,10 +17,56 @@ All source code is expected to be TypeScript and is placed in the `src` folder. 
 
 The NPM package will not contain any TypeScript files (`*.ts`) but will have typings and source maps.
 
-### Scripts
+### Environmental variables
+The environmental variable file, in the root folder, is used to store and configure variables for database management, development and deployment. This repo is supplied with an `example.env`.
+
+Please change the example variables to suit your needs.
+
+## Scripts
 
   - `clean` : Cleans the build folder and test output
   - `build` : Build the project
   - `lint`  : Run the linter over the project
   - `test`  : Run the unit tests and produce a code coverage report
+  - `loadtest` : Run the loadtest and produces an artillery report afterwards
   - `docs`   : Build the docs
+  - `consolelog`  : will show Winston logging for debugging
+
+## Endpoints
+
+### Users
+Endpoints for user data  
+
+|  | Path | Description | Expected Output | Expected Body Input |
+|--------|-----------------------------|---------------------------------------------------------------------|------------------------------------------------------------------|-------------------------------------------------------------|
+| *post* | /admin | Check for duplicate admin-level users, create a new admin user in db, hashes pssword | 200 | { userName, pssword } |
+| *post* | /users | Check for duplicate users, create a new user in db, hashes pssword | 200 | { userName, pssword } |
+| *get* | /users | Return all users as an array of objects | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ] | None |
+| *get* | /users/?id=[id] | Return a user specified by id | { id, userName, dateCreated, deletedAt, role, pssword } | None |
+| *get* | /users/?username=[username] | Return a user specified by username | { id, userName, dateCreated, deletedAt, role, pssword } | None |
+| *put* | /user/:id | Update a user specified by id | 200 | At least one: { userName, dateCreated, deletedAt, pssword } |
+| *delete* | /user/:id | Soft delete a user specified by id | 200 | None |
+
+### Accounts
+Endpoints for account data  
+
+|  | Path | Description | Expected Output | Expected Body Input |
+|--------|--------------------------|----------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------|
+| *post* | /accounts | Add new account to db | 200 | { name, owner} |
+| *get* | /accounts | Return all accounts as an array of objects |  [ { id, name, owner, balance, deletedAt, lastUpdated }, … ] | None |
+| *get* | /accounts/?id=[id] | Return an account specified by id | { id, name, owner, balance, deletedAt, lastUpdated } | None |
+| *get* | /accounts/?owner=[owner] | Return all accounts associated with specified owner as an array of objects | [ { id, name, owner, balance, deletedAt, lastUpdated }, ... ] | None |
+| *put* | /accounts/:id | Update an account specified by id | 200 | At least one: { name, owner, balance } |
+| *delete* | /accounts/:id | Soft delete an account specified by id | 200 | None |
+
+### Transactions
+Endpoints for transaction data
+
+*TODO*
+
+### Services
+Services used throughout the API  
+
+|  | Path | Description | Expected Output | Expected Body Input |
+|------|--------|------------------------------|-----------------|-----------------------|
+| *post* | /token | User login and token signing | { token } | { username, pssword } |
