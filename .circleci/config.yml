@@ -9,18 +9,8 @@ defaults: &defaults
   docker:
       # Use active LTS release: https://github.com/nodejs/Release#release-schedule 
     - image: circleci/node:8.12
-        environment:
-          MYSQL_HOST: 127.0.0.1
-          MYSQL_DB: testdb
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_PASSWORD:
 
     - image: mysql:5.7
-        environment:
-          MYSQL_USER: root
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-
 
 jobs:
   test:
