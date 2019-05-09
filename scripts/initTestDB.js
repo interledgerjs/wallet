@@ -41,9 +41,14 @@ db.run('DROP TABLE IF EXISTS transactions;', function(result, error) {
         id INTEGER PRIMARY KEY AUTOINCREMENT,\
         name VARCHAR(255),\
         owner INTEGER,\
-        balance INT,\
         deletedAt DATETIME NOT NULL DEFAULT "",\
-        lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);')
+        lastUpdated datetime NOT NULL DEFAULT CURRENT_TIMESTAMP);', async function(err) {
+          if (err) {
+            console.log(err)
+          } else {
+            db.run(`INSERT INTO accounts (name, owner, deletedAt, lastUpdated) VALUES ('equity', 1, '', '${new Date().toISOString()}')`)
+          }
+        })
       db.run('CREATE TABLE IF NOT EXISTS transactions (\
         id INTEGER PRIMARY KEY AUTOINCREMENT,\
         debitAccountId INTEGER,\

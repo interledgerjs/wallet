@@ -54,7 +54,7 @@ export function retrieveTransactions (): Promise<Transaction[]> {
       if (isTransactionArray(result)) {
         resolve(result)
       } else {
-        reject(true)
+        reject('Not transaction array')
       }
     } catch (error) {
       reject(error)
@@ -74,7 +74,7 @@ export function retrieveTransactionById (id: number): Promise<Transaction> {
           resolve(null)
         }
       } else {
-        reject(true)
+        reject('Not transaction array')
       }
     } catch (error) {
       reject(error)
@@ -90,7 +90,7 @@ export function retrieveTransactionsByAccountId (id: number): Promise<Transactio
       if (isTransactionArray(result)) {
         resolve(result)
       } else {
-        reject(true)
+        reject('Not transaction array')
       }
     } catch (error) {
       reject(error)
@@ -100,19 +100,15 @@ export function retrieveTransactionsByAccountId (id: number): Promise<Transactio
 
 function buildTransaction (body: any, baseObj: Transaction = undefined): Promise<Transaction> {
   return new Promise(async function (resolve, reject) {
-    try {
-      if (baseObj === undefined) {
-        const transactionObject: Transaction = {
-          id: -1,
-          debitAccountId: body.debitAccountId,
-          creditAccountId: body.creditAccountId,
-          amount: body.amount,
-          date: new Date().toISOString()
-        }
-        resolve(transactionObject)
+    if (baseObj === undefined) {
+      const transactionObject: Transaction = {
+        id: -1,
+        debitAccountId: body.debitAccountId,
+        creditAccountId: body.creditAccountId,
+        amount: body.amount,
+        date: new Date().toISOString()
       }
-    } catch (error) {
-      reject(error)
+      resolve(transactionObject)
     }
   })
 }
