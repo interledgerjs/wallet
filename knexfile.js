@@ -1,8 +1,8 @@
 const dotenv = require('dotenv').config()
 
-const databasePassword = process.env.DBPASSWORD
-const databaseName = process.env.DBNAME
-const databaseUser = process.env.DBUSER
+const databasePassword = process.env.DBPASSWORD || MYSQL_PASSWORD
+const databaseName = process.env.DBNAME || MYSQL_DB
+const databaseUser = process.env.DBUSER || MYSQL_USER
 
 module.exports = {
   client: 'mysql',
