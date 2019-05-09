@@ -31,14 +31,14 @@ export function isTransactionArray (result: any): result is Transaction[] {
 }
 
 // function to handle adding transactions
-export function addTransaction (body: any): Promise<boolean> {
+export function addTransaction (body: any): Promise<Transaction> {
   return new Promise(async function (resolve: any, reject) {
     try {
       if (body) {
         let result = await knexInsert(body, 'transactions')
-        resolve(false)
+        resolve(result)
       } else {
-        resolve(true)
+        resolve(undefined)
       }
     } catch (error) {
       reject(error)

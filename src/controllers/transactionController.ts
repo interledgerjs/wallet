@@ -31,13 +31,12 @@ export async function createTransaction (req: Request, res: Response) {
     }
     if (isAuthorized(req.authData, authorizedAccount.owner)) {
       const balance = await calculateBalance(req.body.debitAccountId)
-      // const accounts = await query(`SELECT * FROM accounts WHERE (id = ${req.body.debitAccountId} OR id = ${req.body.creditAccountId}) AND deletedAt = ''`)
       const debitAccount = await retrieveAccountById(req.body.debitAccountId)
       const creditAccount = await retrieveAccountById(req.body.creditAccountId)
       if ((balance > 0 || req.body.debitAccountId === 1) && creditAccount && debitAccount) {
-        const failure = await addTransaction(req.body)
-        if (!failure) {
-          res.sendStatus(200)
+        const result = await addTransaction(req.body)
+        if (result) {
+          res.send(result)
         } else {
           res.sendStatus(400)
         }

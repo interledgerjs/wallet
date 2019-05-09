@@ -100,8 +100,8 @@ export async function updateAccount (req: Request, res: Response) {
       const accountExists = await retrieveAccountById(req.params.id)
       if (accountExists) {
         const result = await modifyAccount(accountExists, req.body)
-        if (!result) {
-          res.sendStatus(200)
+        if (result) {
+          res.send(result)
         } else {
           res.sendStatus(400)
         }
@@ -127,8 +127,8 @@ export async function deleteAccount (req: Request, res: Response) {
       const accountExists = await retrieveAccountById(req.params.id)
       if (accountExists) {
         const result = await removeAccount(req.params.id)
-        if (!result) {
-          res.sendStatus(200)
+        if (result) {
+          res.send(result)
         }
       } else {
         res.sendStatus(404)

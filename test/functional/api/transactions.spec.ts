@@ -148,7 +148,7 @@ describe('.get/transactions', function () {
       })
   })
 
-  it('should return HTTP 404 when querying by non-existent account', function () {
+  it('should return empty object when querying by non-existent account', function () {
     return request(app)
       .get('/transactions/?account=9999')
       .set('Authorization', 'Bearer ' + adminToken)

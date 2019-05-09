@@ -10,6 +10,10 @@ export interface Account {
   lastUpdated: string
 }
 
+export interface DisplayAccount extends Account {
+  balance: number
+}
+
 function isAccount (account: any): account is Account {
   return (
     typeof account.id === 'number' &&
@@ -34,6 +38,12 @@ function isAccountArray (result: any): result is Account[] {
   )
 }
 
+async function makeDisplayAccount (account: Account): Promise<DisplayAccount> {
+  let displayObject: any = account
+  displayObject.balance = await calculateBalance(account.id)
+  return displayObject
+}
+
 export function calculateBalance (accountId: number): Promise<number> {
   return new Promise(async function (resolve, reject) {
     let balance: number = 0
@@ -54,151 +64,81 @@ export function calculateBalance (accountId: number): Promise<number> {
 }
 
 // function to handle adding an account
-export function addAccount (body: any): Promise<any> {
-  return new Promise(async function (resolve, reject) {
-    try {
-      if (
-        typeof(body.name) === 'string' &&
-        typeof(body.owner) === 'number'
-      ) {
-        const result = await knexInsert(body, 'accounts')
-        resolve(result)
-      } else {
-        resolve(undefined)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
+export async function addAccount (body: any): Promise<DisplayAccount> {
+  if (
+    typeof(body.name) === 'string' &&
+    typeof(body.owner) === 'number'
+  ) {
+    const result = (await knexInsert(body, 'accounts'))[0]
+    const displayObject = await makeDisplayAccount(result)
+    return(displayObject)
+  } else {
+    return(undefined)
+  }
 }
 
 // function to handle retrieving a singular account by id
-export function retrieveAccountById (id: number): Promise<Account> {
-  return new Promise(async function (resolve, reject) {
-    try {
-      let result = await knexSelectById(id, 'accounts')
-      if (isAccountArray(result)) {
-        if (result.length > 0) {
-          resolve(result[0])
-        } else {
-          resolve(null)
-        }
-      } else {
-        reject('Not account array')
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
+export async function retrieveAccountById (id: number): Promise<DisplayAccount> {
+  let result = (await knexSelectById(id, 'accounts'))[0]
+  if (!result) {
+    return undefined
+  }
+  if (isAccount(result)) {
+    const displayAccount = await makeDisplayAccount(result)
+    return(displayAccount)
+  } else {
+    throw new Error('Not an account')
+  }
 }
 
 // function to handle the retrieval of all accounts
-export function retrieveAccounts (): Promise<Account[]> {
-  return new Promise(async function (resolve, reject) {
-    try {
-      let result = await knexSelectAll('accounts')
-      if (isAccountArray(result)) {
-        if (result.length > 0) {
-          resolve(result)
-        } else {
-          resolve(null)
-        }
-      } else {
-        reject('Not account array')
-      }
-    } catch (error) {
-      reject(error)
+export async function retrieveAccounts (): Promise<Account[]> {
+  let result = await knexSelectAll('accounts')
+  if (isAccountArray(result)) {
+    if (result.length > 0) {
+      return(result)
+    } else {
+      return(null)
     }
-  })
+  } else {
+    throw new Error('Not an account array')
+  }
 }
 
 // function to handle the retrieval of all accounts by specific owner
-export function retrieveAccountByOwner (owner: number): Promise<Account[]> {
-  return new Promise(async function (resolve, reject) {
-    try {
-      let result = await knexSelectByOwner(owner, 'accounts')
-      if (isAccountArray(result)) {
-        if (result.length > 0) {
-          resolve(result)
-        } else {
-          resolve(null)
-        }
-      } else {
-        reject('Not account array')
-      }
-    } catch (error) {
-      reject(error)
+export async function retrieveAccountByOwner (owner: number): Promise<Account[]> {
+  let result = await knexSelectByOwner(owner, 'accounts')
+  if (isAccountArray(result)) {
+    if (result.length > 0) {
+      return(result)
+    } else {
+      return(null)
     }
-  })
+  } else {
+    throw new Error('Not an account array')
+  }
 }
 
 // function to handle the updating of account information
-export function modifyAccount (accountExists: Account, body: any): Promise<boolean> {
-  return new Promise(async function (resolve, reject) {
-    if (
-      (body.name === undefined || typeof body.name === 'string') &&
-      (body.owner === undefined || typeof body.owner === 'number') &&
-      (body.deletedAt === undefined || typeof body.deletedAt === 'string')
-    ) {
-      try {
-        const result = await knexUpdateById(body, accountExists.id, 'accounts')
-        resolve(false)
-      } catch (error) {
-        reject(error)
-      }
-    } else {
-      resolve(true)
-    }
-  })
+export async function modifyAccount (accountExists: Account, body: any): Promise<DisplayAccount> {
+  if (
+    (body.name === undefined || typeof body.name === 'string') &&
+    (body.owner === undefined || typeof body.owner === 'number') &&
+    (body.deletedAt === undefined || typeof body.deletedAt === 'string')
+  ) {
+    const result = (await knexUpdateById(body, accountExists.id, 'accounts'))[0]
+    const displayAccount = await makeDisplayAccount(result)
+    return(displayAccount)
+  } else {
+    return(undefined)
+  }
 }
 
-export function removeAccount (id: number): Promise<boolean> {
-  return new Promise(async function (resolve, reject) {
-    try {
-      let body = {
-        deletedAt: knex.fn.now()
-      }
-      let result = await knexUpdateById(body, id, 'users')
-      resolve(false)
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
-function buildAccount (body: any, baseObj: Account = undefined): Promise<Account> {
-  return new Promise(async function (resolve, reject) {
-    try {
-      if (baseObj === undefined) {
-        const accountObject: Account = {
-          id: 0,
-          name: body.name,
-          owner: body.owner,
-          deletedAt: '',
-          lastUpdated: ''
-        }
-        resolve(accountObject)
-      } else {
-        const accountObject: Account = {
-          id: baseObj.id,
-          name: baseObj.name,
-          owner: baseObj.owner,
-          deletedAt: baseObj.deletedAt,
-          lastUpdated: new Date().toISOString()
-        }
-        if (body.name !== undefined) {
-          accountObject.name = body.name
-        }
-        if (body.dateCreated !== undefined) {
-          accountObject.owner = body.owner
-        }
-        if (body.deletedAt !== undefined) {
-          accountObject.deletedAt = body.deletedAt
-        }
-        resolve(accountObject)
-      }
-    } catch (error) {
-      reject(error)
-    }
-  })
+export async function removeAccount (id: number): Promise<Account> {
+  let body = {
+    deletedAt: knex.fn.now()
+  }
+  let result = (await knexUpdateById(body, id, 'accounts'))[0]
+  const displayAccount = await makeDisplayAccount(result)
+  return(displayAccount)
 }
