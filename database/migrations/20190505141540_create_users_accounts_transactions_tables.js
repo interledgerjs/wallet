@@ -11,7 +11,6 @@ exports.up = function(knex, Promise) {
     table.increments('id')
     table.string('name')
     table.integer('owner')
-    table.integer('balance')
     table.timestamp('deletedAt').nullable()
     table.timestamp('lastUpdated').notNullable().defaultTo(knex.fn.now())
 

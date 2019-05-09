@@ -45,7 +45,7 @@ export function retrieveUser (): Promise<User[]> {
       if (isUserArray(result)) {
         resolve(result)
       } else {
-        reject(true)
+        reject('Not user array')
       }
     } catch (error) {
       reject(error)
@@ -65,7 +65,7 @@ export function retrieveUserById (id: number): Promise<User> {
           resolve(undefined)
         }
       } else {
-        reject(true)
+        reject('Not user array')
       }
     } catch (error) {
       reject(error)
@@ -85,7 +85,7 @@ export function retrieveUserByUserName (userName: string): Promise<User> {
           resolve(undefined)
         }
       } else {
-        reject(true)
+        reject('Not user array')
       }
     } catch (error) {
       reject(error)
@@ -194,7 +194,7 @@ function buildUser (body: any, baseObj: User = undefined): Promise<User> {
           if (!userNameExists) {
             userObject.userName = body.userName
           } else {
-            reject(true)
+            reject('Username exists')
           }
         }
         if (body.dateCreated !== undefined) {

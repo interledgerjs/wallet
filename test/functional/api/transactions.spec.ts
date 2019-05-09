@@ -2,6 +2,50 @@ import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
 import * as knex from '../../../database/knex'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
+let adminName = 'admin'
+let adminPassword = 'admin'
+if (process.env.ADMINNAME) {
+  adminName = process.env.ADMINNAME
+}
+if (process.env.ADMINPASSWORD) {
+  adminPassword = process.env.ADMINPASSWORD
+}
+
+let adminToken
+before(function () {
+  return request(app)
+    .post('/token')
+    .send({
+      'userName': adminName,
+      'pssword': adminPassword
+    })
+    .then(function (response) {
+      adminToken = response.body.token
+    })
+})
+let transactionTestAccount
+before(function () {
+  return request(app)
+    .post('/accounts')
+    .send({
+      'name': 'transactionTestAccount',
+      'owner': 1
+    })
+    .set('Authorization', 'Bearer ' + adminToken)
+    .then(function () {
+      return request(app)
+      .get('/accounts')
+      .set('Authorization', 'Bearer ' + adminToken)
+      .then(function (response) {
+        console.log(response.body)
+        transactionTestAccount = response.body[1]
+        console.log(transactionTestAccount)
+      })
+    })
+})
 
 const database = process.env.DBNAME
 
@@ -17,45 +61,50 @@ describe('.post/transactions', function () {
   it('should return HTTP 200 when called with good data', function () {
     let data = {
       'debitAccountId': 1,
-      'creditAccountId': 2,
+      'creditAccountId': transactionTestAccount.id,
       'amount': 100
     }
     return request(app)
       .post('/transactions')
       .send(data)
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
 
-  // it('should return HTTP 400 when called with bad data', function () { // test suspended; absence of Transaction proto object checker
+  // data vlidation being reimplemented, please uncomment test when functioning
+
+  // it('should return HTTP 400 when called with bad data', function () {
   //   let data = {
   //     'debitAccountId': 1,
-  //     'creditAccountId': 2,
+  //     'creditAccountId': transactionTestAccount.id,
   //     'amount': 'asd'
   //   }
   //   return request(app)
   //     .post('/transactions')
   //     .send(data)
+  //     .set('Authorization', 'Bearer ' + adminToken)
   //     .then(function (response) {
   //       assert.equal(response.status, 400)
   //     })
   // })
 
-//   it('should return HTTP 500 when db cannot be found', function () { // test suspended; knex throws error on bad db name call
-//     process.env.DBNAME = ''
-//     let data = {
-//       'debitAccountId' : 1,
-//       'creditAccountId' : 2,
-//       'amount' : 100
-//     }
-//     return request(app)
-//       .post('/transactions')
-//       .send(data)
-//       .then(function (response) {
-//         assert.equal(response.status, 500)
-//       })
-//   })
+  // it('should return HTTP 500 when db cannot be found', function () {
+  //   process.env.DBNAME = ''
+  //   let data = {
+  //     'debitAccountId' : 1,
+  //     'creditAccountId' : transactionTestAccount.id,
+  //     'amount' : 100
+  //   }
+  //   return request(app)
+  //     .post('/transactions')
+  //     .send(data)
+  //     .set('Authorization', 'Bearer ' + adminToken)
+  //     .then(function (response) {
+  //       assert.equal(response.status, 500)
+  //     })
+  // })
 })
 
 describe('.get/transactions', function () {
@@ -66,24 +115,27 @@ describe('.get/transactions', function () {
   it('should return HTTP 200 when db table contains data', function () {
     return request(app)
       .get('/transactions')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
   })
 
-  // it('should return HTTP 404 when db table is empty', function () { // test suspended; testing with knex and empty table not yet implemented
-  //   process.env.DBNAME = 'emptydb'
-  //   return request(app)
-  //     .get('/transactions')
-  //     .then(function (response) {
-  //       assert.equal(response.status, 404)
-  //     })
-  // })
+  it('should return HTTP 200 when db table is empty', function () {
+    process.env.DBNAME = 'emptydb'
+    return request(app)
+      .get('/transactions')
+      .set('Authorization', 'Bearer ' + adminToken)
+      .then(function (response) {
+        assert.equal(response.status, 200)
+      })
+  })
 
-  // it('should return HTTP 500 when db cannot be found', function () { // test suspended; knex throws error when started with invalid db
+  // it('should return HTTP 500 when db cannot be found', function () {
   //   process.env.DBNAME = ''
   //   return request(app)
   //     .get('/transactions')
+  //     .set('Authorization', 'Bearer ' + adminToken)
   //     .then(function (response) {
   //       assert.equal(response.status, 500)
   //     })
@@ -92,6 +144,7 @@ describe('.get/transactions', function () {
   it('should return HTTP 200 when querying by valid account', function () {
     return request(app)
       .get('/transactions/?account=1')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -99,16 +152,18 @@ describe('.get/transactions', function () {
 
   it('should return HTTP 404 when querying by non-existent account', function () {
     return request(app)
-      .get('/transactions/?account=6')
+      .get('/transactions/?account=9999')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        assert.equal(response.status, 404)
+        assert.equal(response.status, 200)
       })
   })
 
-  // it('should return HTTP 500 when db cannot be found', function () { // test suspended; knex throws error when started with invalid db
+  // it('should return HTTP 500 when db cannot be found', function () {
   //   process.env.DBNAME = ''
   //   return request(app)
   //     .get('/transactions/?account=1')
+  //     .set('Authorization', 'Bearer ' + adminToken)
   //     .then(function (response) {
   //       assert.equal(response.status, 500)
   //     })
@@ -116,7 +171,8 @@ describe('.get/transactions', function () {
 
   it('should return HTTP 200 when querying by valid id', function () {
     return request(app)
-      .get('/transactions/?id=1')
+      .get('/transactions/1')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 200)
       })
@@ -124,16 +180,18 @@ describe('.get/transactions', function () {
 
   it('should return HTTP 404 when querying by non-existent id', function () {
     return request(app)
-      .get('/transactions/?id=6')
+      .get('/transactions/999')
+      .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
         assert.equal(response.status, 404)
       })
   })
 
-  // it('should return HTTP 500 when db cannot be found', function () { // test suspended; knex throws error when started with invalid db
+  // it('should return HTTP 500 when db cannot be found', function () {
   //   process.env.DBNAME = ''
   //   return request(app)
-  //     .get('/transactions/?id=1')
+  //     .get('/transactions/1')
+  //     .set('Authorization', 'Bearer ' + adminToken)
   //     .then(function (response) {
   //       assert.equal(response.status, 500)
   //     })

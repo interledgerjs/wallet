@@ -1,7 +1,8 @@
 import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
-import { addTransaction, retrieveTransactionById, retrieveTransactions, retrieveTransactionsByAccountId } from '../models'
+import { addTransaction, retrieveTransactionById, retrieveTransactions, retrieveTransactionsByAccountId, retrieveAccountById, calculateBalance } from '../models'
+import { isAuthorized } from '../services'
 
 dotenv.config()
 const logger = createLogger({
@@ -23,11 +24,28 @@ if (process.env.LOGFILE === 'true') {
 export async function createTransaction (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
-    const failure = await addTransaction(req.body)
-    if (!failure) {
-      res.sendStatus(200)
-    } else {
+    const authorizedAccount = await retrieveAccountById(req.body.debitAccountId)
+    if (!authorizedAccount) {
       res.sendStatus(400)
+      return
+    }
+    if (isAuthorized(req.authData, authorizedAccount.owner)) {
+      const balance = await calculateBalance(req.body.debitAccountId)
+      // const accounts = await query(`SELECT * FROM accounts WHERE (id = ${req.body.debitAccountId} OR id = ${req.body.creditAccountId}) AND deletedAt = ''`)
+      const debitAccount = await retrieveAccountById(req.body.debitAccountId)
+      const creditAccount = await retrieveAccountById(req.body.creditAccountId)
+      if ((balance > 0 || req.body.debitAccountId === 1) && creditAccount && debitAccount) {
+        const failure = await addTransaction(req.body)
+        if (!failure) {
+          res.sendStatus(200)
+        } else {
+          res.sendStatus(400)
+        }
+      } else {
+        res.sendStatus(400)
+      }
+    } else {
+      res.sendStatus(401)
     }
   } catch (error) {
     logger.error(error)
@@ -41,33 +59,49 @@ export async function readTransactions (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
     switch (queryVal) {
-      case ('id'):
-        const idResult = await retrieveTransactionById(req.query.id)
-        if (!idResult) {
-          res.sendStatus(404)
-        } else {
-          res.send(idResult)
-        }
-        break
       case ('account'):
-        const result = await retrieveTransactionsByAccountId(req.query.account)
-        if (result.length === 0) {
-          res.sendStatus(404)
+        const requestedAccount = await retrieveAccountById(req.query.account)
+        if (requestedAccount) {
+          if (isAuthorized(req.authData, requestedAccount.owner)) {
+            const result = await retrieveTransactionsByAccountId(req.query.account)
+            res.send(result)
+          } else {
+            res.sendStatus(401)
+          }
         } else {
-          res.send(result)
+          res.send([])
         }
         break
       default:
-        const allResult = await retrieveTransactions()
-        if (allResult.length === 0) {
-          res.sendStatus(404)
-        } else {
+        if (isAuthorized(req.authData, null)) {
+          const allResult = await retrieveTransactions()
           res.send(allResult)
+        } else {
+          res.sendStatus(401)
         }
         break
     }
   } catch (error) {
     res.sendStatus(500)
     logger.error(error)
+  }
+}
+
+export async function readTransactionById (req: Request, res: Response) {
+  logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
+  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+    try {
+      const idResult = await retrieveTransactionById(req.params.id)
+      if (!idResult) {
+        res.sendStatus(404)
+      } else {
+        res.send(idResult)
+      }
+    } catch (error) {
+      logger.error(error)
+      res.sendStatus(500)
+    }
+  } else {
+    res.sendStatus(401)
   }
 }
