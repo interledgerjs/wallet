@@ -1,6 +1,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', function (table) {
-    table.increments('id') // .unsigned() // .primary()
+    table.increments('id')
     table.string('userName')
     table.timestamp('dateCreated').notNullable().defaultTo(knex.fn.now())
     table.timestamp('deletedAt').nullable()
@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
     table.string('pssword')
   })
   .createTable('accounts', function (table) {
-    table.increments('id') // .unsigned()
+    table.increments('id')
     table.string('name')
     table.integer('owner').unsigned().references('id').inTable('users')
     table.integer('balance')
