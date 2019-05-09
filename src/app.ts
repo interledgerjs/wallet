@@ -30,9 +30,21 @@ app.all('*', (req, res) => {
   res.sendStatus(404)
 })
 
-// istanbul ignore if
+const start = async () => {
+  const port = process.env.PORT || 3000
+  try {
+    app.listen(port, () => {
+      console.log('server running on port %d', port)
+    })
+  } catch (err) {
+    console.log(err)
+    process.exit(1)
+  }
+}
+// instabul ignore if
 if (!module.parent) {
-  app.listen(process.env.PORT, () => {
-    console.log('server running on port %d', process.env.PORT)
+  start().catch(err => {
+    console.log(err)
+    process.exit(1)
   })
 }
