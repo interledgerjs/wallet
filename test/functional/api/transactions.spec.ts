@@ -40,9 +40,7 @@ before(function () {
       .get('/accounts')
       .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        console.log(response.body)
         transactionTestAccount = response.body[1]
-        console.log(transactionTestAccount)
       })
     })
 })
