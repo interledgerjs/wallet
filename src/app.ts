@@ -31,7 +31,7 @@ app.all('*', (req, res) => {
 })
 
 const start = async () => {
-  const port = process.env.PORT || 5000
+  const port = process.env.PORT || 3000
   try {
     app.listen(port, () => {
       console.log('server running on port %d', port)
