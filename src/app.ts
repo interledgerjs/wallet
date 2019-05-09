@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv'
 import * as express from 'express'
 import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readAccountById, readTransactionById, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
 import { verifyToken, Roles } from './services'
+import { postUserArrayValidation, putUserArrayValidation } from './services/validation'
 
 dotenv.config()
 const app = express()
@@ -19,14 +20,14 @@ app.get('/accounts/:id', verifyToken(Roles.User), readAccountById)
 app.put('/accounts/:id', verifyToken(Roles.Admin), updateAccount) // id as param, body.name, body.owner
 app.delete('/accounts/:id', verifyToken(Roles.Admin), deleteAccount) // id's as params
 
-app.post('/users', createUser) // body.userName, body.password
+app.post('/users', postUserArrayValidation, createUser) // body.userName, body.password
 app.get('/users', verifyToken(Roles.Admin), readUsers) // no required input
 app.get('/users/:id', verifyToken(Roles.User), readUserById)
-app.put('/users/:id', verifyToken(Roles.User), updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.role?
+app.put('/users/:id', verifyToken(Roles.User), putUserArrayValidation, updateUser) // id as param, body.userName?, body.deletedAt?, body.pssword?, body.role?
 app.delete('/users/:id', verifyToken(Roles.User), deleteUser) // id as param
 
-app.post('/admin', verifyToken(Roles.Admin), createAdmin) // body.userName, body.password
-app.post('/token', token) // body.userName, body.password
+app.post('/admin', verifyToken(Roles.Admin), postUserArrayValidation, createAdmin) // body.userName, body.password
+app.post('/token', postUserArrayValidation, token) // body.userName, body.password
 
 app.all('*', (req, res) => {
   res.sendStatus(404)
