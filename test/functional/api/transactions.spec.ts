@@ -2,12 +2,19 @@ import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
 import * as knex from '../../../database/knex'
-import { knexSelectAll } from '../../../build/services/dbService'
+import { knexSelectAll, knexInsert } from '../../../build/services/dbService'
 const database = process.env.DBNAME
 
 before(async function () {
-  // console.log('renzo')
-  console.log(await knexSelectAll('accounts'))
+  knexInsert([{
+    name: 'testAccount1',
+    owner: 1,
+    balance: 10000000
+  }, {
+    name: 'testAccount2',
+    owner: 1,
+    balance: 10000000
+  }], 'accounts')
 })
 
 after(function () {
