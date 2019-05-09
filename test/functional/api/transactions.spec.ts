@@ -2,6 +2,7 @@ import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
 import * as knex from '../../../database/knex'
+import { knexSelectAll, knexInsert } from '../../../build/services/dbService'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
@@ -46,6 +47,16 @@ before(function () {
 })
 
 const database = process.env.DBNAME
+
+before(async function () {
+  knexInsert([{
+    name: 'testAccount1',
+    owner: 1
+  }, {
+    name: 'testAccount2',
+    owner: 1
+  }], 'accounts')
+})
 
 after(function () {
   knex.destroy()

@@ -10,7 +10,7 @@ exports.up = function(knex, Promise) {
   .createTable('accounts', function (table) {
     table.increments('id')
     table.string('name')
-    table.integer('owner')
+    table.integer('owner').unsigned().references('id').inTable('users')
     table.timestamp('deletedAt').nullable()
     table.timestamp('lastUpdated').notNullable().defaultTo(knex.fn.now())
 
@@ -18,15 +18,15 @@ exports.up = function(knex, Promise) {
   })
   .createTable('transactions', function (table) {
     table.increments()
-    table.integer('debitAccountId')
-    table.integer('creditAccountId')
+    table.integer('debitAccountId').unsigned().references('id').inTable('accounts')
+    table.integer('creditAccountId').unsigned().references('id').inTable('accounts')
     table.integer('amount')
     table.timestamp('date').notNullable().defaultTo(knex.fn.now())
   })
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('users')
+  return knex.schema.dropTable('transactions')
     .dropTable('accounts')
-    .dropTable('transactions')
+    .dropTable('users')
 };

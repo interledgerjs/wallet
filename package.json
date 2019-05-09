@@ -4,7 +4,7 @@
   "description": "> **This project is being built by the interns at Coil and is NOT ready to use. We'll make a release as soon as it is.**",
   "main": "./build/app.js",
   "scripts": {
-    "build": "npm run mkdir && node scripts/initDB.js && tsc",
+    "build": "tsc",
     "clean": "rm -Rf .nyc_output && rm -Rf coverage && rm -Rf build ",
     "codecov": "codecov",
     "docs": "typedoc --out docs/  src --module commonjs --readme README.md --name wallet",
@@ -41,7 +41,7 @@
     "mkdirp": "^0.5.1",
     "mysql": "^2.17.1",
     "nock": "^10.0.6",
-    "sqlite3": "^4.0.6",
+    "sqlite3": "^4.0.7",
     "validator": "^10.11.0",
     "winston": "^3.2.1"
   },
@@ -55,7 +55,7 @@
     "artillery": "^1.6.0-28",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "codecov": "^3.3.0",
+    "codecov": "^3.4.0",
     "concurrently": "^4.1.0",
     "dotenv": "^7.0.0",
     "expect": "^24.8.0",

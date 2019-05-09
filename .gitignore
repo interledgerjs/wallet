@@ -81,3 +81,6 @@ emptydb
 # load test report
 report.json.html
 report.json
+
+#config files
+.env
