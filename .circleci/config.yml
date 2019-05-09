@@ -15,6 +15,12 @@ defaults: &defaults
         MYSQL_USER: root
         MYSQL_ALLOW_EMPTY_PASSWORD: true
         MYSQL_PASSWORD:
+        ADMINNAME: admin
+        ADMINPASSWORD: admin
+        PORT: 3000
+        CONSOLELOG: false
+        LOGFILE: false
+        SECRETKEY: secret
 
     - image: mysql:5.7
       environment:
