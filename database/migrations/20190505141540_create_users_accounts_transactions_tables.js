@@ -1,6 +1,6 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('users', function (table) {
-    table.increments('id')
+    table.increments('id') // .unsigned() // .primary()
     table.string('userName')
     table.timestamp('dateCreated').notNullable().defaultTo(knex.fn.now())
     table.timestamp('deletedAt').nullable()
@@ -8,9 +8,9 @@ exports.up = function(knex, Promise) {
     table.string('pssword')
   })
   .createTable('accounts', function (table) {
-    table.increments('id')
+    table.increments('id') // .unsigned()
     table.string('name')
-    table.integer('owner')
+    table.integer('owner').unsigned().references('id').inTable('users')
     table.integer('balance')
     table.timestamp('deletedAt').nullable()
     table.timestamp('lastUpdated').notNullable().defaultTo(knex.fn.now())
@@ -19,15 +19,15 @@ exports.up = function(knex, Promise) {
   })
   .createTable('transactions', function (table) {
     table.increments()
-    table.integer('debitAccountId')
-    table.integer('creditAccountId')
+    table.integer('debitAccountId').unsigned().references('id').inTable('accounts')
+    table.integer('creditAccountId').unsigned().references('id').inTable('accounts')
     table.integer('amount')
     table.timestamp('date').notNullable().defaultTo(knex.fn.now())
   })
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('users')
+  return knex.schema.dropTable('transactions')
     .dropTable('accounts')
-    .dropTable('transactions')
+    .dropTable('users')
 };

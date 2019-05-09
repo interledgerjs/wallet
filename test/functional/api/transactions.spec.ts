@@ -2,8 +2,13 @@ import { assert } from 'chai'
 import * as request from 'supertest'
 import * as app from '../../../build/app'
 import * as knex from '../../../database/knex'
-
+import { knexSelectAll } from '../../../build/services/dbService'
 const database = process.env.DBNAME
+
+before(async function () {
+  // console.log('renzo')
+  console.log(await knexSelectAll('accounts'))
+})
 
 after(function () {
   knex.destroy()

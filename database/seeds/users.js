@@ -17,7 +17,8 @@ exports.seed = function(knex, Promise) {
   return knex('users').del()
   .then(async function () {
     // Inserts seed entries
-    return knex('users').insert({
+    return knex('users')
+    .insert({
       userName: adminName,
       role: 'admin',
       pssword: await hash(),
