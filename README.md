@@ -69,11 +69,9 @@ Method | Path | Token Type | Description | Expected Body Input | Expected Output
 *get* | /accounts | Admin | Return all accounts as an array of objects | None | [ { id, name, owner, deletedAt, lastUpdated }, ... ]
 *get* | /accounts/?owner=[owner] | Admin/User | Return all accounts associated with specified owner as an array of objects | None | [ { id, name, owner, deletedAt, lastUpdated }, ... ]
 *get* | /accounts/:id | Admin/User | Return an account specified by id | None | { id, name, owner, deletedAt, lastUpdated, balance }
-*put* | /accounts/:id | Admin | Update an account specified by id | At least one or any combination of { name, owner, deleteAt } | { id, name, owner, deletedAt, lastUpdated, balance }
-*put* | /accounts/:id | User | Update an account specified by id | At least one or any combination of {name, owner} | unauthorised
+*put* | /accounts/:id | Admin | Update an account specified by id | { name } | { id, name, owner, deletedAt, lastUpdated, balance }
+*put* | /accounts/:id | User | Update an account specified by id | { name } | unauthorised
 *delete* | /accounts/:id | Admin/User | Soft delete an account specified by id | None | { id, name, owner, deletedAt, lastUpdated, balance }
-
-To undelete an account with *.put(/accounts/:id)*, *deletedAt* must be specified as *false* in the body input.
 
 The resource referenced by the route must be associated with the user to whom the User token was issued.
 
