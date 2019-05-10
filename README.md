@@ -27,9 +27,8 @@ Please change the example variables to suit your needs.
   - `clean` : Cleans the build folder and test output
   - `build` : Builds the project
   - `lint`  : Runs the linter over the project
-  - `test`  : Runs the unit tests and produce a code coverage report
+  - `test`  : Runs the unit tests and produces a code coverage report
   - `loadtest` : Runs the loadtest and produces an artillery report afterwards
-  - `docs`   : Builds the docs
 
 ## Endpoints
 
