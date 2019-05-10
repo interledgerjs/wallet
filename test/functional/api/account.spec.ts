@@ -191,7 +191,7 @@ describe('.put/accounts', function () {
       .set('Authorization', 'Bearer ' + adminToken)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
-        assert.equal(response.status, 404)
+        assert.equal(response.status, 400)
       })
   })
 
