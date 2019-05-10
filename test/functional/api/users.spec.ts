@@ -252,8 +252,9 @@ describe('.get/users', function () {
 
 describe('.put/users', function () {
   let id: number
+  // userName is case insensitive
   let data = {
-    'userName': 'TEST_USER',
+    'userName': 'TEST_USER1',
     'pssword': '321'
   }
 
