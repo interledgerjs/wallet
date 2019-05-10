@@ -191,7 +191,7 @@ describe('.put/accounts', function () {
       .set('Authorization', 'Bearer ' + adminToken)
       // .set('Authorization', 'Bearer ' + token)
       .then(function (response) {
-        assert.equal(response.status, 404)
+        assert.equal(response.status, 400)
       })
   })
 
@@ -223,10 +223,13 @@ describe('.delete/accounts', function () {
 
   before(function () {
     return request(app)
-      .get('/accounts')
+      .post('/accounts')
+      .send({
+        'name': 'test_account',
+        'owner': 1})
       .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[2].id
+        id = response.body.id
       })
   })
 

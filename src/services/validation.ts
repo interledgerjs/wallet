@@ -1,4 +1,4 @@
-import { check, validationResult, oneOf } from 'express-validator/check'
+import { check, validationResult, oneOf, param } from 'express-validator/check'
 
 export const postUserArrayValidation = [
   check('userName').exists().isString().not().isNumeric(),
@@ -13,6 +13,22 @@ export const putUserArrayValidation = [
     check('role').optional().equals('admin')
   ]),
   check('deletedAt').optional().matches('false').toBoolean()
+]
+
+export const postAccountArrayValidation = [
+  check('name').exists().isString(),
+  check('owner').exists().isInt()
+]
+
+export const putAccountArrayValidation = [
+  check('name').optional().isString(),
+  param('id').exists().isNumeric()
+]
+
+export const postTransactionArrayValidation = [
+  check('debitAccountId').exists().isInt(),
+  check('creditAccountId').exists().isInt(),
+  check('amount').exists().isInt().not().contains('-')
 ]
 
 export function validate (req, res) {
