@@ -1,11 +1,11 @@
 import { check, validationResult, oneOf, param } from 'express-validator/check'
 
-export const postUserArrayValidation = [
+export const postUserInputValidator = [
   check('userName').exists().isString().not().isNumeric(),
   check('pssword').exists().isString()
 ]
 
-export const putUserArrayValidation = [
+export const putUserInputValidator = [
   check('userName').optional().exists().not().isNumeric(),
   check('pssword').optional().exists().isString(),
   oneOf([
@@ -15,17 +15,17 @@ export const putUserArrayValidation = [
   check('deletedAt').optional().matches('false').toBoolean()
 ]
 
-export const postAccountArrayValidation = [
+export const postAccountInputValidator = [
   check('name').exists().isString(),
   check('owner').exists().isInt()
 ]
 
-export const putAccountArrayValidation = [
+export const putAccountInputValidator = [
   check('name').optional().isString(),
   param('id').exists().isNumeric()
 ]
 
-export const postTransactionArrayValidation = [
+export const postTransactionInputValidator = [
   check('debitAccountId').exists().isInt(),
   check('creditAccountId').exists().isInt(),
   check('amount').exists().isInt().not().contains('-')
