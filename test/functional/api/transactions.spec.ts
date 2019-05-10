@@ -84,20 +84,20 @@ describe('.post/transactions', function () {
 
   // data vlidation being reimplemented, please uncomment test when functioning
 
-  // it('should return HTTP 400 when called with bad data', function () {
-  //   let data = {
-  //     'debitAccountId': 1,
-  //     'creditAccountId': transactionTestAccount.id,
-  //     'amount': 'asd'
-  //   }
-  //   return request(app)
-  //     .post('/transactions')
-  //     .send(data)
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 400)
-  //     })
-  // })
+  it('should return HTTP 400 when called with bad data', function () {
+    let data = {
+      'debitAccountId': 1,
+      'creditAccountId': transactionTestAccount.id,
+      'amount': 'asd'
+    }
+    return request(app)
+      .post('/transactions')
+      .send(data)
+      .set('Authorization', 'Bearer ' + adminToken)
+      .then(function (response) {
+        assert.equal(response.status, 400)
+      })
+  })
 
   // it('should return HTTP 500 when db cannot be found', function () {
   //   process.env.DBNAME = ''
