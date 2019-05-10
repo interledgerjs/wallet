@@ -138,7 +138,7 @@ export async function updateUser (req: Request, res: Response) {
     }
     try {
       const userExists = await retrieveUserById(req.params.id)
-      if (userExists && !userExists.deletedAt) {
+      if (userExists) {
          // admin access
         if (req.authData.role === 'admin') {
           const result = await modifyUserAdmin(userExists, req.body)

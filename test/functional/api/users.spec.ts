@@ -166,7 +166,6 @@ describe('.post/users', function () {
 })
 
 describe('.get/users', function () {
-  let dbname = process.env.DBNAME
   let id
   let userName
 
@@ -178,10 +177,6 @@ describe('.get/users', function () {
         id = response.body[0].id
         userName = response.body[0].userName
       })
-  })
-
-  afterEach(function () {
-    process.env.DBNAME = dbname
   })
 
   it('should return HTTP 200 when db table contains data', function () {
@@ -252,7 +247,6 @@ describe('.get/users', function () {
 
 describe('.put/users', function () {
   let id: number
-  // userName is case insensitive
   let data = {
     'userName': 'TEST_USER1',
     'pssword': '321'
