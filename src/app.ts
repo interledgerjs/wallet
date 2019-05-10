@@ -17,7 +17,7 @@ app.get('/transactions/:id', verifyToken(Roles.User), readTransactionById)
 app.post('/accounts', postAccountInputValidator, verifyToken(Roles.User), createAccount) // body.name, body.owner
 app.get('/accounts', verifyToken(Roles.User), readAccounts) // no required input
 app.get('/accounts/:id', verifyToken(Roles.User), readAccountById)
-app.put('/accounts/:id', putAccountInputValidator, verifyToken(Roles.Admin), updateAccount) // id as param, body.name, body.owner
+app.put('/accounts/:id', putAccountInputValidator, verifyToken(Roles.User), updateAccount) // id as param, body.name, body.owner
 app.delete('/accounts/:id', verifyToken(Roles.Admin), deleteAccount) // id's as params
 
 app.post('/users', postUserInputValidator, createUser) // body.userName, body.password
