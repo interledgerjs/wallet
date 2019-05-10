@@ -9,7 +9,7 @@
 
 ## Goal
 
-A working REST API that exposes the functions of simple wallet system (accounts, users, transactions etc) and integrates the functions required of an ILSP or wallet that can peer with connectors on the Interledger.
+A working REST API that exposes the functions of a simple wallet system (accounts, users, transactions etc) and integrates the functions required of an ILSP or wallet that can peer with connectors on the Interledger.
 
 ### Folders
 
