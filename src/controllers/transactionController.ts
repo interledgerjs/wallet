@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
 import { addTransaction, retrieveTransactionById, retrieveTransactions, retrieveTransactionsByAccountId, retrieveAccountById, calculateBalance } from '../models'
 import { isAuthorized } from '../services'
+import { validate } from '../services/validation'
 
 dotenv.config()
 const logger = createLogger({
@@ -30,14 +31,16 @@ export async function createTransaction (req: Request, res: Response) {
       return
     }
     if (isAuthorized(req.authData, authorizedAccount.owner)) {
+      if (!validate(req, res)) {
+        return
+      }
       const balance = await calculateBalance(req.body.debitAccountId)
-      // const accounts = await query(`SELECT * FROM accounts WHERE (id = ${req.body.debitAccountId} OR id = ${req.body.creditAccountId}) AND deletedAt = ''`)
       const debitAccount = await retrieveAccountById(req.body.debitAccountId)
       const creditAccount = await retrieveAccountById(req.body.creditAccountId)
       if ((balance > 0 || req.body.debitAccountId === 1) && creditAccount && debitAccount) {
-        const failure = await addTransaction(req.body)
-        if (!failure) {
-          res.sendStatus(200)
+        const result = await addTransaction(req.body)
+        if (result) {
+          res.send(result)
         } else {
           res.sendStatus(400)
         }

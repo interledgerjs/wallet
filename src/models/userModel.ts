@@ -12,161 +12,119 @@ export interface User {
   pssword: string,
 }
 
-function isUser (user: any): user is User {
-  return (
-    typeof user.id === 'number' &&
-    typeof user.userName === 'string' &&
-    typeof user.dateCreated === 'string' &&
-    (typeof user.deletedAt === 'object' || typeof user.deletedAt === 'string') &&
-    typeof user.role === 'string' &&
-    typeof user.pssword === 'string'
-  )
-}
-
-export function isUserArray (result: any): result is User[] {
-  let isUserArray: boolean = true
-  if (result.length) {
-    result.forEach(function (element: any) {
-      if (!isUser(element)) {
-        isUserArray = false
-      }
-    })
-  }
-  return (
-    isUserArray || result === null
-  )
-}
-
 // function to handle getting all users
-export async function retrieveUser (): Promise<User[]> {
-  let result = await knexSelectAll('users')
-  if (isUserArray(result)) {
+export async function retrieveUsers (): Promise<User[]> {
+  const result = await knexSelectAll('users')
+  if (result) {
     return (result)
   } else {
-    throw new Error('Not user array')
+    return (undefined)
   }
 }
 
 // function to handle get user by id
 export async function retrieveUserById (id: number): Promise<User> {
-  let result = await knexSelectById(id, 'users')
-  if (isUserArray(result)) {
-    if (result.length > 0) {
-      return (result[0])
-    } else {
-      return (undefined)
-    }
+  // result will be empty array or array of one element only
+  const result = await knexSelectById(id, 'users')
+  if (result[0]) {
+    return (result[0])
   } else {
-    throw new Error('Not user array')
+    return (undefined)
   }
 }
 
 // function to handle get user by userName
 export async function retrieveUserByUserName (userName: string): Promise<User> {
-  let result = await knexSelectByUserName(userName, 'users')
-  if (isUserArray(result)) {
-    if (result.length > 0) {
-      return (result[0])
-    } else {
-      return (undefined)
-    }
+  const result = await knexSelectByUserName(userName, 'users')
+  if (result[0]) {
+    return (result[0])
   } else {
-    throw new Error('Not user array')
+    return (undefined)
   }
 }
 
 // function to handle adding users
-export async function addUser (body: any): Promise<boolean> {
+export async function addUser (body: any): Promise<User> {
   if (body) {
+    body.role = 'user'
+    const hashedPssword = await hashing(body.pssword)
+    body.pssword = hashedPssword
     const result = await knexInsert(body, 'users')
-    return (false)
+    return(result[0])
   } else {
-    return (true)
+    return (undefined)
   }
 }
 
-// function to handle adding users
-export async function addAdmin (body: any): Promise<boolean> {
-  const user = await buildUser(body)
-  if (user && isUser(user)) {
-    let result = await knexInsert(body, 'users')
-    return (false)
+// function to handle adding admin
+export async function addAdmin (body: any): Promise<User> {
+  if (body) {
+    body.role = 'admin'
+    const hashedPssword = await hashing(body.pssword)
+    body.pssword = hashedPssword
+    const result = await knexInsert(body, 'users')
+    return(result[0])
   } else {
-    return (true)
+    return (undefined)
   }
 }
 
-export async function modifyUser (userExists: User, body: any): Promise<boolean> {
-  if (
-      (body.userName === undefined || typeof body.userName === 'string') &&
-      (body.dateCreated === undefined || typeof body.dateCreated === 'string') &&
-      (body.deletedAt === undefined || typeof body.deletedAt === 'string') &&
-      (body.pssword === undefined || typeof body.pssword === 'string')
-    ) {
-    try {
-      let result = await knexUpdateById(body, userExists.id, 'users')
-      return (false)
-    } catch (error) {
-      return (error)
+// function to handle modifying a user
+export async function modifyUser (userExists: User, body: any): Promise<User> {
+  if (body) {
+    if (body.userName) {
+      const userExists = await retrieveUserByUserName(body.userName)
+      if (userExists) {
+        return (undefined)
+      }
+    } if (body.pssword) {
+      const hashedPssword = await hashing(body.pssword)
+      body.pssword = hashedPssword
     }
+    const result = await knexUpdateById(body, userExists.id, 'users')
+    return (result[0])
   } else {
-    return (true)
+    return (undefined)
   }
 }
 
-export async function removeUser (id: number): Promise<boolean> {
+// admin function to handle modifying a user
+export async function modifyUserAdmin (userExists: User, body: any): Promise<User> {
+  if (body) {
+    if (body.userName) {
+      const userExists = await retrieveUserByUserName(body.userName)
+      if (userExists) {
+        return (undefined)
+      }
+    } if (body.pssword) {
+      const hashedPssword = await hashing(body.pssword)
+      body.pssword = hashedPssword
+    }
+      // reinstate deleted user
+    if (body.deletedAt === false) {
+      body.deletedAt = null
+    }
+    const result = await knexUpdateById(body, userExists.id, 'users')
+    return (result[0])
+  } else {
+    return (undefined)
+  }
+}
+
+export async function removeUser (id: number): Promise<User> {
   let body = {
     deletedAt: knex.fn.now()
   }
   let result = await knexUpdateById(body, id, 'users')
-  return (false)
+  return (result[0])
 }
 
-async function buildUser (body: any, baseObj: User = undefined): Promise<User> {
-  if (baseObj === undefined) {
-    if (typeof(body.pssword) === 'string') {
-      const salt = await bcrypt.genSalt(saltRounds)
-      const hash = await bcrypt.hash(body.pssword, salt)
-      const userObject: User = {
-        id: -1,
-        userName: body.userName,
-        dateCreated: new Date().toISOString(),
-        deletedAt: '',
-        role: '',
-        pssword: hash
-      }
-      return (userObject)
-    } else {
-      return (undefined)
-    }
+export async function hashing (pssword: string): Promise<string> {
+  const salt = await bcrypt.genSalt(saltRounds)
+  const hash = await bcrypt.hash(pssword, salt)
+  if (hash) {
+    return (hash)
   } else {
-    const userObject: User = {
-      id: baseObj.id,
-      userName: baseObj.userName,
-      dateCreated: baseObj.dateCreated,
-      deletedAt: baseObj.deletedAt,
-      role: baseObj.role,
-      pssword: baseObj.pssword
-    }
-    if (body.userName !== undefined) {
-      const userNameExists = await retrieveUserByUserName(body.userName)
-      if (!userNameExists) {
-        userObject.userName = body.userName
-      } else {
-        throw new Error('Username exists')
-      }
-    }
-    if (body.dateCreated !== undefined) {
-      userObject.dateCreated = body.dateCreated
-    }
-    if (body.deletedAt !== undefined) {
-      userObject.deletedAt = body.deletedAt
-    }
-    if (body.pssword !== undefined) {
-      const salt = await bcrypt.genSalt(saltRounds)
-      const hash = await bcrypt.hash(body.pssword, salt)
-      userObject.pssword = hash
-    }
-    return (userObject)
+    return (undefined)
   }
 }

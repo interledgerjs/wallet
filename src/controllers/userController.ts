@@ -1,8 +1,9 @@
 import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
-import { addAdmin, addUser, modifyUser, removeUser, retrieveUser, retrieveUserById, retrieveUserByUserName } from '../models'
-import { isAuthorized } from '../services'
+import { addAdmin, addUser, modifyUser, modifyUserAdmin, removeUser, retrieveUsers, retrieveUserById, retrieveUserByUserName } from '../models'
+import { isAuthorized, filterDeleted } from '../services'
+import { validate } from '../services/validation'
 
 dotenv.config()
 const logger = createLogger({
@@ -20,16 +21,12 @@ if (process.env.LOGFILE === 'true') {
   logger.add(new transports.File({ filename: 'logs.log' }))
 }
 
-// get /user #returns all users
+/// get /user #returns all users
 export async function readUsers (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
-    const result = await retrieveUser()
-    if (result.length > 0) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
+    const result = await filterDeleted(await retrieveUsers())
+    res.send(result)
   } catch (error) {
     logger.error(error)
     res.sendStatus(500)
@@ -38,11 +35,16 @@ export async function readUsers (req: Request, res: Response) {
 
 export async function readUserById (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, req.params.id)) {
+  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
     try {
       const userById = await retrieveUserById(req.params.id)
-      if (userById) {
-        res.send(userById)
+      if (userById && !userById.deletedAt) {
+        const returnObject = {
+          id: userById.id,
+          userName: userById.userName,
+          dateCreated: userById.dateCreated
+        }
+        res.send(returnObject)
       } else {
         res.sendStatus(404)
       }
@@ -58,15 +60,22 @@ export async function readUserById (req: Request, res: Response) {
 // post /users #adds new user to table
 export async function createUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  // check if userName already exists
-  const userName: string = req.body.userName
-  const pssword: string = req.body.pssword
+  if (!validate(req, res)) {
+    return
+  }
   try {
-    const userExists = await retrieveUserByUserName(userName)
+    // check if userName already exists
+    const userExists = await retrieveUserByUserName(req.body.userName)
+    // console.log(userExists)
     if (!userExists) {
       const result = await addUser(req.body)
-      if (!result) {
-        res.sendStatus(200)
+      if (result) {
+        const returnObject = {
+          id: result.id,
+          userName: result.userName,
+          dateCreated: result.dateCreated
+        }
+        res.send(returnObject)
       } else {
         res.sendStatus(400)
       }
@@ -82,15 +91,23 @@ export async function createUser (req: Request, res: Response) {
 // post /users #adds new admin to table
 export async function createAdmin (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  // check if userName already exists
-  const userName: string = req.body.userName
-  const pssword: string = req.body.pssword
+  if (!validate(req,res)) {
+    return
+  }
   try {
-    const userExists = await retrieveUserByUserName(userName)
+    // check if userName already exists
+    const userExists = await retrieveUserByUserName(req.body.userName)
     if (!userExists) {
       const result = await addAdmin(req.body)
-      if (!result) {
-        res.sendStatus(200)
+      if (result) {
+        const returnObject = {
+          id: result.id,
+          userName: result.userName,
+          role: result.role,
+          dateCreated: result.dateCreated,
+          deletedAt: result.deletedAt
+        }
+        res.send(returnObject)
       } else {
         res.sendStatus(400)
       }
@@ -107,14 +124,40 @@ export async function createAdmin (req: Request, res: Response) {
 export async function updateUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+    if (!validate(req,res)) {
+      return
+    }
     try {
       const userExists = await retrieveUserById(req.params.id)
-      if (userExists) {
-        const result = await modifyUser(userExists, req.body)
-        if (!result) {
-          res.sendStatus(200)
-        } else {
-          res.sendStatus(400)
+      if (userExists && !userExists.deletedAt) {
+         // admin access
+        if (req.authData.role === 'admin') {
+          const result = await modifyUserAdmin(userExists, req.body)
+          if (result) {
+            const returnObject = {
+              id: result.id,
+              userName: result.userName,
+              role: result.role,
+              dateCreated: result.dateCreated,
+              deletedAt: result.deletedAt
+            }
+            res.send(returnObject)
+          } else {
+            res.sendStatus(400)
+          }
+       // user access
+        } else if (parseInt(req.params.id, 10) === req.authData.id) {
+          const result = await modifyUser(userExists, req.body)
+          if (result) {
+            const returnObject = {
+              id: result.id,
+              userName: result.userName,
+              dateCreated: result.dateCreated
+            }
+            res.send(returnObject)
+          } else {
+            res.sendStatus(400)
+          }
         }
       } else {
         res.sendStatus(404)
@@ -134,10 +177,17 @@ export async function deleteUser (req: Request, res: Response) {
   if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
     try {
       const userExists = await retrieveUserById(req.params.id)
-      if (userExists) {
+      if (userExists && !userExists.deletedAt) {
         const result = await removeUser(req.params.id)
-        if (!result) {
-          res.sendStatus(200)
+        if (result) {
+          const returnObject = {
+            id: result.id,
+            userName: result.userName,
+            role: result.role,
+            dateCreated: result.dateCreated,
+            deletedAt: result.deletedAt
+          }
+          res.send(returnObject)
         }
       } else {
         res.sendStatus(404)

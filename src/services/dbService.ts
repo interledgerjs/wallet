@@ -44,7 +44,7 @@ export function knexUpdateById (body, id, targetTable) {
     .where('id', id)
     .update(body)
     .then(function () {
-      return knexSelectById(id, 'users')
+      return knexSelectById(id, targetTable)
     })
 }
 
