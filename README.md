@@ -34,39 +34,42 @@ Please change the example variables to suit your needs.
 
 ## Endpoints
 
+### Services
+Services used throughout the API  
+
+| Method | Path | Description | Expected Output | Expected Body Input | Required Token
+|-|-|-|-|-|-
+| *post* | /token | User login and token signing | { token } | { userName, pssword } |
+
+Tokens are valid for one hour and have to be included as a bearer token in the request header. After deployment, this route can be accessed with username *admin* and password *admin*. 
+
 ### Users
 Endpoints for user data  
 
-|  | Path | Description | Expected Output | Expected Body Input |
-|--------|-----------------------------|---------------------------------------------------------------------|------------------------------------------------------------------|-------------------------------------------------------------|
-| *post* | /admin | Check for duplicate admin-level users, create a new admin user in db, hashes pssword | 200 | { userName, pssword } |
-| *post* | /users | Check for duplicate users, create a new user in db, hashes pssword | 200 | { userName, pssword } |
+| Method | Path | Description | Expected Output | Expected Body Input | Required Token
+|-|-|-|-|-|-
+| *post* | /admin | Check for duplicate admin-level users, create a new admin user in db, hashes password | *update this* | { userName, pssword }
+| *post* | /users | Check for duplicate users, create a new user in db, hashes pssword | *update this* | { userName, pssword } |
 | *get* | /users | Return all users as an array of objects | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ] | None |
 | *get* | /users/?id=[id] | Return a user specified by id | { id, userName, dateCreated, deletedAt, role, pssword } | None |
 | *get* | /users/?username=[username] | Return a user specified by username | { id, userName, dateCreated, deletedAt, role, pssword } | None |
-| *put* | /user/:id | Update a user specified by id | 200 | At least one: { userName, dateCreated, deletedAt, pssword } |
-| *delete* | /user/:id | Soft delete a user specified by id | 200 | None |
+| *put* | /user/:id | Update a user specified by id | *update this* | At least one: { userName, dateCreated, deletedAt, pssword } |
+| *delete* | /user/:id | Soft delete a user specified by id | *update this* | None |
 
 ### Accounts
 Endpoints for account data  
 
-|  | Path | Description | Expected Output | Expected Body Input |
-|--------|--------------------------|----------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------|
-| *post* | /accounts | Add new account to db | 200 | { name, owner} |
+| Method | Path | Description | Expected Output | Expected Body Input | Required Token
+|-|-|-|-|-|-
+| *post* | /accounts | Add new account to db | *update this* | { name, owner} |
 | *get* | /accounts | Return all accounts as an array of objects |  [ { id, name, owner, balance, deletedAt, lastUpdated }, … ] | None |
 | *get* | /accounts/?id=[id] | Return an account specified by id | { id, name, owner, balance, deletedAt, lastUpdated } | None |
 | *get* | /accounts/?owner=[owner] | Return all accounts associated with specified owner as an array of objects | [ { id, name, owner, balance, deletedAt, lastUpdated }, ... ] | None |
-| *put* | /accounts/:id | Update an account specified by id | 200 | At least one: { name, owner, balance } |
-| *delete* | /accounts/:id | Soft delete an account specified by id | 200 | None |
+| *put* | /accounts/:id | Update an account specified by id | *update this* | At least one: { name, owner, balance } |
+| *delete* | /accounts/:id | Soft delete an account specified by id | *update this* | None |
 
 ### Transactions
 Endpoints for transaction data
 
 *TODO*
 
-### Services
-Services used throughout the API  
-
-|  | Path | Description | Expected Output | Expected Body Input |
-|------|--------|------------------------------|-----------------|-----------------------|
-| *post* | /token | User login and token signing | { token } | { username, pssword } |
