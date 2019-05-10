@@ -34,7 +34,7 @@ export const postTransactionInputValidator = [
 
 export function validate (req, res) {
   const errors = validationResult(req)
-  if (!errors.isEmpty()) {
+  if (!errors.isEmpty() || Object.keys(matchedData(req)).length === 0) {
     // res.status(422).json({ errors: errors.array() })
     res.sendStatus(400)
     return false
