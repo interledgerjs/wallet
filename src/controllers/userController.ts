@@ -43,7 +43,12 @@ export async function readUserById (req: Request, res: Response) {
     try {
       const userById = await retrieveUserById(req.params.id)
       if (userById) {
-        res.send(userById)
+        const returnObject = {
+          id: userById.id,
+          userName: userById.userName,
+          dateCreated: userById.dateCreated
+        }
+        res.send(returnObject)
       } else {
         res.sendStatus(404)
       }
@@ -99,8 +104,14 @@ export async function createAdmin (req: Request, res: Response) {
     if (!userExists) {
       const result = await addAdmin(req.body)
       if (result) {
-        // admin return object?
-        res.send(result)
+        const returnObject = {
+          id: result.id,
+          userName: result.userName,
+          role: result.role,
+          dateCreated: result.dateCreated,
+          deletedAt: result.deletedAt
+        }
+        res.send(returnObject)
       } else {
         res.sendStatus(400)
       }
@@ -127,6 +138,13 @@ export async function updateUser (req: Request, res: Response) {
         if (req.authData.role === 'admin') {
           const result = await modifyUserAdmin(userExists, req.body)
           if (result) {
+            const returnObject = {
+              id: result.id,
+              userName: result.userName,
+              role: result.role,
+              dateCreated: result.dateCreated,
+              deletedAt: result.deletedAt
+            }
             res.send(result)
           } else {
             res.sendStatus(400)
@@ -165,8 +183,15 @@ export async function deleteUser (req: Request, res: Response) {
       const userExists = await retrieveUserById(req.params.id)
       if (userExists) {
         const result = await removeUser(req.params.id)
-        if (!result) {
-          res.sendStatus(200)
+        if (result) {
+          const returnObject = {
+            id: result.id,
+            userName: result.userName,
+            role: result.role,
+            dateCreated: result.dateCreated,
+            deletedAt: result.deletedAt
+          }
+          res.send(returnObject)
         }
       } else {
         res.sendStatus(404)

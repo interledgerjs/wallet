@@ -111,12 +111,12 @@ export async function modifyUserAdmin (userExists: User, body: any): Promise<Use
   }
 }
 
-export async function removeUser (id: number): Promise<boolean> {
+export async function removeUser (id: number): Promise<User> {
   let body = {
     deletedAt: knex.fn.now()
   }
   let result = await knexUpdateById(body, id, 'users')
-  return (false)
+  return (result[0])
 }
 
 export async function hashing (pssword: string): Promise<string> {
