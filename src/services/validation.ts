@@ -35,7 +35,7 @@ export function validate (req, res) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     // res.status(422).json({ errors: errors.array() })
-    res.send(400)
+    res.sendStatus(400)
     return false
   } else {
     return true
