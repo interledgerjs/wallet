@@ -29,11 +29,7 @@ export async function createAccount (req: Request, res: Response) {
     }
     try {
       const result = await addAccount(req.body)
-      if (result) {
-        res.send(result)
-      } else {
-        res.sendStatus(400)
-      }
+      res.send(result)
     } catch (error) {
       logger.error(error)
       res.sendStatus(500)

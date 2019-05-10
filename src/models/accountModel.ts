@@ -71,16 +71,9 @@ export function calculateBalance (accountId: number): Promise<number> {
 
 // function to handle adding an account
 export async function addAccount (body: any): Promise<DisplayAccount> {
-  if (
-    typeof(body.name) === 'string' &&
-    typeof(body.owner) === 'number'
-  ) {
-    const result = (await knexInsert(body, 'accounts'))[0]
-    const displayObject = makeDisplayAccount(result)
-    return(displayObject)
-  } else {
-    return(undefined)
-  }
+  const result = (await knexInsert(body, 'accounts'))[0]
+  const displayObject = makeDisplayAccount(result)
+  return(displayObject)
 }
 
 // function to handle retrieving a singular account by id
