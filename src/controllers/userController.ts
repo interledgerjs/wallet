@@ -60,8 +60,11 @@ export async function readUserById (req: Request, res: Response) {
 // post /users #adds new user to table
 export async function createUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (!validate(req, res)) {
+  const valid = validate(req, res)
+  if (!valid) {
     return
+  } else {
+    req.body = valid
   }
   try {
     // check if userName already exists
@@ -91,8 +94,11 @@ export async function createUser (req: Request, res: Response) {
 // post /users #adds new admin to table
 export async function createAdmin (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (!validate(req,res)) {
+  const valid = validate(req, res)
+  if (!valid) {
     return
+  } else {
+    req.body = valid
   }
   try {
     // check if userName already exists
@@ -124,8 +130,11 @@ export async function createAdmin (req: Request, res: Response) {
 export async function updateUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
-    if (!validate(req,res)) {
+    const valid = validate(req, res)
+    if (!valid) {
       return
+    } else {
+      req.body = valid
     }
     try {
       const userExists = await retrieveUserById(req.params.id)
