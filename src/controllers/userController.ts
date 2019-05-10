@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
 import { addAdmin, addUser, modifyUser, modifyUserAdmin, removeUser, retrieveUsers, retrieveUserById, retrieveUserByUserName } from '../models'
-import { isAuthorized } from '../services'
+import { isAuthorized, filterDeleted } from '../services'
 import { validate } from '../services/validation'
 
 dotenv.config()
@@ -25,12 +25,8 @@ if (process.env.LOGFILE === 'true') {
 export async function readUsers (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
-    const result = await retrieveUsers()
-    if (result) {
-      res.send(result)
-    } else {
-      res.sendStatus(404)
-    }
+    const result = await filterDeleted(await retrieveUsers())
+    res.send(result)
   } catch (error) {
     logger.error(error)
     res.sendStatus(500)
@@ -42,7 +38,7 @@ export async function readUserById (req: Request, res: Response) {
   if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
     try {
       const userById = await retrieveUserById(req.params.id)
-      if (userById) {
+      if (userById && !userById.deletedAt) {
         const returnObject = {
           id: userById.id,
           userName: userById.userName,
@@ -133,7 +129,7 @@ export async function updateUser (req: Request, res: Response) {
     }
     try {
       const userExists = await retrieveUserById(req.params.id)
-      if (userExists) {
+      if (userExists && !userExists.deletedAt) {
          // admin access
         if (req.authData.role === 'admin') {
           const result = await modifyUserAdmin(userExists, req.body)
@@ -145,7 +141,7 @@ export async function updateUser (req: Request, res: Response) {
               dateCreated: result.dateCreated,
               deletedAt: result.deletedAt
             }
-            res.send(result)
+            res.send(returnObject)
           } else {
             res.sendStatus(400)
           }
@@ -181,7 +177,7 @@ export async function deleteUser (req: Request, res: Response) {
   if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
     try {
       const userExists = await retrieveUserById(req.params.id)
-      if (userExists) {
+      if (userExists && !userExists.deletedAt) {
         const result = await removeUser(req.params.id)
         if (result) {
           const returnObject = {

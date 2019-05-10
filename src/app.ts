@@ -3,21 +3,21 @@ import * as dotenv from 'dotenv'
 import * as express from 'express'
 import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readAccountById, readTransactionById, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
 import { verifyToken, Roles } from './services'
-import { postUserArrayValidation, putUserArrayValidation } from './services/validation'
+import { postUserArrayValidation, putUserArrayValidation, postAccountArrayValidation, postTransactionArrayValidation, putAccountArrayValidation } from './services/validation'
 
 dotenv.config()
 const app = express()
 module.exports = app
 app.use(bodyParser.json())
 
-app.post('/transactions', verifyToken(Roles.User), createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
+app.post('/transactions', postTransactionArrayValidation, verifyToken(Roles.User), createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
 app.get('/transactions/', verifyToken(Roles.User), readTransactions) // no required input
 app.get('/transactions/:id', verifyToken(Roles.User), readTransactionById)
 
-app.post('/accounts', verifyToken(Roles.User), createAccount) // body.name, body.owner
+app.post('/accounts', postAccountArrayValidation, verifyToken(Roles.User), createAccount) // body.name, body.owner
 app.get('/accounts', verifyToken(Roles.User), readAccounts) // no required input
 app.get('/accounts/:id', verifyToken(Roles.User), readAccountById)
-app.put('/accounts/:id', verifyToken(Roles.Admin), updateAccount) // id as param, body.name, body.owner
+app.put('/accounts/:id', putAccountArrayValidation, verifyToken(Roles.Admin), updateAccount) // id as param, body.name, body.owner
 app.delete('/accounts/:id', verifyToken(Roles.Admin), deleteAccount) // id's as params
 
 app.post('/users', postUserArrayValidation, createUser) // body.userName, body.password

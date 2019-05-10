@@ -223,10 +223,13 @@ describe('.delete/accounts', function () {
 
   before(function () {
     return request(app)
-      .get('/accounts')
+      .post('/accounts')
+      .send({
+        'name': 'test_account',
+        'owner': 1})
       .set('Authorization', 'Bearer ' + adminToken)
       .then(function (response) {
-        id = response.body[2].id
+        id = response.body.id
       })
   })
 

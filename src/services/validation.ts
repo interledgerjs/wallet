@@ -15,6 +15,22 @@ export const putUserArrayValidation = [
   check('deletedAt').optional().matches('false').toBoolean()
 ]
 
+export const postAccountArrayValidation = [
+  check('name').exists().isString(),
+  check('owner').exists().isNumeric()
+]
+
+export const putAccountArrayValidation = [
+  check('name').optional().isString(),
+  check('owner').optional().isInt()
+]
+
+export const postTransactionArrayValidation = [
+  check('debitAccountId').exists().isInt(),
+  check('creditAccountId').exists().isInt(),
+  check('amount').exists().isInt().not().contains('-')
+]
+
 export function validate (req, res) {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {

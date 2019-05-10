@@ -13,7 +13,7 @@ export interface User {
 }
 
 // function to handle getting all users
-export async function retrieveUsers (): Promise<User> {
+export async function retrieveUsers (): Promise<User[]> {
   const result = await knexSelectAll('users')
   if (result) {
     return (result)

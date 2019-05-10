@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
 import { addTransaction, retrieveTransactionById, retrieveTransactions, retrieveTransactionsByAccountId, retrieveAccountById, calculateBalance } from '../models'
 import { isAuthorized } from '../services'
+import { validate } from '../services/validation'
 
 dotenv.config()
 const logger = createLogger({
@@ -30,6 +31,9 @@ export async function createTransaction (req: Request, res: Response) {
       return
     }
     if (isAuthorized(req.authData, authorizedAccount.owner)) {
+      if (!validate(req, res)) {
+        return
+      }
       const balance = await calculateBalance(req.body.debitAccountId)
       const debitAccount = await retrieveAccountById(req.body.debitAccountId)
       const creditAccount = await retrieveAccountById(req.body.creditAccountId)
