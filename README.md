@@ -18,7 +18,7 @@ All source code is expected to be TypeScript and is placed in the `src` folder. 
 The NPM package will not contain any TypeScript files (`*.ts`) but will have typings and source maps.
 
 ### Environmental variables
-The environmental variable file, in the root folder, is used to store and configure variables for database management, development and deployment. This repo is supplied with an `example.env`.
+The environmental variable file in the root folder is used to store and configure variables for database management, development, and deployment. This repo is supplied with an `example.env`.
 
 Please change the example variables to suit your needs.
 
