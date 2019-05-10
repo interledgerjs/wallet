@@ -1,7 +1,7 @@
 import { check, validationResult, oneOf } from 'express-validator/check'
 
 export const postUserArrayValidation = [
-  check('userName').exists().not().isNumeric(),
+  check('userName').exists().isString().not().isNumeric(),
   check('pssword').exists().isString()
 ]
 
