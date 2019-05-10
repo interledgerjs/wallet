@@ -120,17 +120,9 @@ export async function retrieveAccountByOwner (owner: number): Promise<Account[]>
 
 // function to handle the updating of account information
 export async function modifyAccount (accountExists: Account, body: any): Promise<DisplayAccount> {
-  if (
-    (body.name === undefined || typeof body.name === 'string') &&
-    (body.owner === undefined || typeof body.owner === 'number') &&
-    (body.deletedAt === undefined || typeof body.deletedAt === 'string')
-  ) {
-    const result = (await knexUpdateById(body, accountExists.id, 'accounts'))[0]
-    const displayAccount = makeDisplayAccount(result)
-    return(displayAccount)
-  } else {
-    return(undefined)
-  }
+  const result = (await knexUpdateById(body, accountExists.id, 'accounts'))[0]
+  const displayAccount = makeDisplayAccount(result)
+  return(displayAccount)
 }
 
 export async function removeAccount (id: number): Promise<DisplayAccount> {

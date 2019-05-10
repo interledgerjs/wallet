@@ -103,11 +103,7 @@ export async function updateAccount (req: Request, res: Response) {
       const accountExists = await retrieveAccountById(req.params.id)
       if (accountExists && !accountExists.deletedAt) {
         const result = await modifyAccount(accountExists, req.body)
-        if (result) {
-          res.send(result)
-        } else {
-          res.sendStatus(400)
-        }
+        res.send(result)
       } else {
         res.sendStatus(404)
       }
