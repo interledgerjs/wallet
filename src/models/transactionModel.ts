@@ -33,8 +33,12 @@ export function isTransactionArray (result: any): result is Transaction[] {
 // function to handle adding transactions
 export async function addTransaction (body: any): Promise<Transaction> {
   if (body) {
-    let result = (await knexInsert(body, 'transactions'))[0]
-    return (result)
+    let result = await knexInsert(body, 'transactions')
+    if (isTransactionArray(result)) {
+      return (result[0])
+    } else {
+      throw new Error('Not transaction array')
+    }
   } else {
     return (undefined)
   }
@@ -71,18 +75,5 @@ export async function retrieveTransactionsByAccountId (id: number): Promise<Tran
     return (result)
   } else {
     throw new Error('Not transaction array')
-  }
-}
-
-function buildTransaction (body: any, baseObj: Transaction = undefined): Transaction {
-  if (baseObj === undefined) {
-    const transactionObject: Transaction = {
-      id: -1,
-      debitAccountId: body.debitAccountId,
-      creditAccountId: body.creditAccountId,
-      amount: body.amount,
-      date: new Date().toISOString()
-    }
-    return (transactionObject)
   }
 }

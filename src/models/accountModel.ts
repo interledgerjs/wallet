@@ -38,10 +38,16 @@ function isAccountArray (result: any): result is Account[] {
   )
 }
 
-async function makeDisplayAccount (account: Account): Promise<DisplayAccount> {
-  let displayObject: any = account
-  displayObject.balance = await calculateBalance(account.id)
-  return displayObject
+function makeDisplayAccount (account: Account): Promise<DisplayAccount> {
+  return new Promise(async function (resolve, reject) {
+    try {
+      let displayObject: any = account
+      displayObject.balance = await calculateBalance(account.id)
+      resolve(displayObject)
+    } catch (error) {
+      reject(error)
+    }
+  })
 }
 
 export function calculateBalance (accountId: number): Promise<number> {
@@ -70,7 +76,7 @@ export async function addAccount (body: any): Promise<DisplayAccount> {
     typeof(body.owner) === 'number'
   ) {
     const result = (await knexInsert(body, 'accounts'))[0]
-    const displayObject = await makeDisplayAccount(result)
+    const displayObject = makeDisplayAccount(result)
     return(displayObject)
   } else {
     return(undefined)
@@ -84,7 +90,7 @@ export async function retrieveAccountById (id: number): Promise<DisplayAccount> 
     return undefined
   }
   if (isAccount(result)) {
-    const displayAccount = await makeDisplayAccount(result)
+    const displayAccount = makeDisplayAccount(result)
     return(displayAccount)
   } else {
     throw new Error('Not an account')
@@ -127,18 +133,18 @@ export async function modifyAccount (accountExists: Account, body: any): Promise
     (body.deletedAt === undefined || typeof body.deletedAt === 'string')
   ) {
     const result = (await knexUpdateById(body, accountExists.id, 'accounts'))[0]
-    const displayAccount = await makeDisplayAccount(result)
+    const displayAccount = makeDisplayAccount(result)
     return(displayAccount)
   } else {
     return(undefined)
   }
 }
 
-export async function removeAccount (id: number): Promise<Account> {
+export async function removeAccount (id: number): Promise<DisplayAccount> {
   let body = {
     deletedAt: knex.fn.now()
   }
   let result = (await knexUpdateById(body, id, 'accounts'))[0]
-  const displayAccount = await makeDisplayAccount(result)
+  const displayAccount = makeDisplayAccount(result)
   return(displayAccount)
 }
