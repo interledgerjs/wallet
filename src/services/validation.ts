@@ -1,4 +1,5 @@
 import { check, validationResult, oneOf, param } from 'express-validator/check'
+import { matchedData } from 'express-validator/filter'
 
 export const postUserInputValidator = [
   check('userName').exists().isString().not().isNumeric(),
@@ -38,6 +39,6 @@ export function validate (req, res) {
     res.sendStatus(400)
     return false
   } else {
-    return true
+    return (matchedData(req))
   }
 }
