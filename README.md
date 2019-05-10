@@ -39,7 +39,7 @@ Services used throughout the API
 
 | Method | Path | Description | Expected Output | Expected Body Input | Required Token
 |-|-|-|-|-|-
-| *post* | /token | User login and token signing | { token } | { userName, pssword } |
+| *post* | /token | User login and token signing | { token } | { userName, pssword } | None
 
 Tokens are valid for one hour and have to be included as a bearer token in the request header. After deployment, this route can be accessed with username *admin* and password *admin*. 
 
@@ -48,13 +48,14 @@ Endpoints for user data
 
 | Method | Path | Description | Expected Output | Expected Body Input | Required Token
 |-|-|-|-|-|-
-| *post* | /admin | Check for duplicate admin-level users, create a new admin user in db, hashes password | *update this* | { userName, pssword }
-| *post* | /users | Check for duplicate users, create a new user in db, hashes pssword | *update this* | { userName, pssword } |
-| *get* | /users | Return all users as an array of objects | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ] | None |
-| *get* | /users/?id=[id] | Return a user specified by id | { id, userName, dateCreated, deletedAt, role, pssword } | None |
-| *get* | /users/?username=[username] | Return a user specified by username | { id, userName, dateCreated, deletedAt, role, pssword } | None |
+| *post* | /admin | Check for duplicate admin-level users, create a new admin user in db, hashes password | { id, userName, role, dateCreated, deletedAt } | { userName, pssword } | Admin
+| *post* | /users | Check for duplicate users, create a new user in db, hashes pssword | { id, userName, dateCreated } | { userName, pssword } | None
+| *get* | /users | Return all users as an array of objects | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ] | None | Admin
+| *get* | /users/:id | Return a user specified by id | { id, userName, dateCreated } | None | Admin/User*
 | *put* | /user/:id | Update a user specified by id | *update this* | At least one: { userName, dateCreated, deletedAt, pssword } |
 | *delete* | /user/:id | Soft delete a user specified by id | *update this* | None |
+
+*When a user token is used here, only the data of the user to whom the token was issued can be accessed.
 
 ### Accounts
 Endpoints for account data  
