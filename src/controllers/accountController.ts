@@ -24,8 +24,11 @@ if (process.env.LOGFILE === 'true') {
 export async function createAccount (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (isAuthorized(req.authData, parseInt(req.body.owner, 10))) {
-    if (!validate(req, res)) {
+    const valid = validate(req, res)
+    if (!valid) {
       return
+    } else {
+      req.body = valid
     }
     try {
       const result = await addAccount(req.body)
@@ -96,8 +99,11 @@ export async function readAccountById (req: Request, res: Response) {
 export async function updateAccount (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
-    if (!validate(req, res)) {
+    const valid = validate(req, res)
+    if (!valid) {
       return
+    } else {
+      req.body = valid
     }
     try {
       const accountExists = await retrieveAccountById(req.params.id)

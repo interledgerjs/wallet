@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken'
 import { createLogger, format, transports } from 'winston'
 import { retrieveUserByUserName } from '../models'
 import { compareHash } from '../services'
+import { validate } from '../services/validation'
 
 dotenv.config()
 const logger = createLogger({
@@ -21,14 +22,18 @@ if (process.env.LOGFILE === 'true') {
   logger.add(new transports.File({ filename: 'logs.log' }))
 }
 
-// get /token #returns a token
+// post/token #returns a token
 export async function token (req: Request, res: Response) {
-  const userName: string = req.body.userName
-  const pssword: string = req.body.pssword
+  const valid = validate(req, res)
+  if (!valid) {
+    return
+  } else {
+    req.body = valid
+  }
   try {
-    const userExists = await retrieveUserByUserName(userName)
+    const userExists = await retrieveUserByUserName(req.body.userName)
     if (userExists) {
-      const result = await compareHash(userExists, pssword)
+      const result = await compareHash(userExists, req.body.pssword)
       if (result) {
         const authData = {
           id: userExists.id,
