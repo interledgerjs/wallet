@@ -1,4 +1,4 @@
-import { check, validationResult, oneOf, param } from 'express-validator/check'
+import { check, validationResult, oneOf, param, body } from 'express-validator/check'
 import { matchedData } from 'express-validator/filter'
 
 export const postUserInputValidator = [
@@ -34,7 +34,8 @@ export const postTransactionInputValidator = [
 
 export function validate (req, res) {
   const errors = validationResult(req)
-  if (!errors.isEmpty()) {
+  console.log(matchedData(req))
+  if (!errors.isEmpty() || Object.keys(matchedData(req)).length === 0) {
     // res.status(422).json({ errors: errors.array() })
     res.sendStatus(400)
     return false
