@@ -25,12 +25,11 @@ Please change the example variables to suit your needs.
 ## Scripts
 
   - `clean` : Cleans the build folder and test output
-  - `build` : Build the project
-  - `lint`  : Run the linter over the project
-  - `test`  : Run the unit tests and produce a code coverage report
-  - `loadtest` : Run the loadtest and produces an artillery report afterwards
-  - `docs`   : Build the docs
-  - `consolelog`  : will show Winston logging for debugging
+  - `build` : Builds the project
+  - `lint`  : Runs the linter over the project
+  - `test`  : Runs the unit tests and produce a code coverage report
+  - `loadtest` : Runs the loadtest and produces an artillery report afterwards
+  - `docs`   : Builds the docs
 
 ## Endpoints
 
