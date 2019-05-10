@@ -39,38 +39,57 @@ Services used throughout the API
 
 | Method | Path | Description | Expected Output | Expected Body Input | Required Token
 |-|-|-|-|-|-
-| *post* | /token | User login and token signing | { token } | { userName, pssword } | None
+*post* | /token | Admin/User | User login and token signing | { userName, pssword } | { token }
 
 Tokens are valid for one hour and have to be included as a bearer token in the request header. After deployment, this route can be accessed with username *admin* and password *admin*. 
 
 ### Users
 Endpoints for user data  
 
-| Method | Path | Description | Expected Output | Expected Body Input | Required Token
+Method | Path | Token Type | Description | Expected Body Input | Expected Output
 |-|-|-|-|-|-
-| *post* | /admin | Check for duplicate admin-level users, create a new admin user in db, hashes password | { id, userName, role, dateCreated, deletedAt } | { userName, pssword } | Admin
-| *post* | /users | Check for duplicate users, create a new user in db, hashes pssword | { id, userName, dateCreated } | { userName, pssword } | None
-| *get* | /users | Return all users as an array of objects | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ] | None | Admin
-| *get* | /users/:id | Return a user specified by id | { id, userName, dateCreated } | None | Admin/User*
-| *put* | /user/:id | Update a user specified by id | *update this* | At least one: { userName, dateCreated, deletedAt, pssword } |
-| *delete* | /user/:id | Soft delete a user specified by id | *update this* | None |
+*post* | /admin | Admin | Check for duplicate admin-level users, create a new admin user in db, hashes password | { userName, pssword } | { id, userName, role, dateCreated, deletedAt }
+*post* | /users | None | Check for duplicate users, create a new user in db, hashes pssword | { userName, pssword } | { id, userName, dateCreated }
+*get* | /users | Admin | Return all users as an array of objects | None | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ]
+*get* | /users/:id | Admin/User | Return a user specified by id | None | { id, userName, dateCreated }
+*put* | /users/:id | Admin | Update a user specified by id | At least one or any combination of { userName, deletedAt, role, pssword } | { id, userName, role, dateCreated, deletedAt }
+*put* | /users/:id | User | Update a user specified by id. User must the user to whom the token was issued | At least one or any combination of { userName, pssword } | { id, userName, dateCreated }
+*delete* | /users/:id | Admin/User | Soft delete a user specified by id | None | { id, userName, role, dateCreated, deletedAt }
 
-*When a user token is used here, only the data of the user to whom the token was issued can be accessed.
+To undelete a user with *.put(/users/:id)*, *deletedAt* must be specified as *false* in the body input.
+
+The resource referenced by the route must be associated with the user to whom the User token was issued.
 
 ### Accounts
 Endpoints for account data  
 
-| Method | Path | Description | Expected Output | Expected Body Input | Required Token
+Method | Path | Token Type | Description | Expected Body Input | Expected Output
 |-|-|-|-|-|-
-| *post* | /accounts | Add new account to db | *update this* | { name, owner} |
-| *get* | /accounts | Return all accounts as an array of objects |  [ { id, name, owner, balance, deletedAt, lastUpdated }, … ] | None |
-| *get* | /accounts/?id=[id] | Return an account specified by id | { id, name, owner, balance, deletedAt, lastUpdated } | None |
-| *get* | /accounts/?owner=[owner] | Return all accounts associated with specified owner as an array of objects | [ { id, name, owner, balance, deletedAt, lastUpdated }, ... ] | None |
-| *put* | /accounts/:id | Update an account specified by id | *update this* | At least one: { name, owner, balance } |
-| *delete* | /accounts/:id | Soft delete an account specified by id | *update this* | None |
+*post* | /accounts | Admin/User | Add new account to db | { name, owner } | { id, name, owner, deletedAt, lastUpdated, balance }
+*get* | /accounts | Admin | Return all accounts as an array of objects | None | [ { id, name, owner, deletedAt, lastUpdated }, ... ]
+*get* | /accounts/?owner=[owner] | Admin/User | Return all accounts associated with specified owner as an array of objects | None | [ { id, name, owner, deletedAt, lastUpdated }, ... ]
+*get* | /accounts/:id | Admin/User | Return an account specified by id | None | { id, name, owner, deletedAt, lastUpdated, balance }
+*put* | /accounts/:id | Admin | Update an account specified by id | At least one or any combination of { name, owner, deleteAt } | { id, name, owner, deletedAt, lastUpdated, balance }
+*put* | /accounts/:id | User | Update an account specified by id | At least one or any combination of {name, owner} | unauthorised
+*delete* | /accounts/:id | Admin/User | Soft delete an account specified by id | None | { id, name, owner, deletedAt, lastUpdated, balance }
+
+To undelete an account with *.put(/accounts/:id)*, *deletedAt* must be specified as *false* in the body input.
+
+The resource referenced by the route must be associated with the user to whom the User token was issued.
 
 ### Transactions
 Endpoints for transaction data
+
+Method | Path | Token Type | Description | Expected Body Input | Expected Output
+-|-|-|-|-|-
+*post* | /transactions | Admin/User | Add transaction | { debitAccountId, creditAccountId, amount } | { id, debitAccountId, creditAccountId, amount, date }
+*get* | /transactions | Admin | Return all transactions as an array of objects | None | [ { id, debitAccountId, creditAccountId, amount, date }, ... ]
+*get* | /transaction/?account=[account] | Admin/User | Return all transactions associated with specified account as an array of objects | None | [ { id, debitAccountId, creditAccountId, amount, date }, ... ]
+*get* | /transactions/:id | Admin/User | Return transaction specified by id as an object | None | { id, debitAccountId, creditAccountId, amount, date }
+
+To create a new transaction resource, the user to whom the User token was issued must be the owner of the account which will be debited. 
+
+To read a transaction resource, the user to whom the User token was issued must be the owner of the account being referenced by the transaction. 
 
 *TODO*
 
