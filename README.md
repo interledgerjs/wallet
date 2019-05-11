@@ -16,10 +16,19 @@ A working REST API that exposes the functions of a simple wallet system (account
 Prerequisites: nodejs, typsecript, docker, docker-compose, mysql. 
 After downloading the project, rename *sample.env* to *.env*.
 Configure the options in *.env*. 
-Run *npm install*. 
+
+To run via docker:
+
 Run *npm run docker-run*. 
 API requests can be sent to *0.0.0.0:3000*. 
 To get the first admin token, login in at *0.0.0.0:3000/post/token* with the following JSON { "userName": "admin", "pssword": "admin" }. 
+
+To run locally:
+
+Run *npm install*.
+Run *npm run watch-node*. 
+API requests can be sent to *127.0.0.1:3000*. 
+To get the first admin token, login in at *127.0.0.1:3000/post/token* with the following JSON { "userName": "admin", "pssword": "admin" }. 
 
 ### Folders
 
