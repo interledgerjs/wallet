@@ -13,7 +13,7 @@ A working REST API that exposes the functions of a simple wallet system (account
 
 ### Quickstart Guide
 
-Prerequisites: docker, docker-compose, mysql
+Prerequisites: nodejs, typsecript, docker, docker-compose, mysql
 After downloading the project, rename *sample.env* to *.env*.
 Configure the options in *.env*
 Run *npm install*
