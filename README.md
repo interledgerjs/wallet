@@ -17,6 +17,7 @@ Prerequisites: nodejs, typsecript, docker, docker-compose, mysql.
 
 To run via docker:
 
+Configure the environmental variables in *docker-compose.yml*.
 Run *npm run docker-run*. 
 API requests can be sent to *0.0.0.0:3000*. 
 To get the first admin token, login in at *0.0.0.0:3000/post/token* with the following JSON { "userName": "admin", "pssword": "admin" }. 
