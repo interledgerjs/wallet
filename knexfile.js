@@ -3,13 +3,15 @@ const dotenv = require('dotenv').config()
 const databasePassword = process.env.DBPASSWORD
 const databaseName = process.env.DBNAME || process.env.MYSQL_DB
 const databaseUser = process.env.DBUSER || process.env.MYSQL_USER
+const databaseHost = process.env.DBHOST || process.env.MYSQL_HOST
 
 module.exports = {
   client: 'mysql',
   connection: {
     user: databaseUser,
     password: databasePassword,
-    database: databaseName
+    database: databaseName,
+    host: databaseHost
   },
   migrations: {
     directory: __dirname + '/database/migrations'
@@ -18,4 +20,3 @@ module.exports = {
     directory: __dirname + '/database/seeds'
   }  
 }
-
