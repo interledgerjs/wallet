@@ -35,7 +35,7 @@ Please change the example variables to suit your needs.
 ### Services
 Services used throughout the API  
 
-| Method | Path | Description | Expected Output | Expected Body Input | Required Token
+Method | Path | Token Type | Description | Expected Body Input | Expected Output
 |-|-|-|-|-|-
 *post* | /token | Admin/User | User login and token signing | { userName, pssword } | { token }
 
@@ -46,8 +46,8 @@ Endpoints for user data
 
 Method | Path | Token Type | Description | Expected Body Input | Expected Output
 |-|-|-|-|-|-
-*post* | /admin | Admin | Check for duplicate admin-level users, create a new admin user in db, hashes password | { userName, pssword } | { id, userName, role, dateCreated, deletedAt }
-*post* | /users | None | Check for duplicate users, create a new user in db, hashes pssword | { userName, pssword } | { id, userName, dateCreated }
+*post* | /admin | Admin | Create new user with Admin privileges | { userName, pssword } | { id, userName, role, dateCreated, deletedAt }
+*post* | /users | None | Create new user with User privileges | { userName, pssword } | { id, userName, dateCreated }
 *get* | /users | Admin | Return all users as an array of objects | None | [ { id, userName, dateCreated, deletedAt, role, pssword }, ... ]
 *get* | /users/:id | Admin/User | Return a user specified by id | None | { id, userName, dateCreated }
 *put* | /users/:id | Admin | Update a user specified by id | At least one or any combination of { userName, deletedAt, role, pssword } | { id, userName, role, dateCreated, deletedAt }
