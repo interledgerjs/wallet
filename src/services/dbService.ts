@@ -1,4 +1,3 @@
-import * as sqlite3 from 'sqlite3'
 require('dotenv').config()
 import * as knex from '../../database/knex'
 

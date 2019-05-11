@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: testdb
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_PASSWORD: password
+  web:
+    build: ./
+    environment:
+      DBHOST: mysql
+      MYSQL_PORT: 3306
+      DBNAME: testdb
+      DBUSER: root
+      DBPASSWORD: password
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    command: ["./wait-for-it.sh", "mysql:3306", "--", "npm", "run", "start-docker"]
+    restart: on-failure 
