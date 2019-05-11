@@ -11,6 +11,26 @@
 
 A working REST API that exposes the functions of a simple wallet system (accounts, users, transactions etc) and integrates the functions required of an ILSP or wallet that can peer with connectors on the Interledger.
 
+### Quickstart Guide
+
+Prerequisites: nodejs, typsecript, docker, docker-compose, mysql. 
+
+To run via docker:
+
+Configure the environmental variables in *docker-compose.yml*.
+Run *npm run docker-run*. 
+API requests can be sent to *0.0.0.0:3000*. 
+To get the first admin token, login in at *0.0.0.0:3000/post/token* with the following JSON { "userName": "admin", "pssword": "admin" }. 
+
+To run locally:
+
+After downloading the project, rename *sample.env* to *.env*.
+Configure the options in *.env*. 
+Run *npm install*.
+Run *npm run watch-node*. 
+API requests can be sent to *127.0.0.1:3000*. 
+To get the first admin token, login in at *127.0.0.1:3000/post/token* with the following JSON { "userName": "admin", "pssword": "admin" }. 
+
 ### Folders
 
 All source code is expected to be TypeScript and is placed in the `src` folder. Tests are put in the `test` folder.
