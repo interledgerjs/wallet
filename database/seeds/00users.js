@@ -1,4 +1,3 @@
-const sqlite3 = require('sqlite3')
 const dotenv = require('dotenv').config()
 const bcrypt = require('bcrypt')
 const saltRounds = 3
