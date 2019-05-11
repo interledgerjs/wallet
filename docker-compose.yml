@@ -15,6 +15,17 @@ services:
       DBNAME: testdb
       DBUSER: root
       DBPASSWORD: password
+      DBFOLDER: ./database/
+      # Set port for the API service
+      PORT: 3000
+      # Set the secret key to be used by JSON Web Token Authentication
+      SECRETKEY: secret
+      # Set logging status 
+      CONSOLELOG: 'false'
+      LOGFILE: 'true'
+      # Initial admin properties
+      ADMINNAME: admin
+      ADMINPASSWORD: admin
     ports:
       - "3000:3000"
     depends_on:
