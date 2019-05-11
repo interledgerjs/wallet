@@ -14,8 +14,6 @@ A working REST API that exposes the functions of a simple wallet system (account
 ### Quickstart Guide
 
 Prerequisites: nodejs, typsecript, docker, docker-compose, mysql. 
-After downloading the project, rename *sample.env* to *.env*.
-Configure the options in *.env*. 
 
 To run via docker:
 
@@ -25,6 +23,8 @@ To get the first admin token, login in at *0.0.0.0:3000/post/token* with the fol
 
 To run locally:
 
+After downloading the project, rename *sample.env* to *.env*.
+Configure the options in *.env*. 
 Run *npm install*.
 Run *npm run watch-node*. 
 API requests can be sent to *127.0.0.1:3000*. 
