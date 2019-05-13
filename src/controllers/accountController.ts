@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
-import { addAccount, modifyAccount, removeAccount, retrieveAccountById, retrieveAccountByOwner, retrieveAccounts } from '../models'
+import { addAccount, modifyAccount, removeAccount, retrieveAccountById, retrieveAccountByOwner, retrieveAccounts, retrieveUserById } from '../models'
 import { isAuthorized, filterDeleted } from '../services'
 import { validate } from '../services/validation'
 
@@ -31,8 +31,13 @@ export async function createAccount (req: Request, res: Response) {
       req.body = valid
     }
     try {
-      const result = await addAccount(req.body)
-      res.send(result)
+      const requestedUser = await retrieveUserById(req.body.owner)
+      if (requestedUser && !requestedUser.deletedAt) {
+        const result = await addAccount(req.body)
+        res.send(result)
+      } else {
+        res.sendStatus(400)
+      }
     } catch (error) {
       logger.error(error)
       res.sendStatus(500)
