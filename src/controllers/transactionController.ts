@@ -24,6 +24,11 @@ if (process.env.LOGFILE === 'true') {
 // post /transactions #adds new transaction to table
 export async function createTransaction (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
+  const valid = validate(req, res)
+  if (!valid) {
+    return
+  }
+  req.body = valid
   try {
     const authorizedAccount = await retrieveAccountById(req.body.debitAccountId)
     if (!authorizedAccount) {
@@ -31,13 +36,10 @@ export async function createTransaction (req: Request, res: Response) {
       return
     }
     if (isAuthorized(req.authData, authorizedAccount.owner)) {
-      if (!validate(req, res)) {
-        return
-      }
-      const balance = await calculateBalance(req.body.debitAccountId)
+      const newBalance = await calculateBalance(req.body.debitAccountId) - req.body.amount
       const debitAccount = await retrieveAccountById(req.body.debitAccountId)
       const creditAccount = await retrieveAccountById(req.body.creditAccountId)
-      if ((balance > 0 || req.body.debitAccountId === 1) && creditAccount && debitAccount) {
+      if ((newBalance >= 0 || req.body.debitAccountId === 1) && creditAccount && debitAccount && req.body.debitAccountId !== req.body.creditAccountId) {
         const result = await addTransaction(req.body)
         if (result) {
           res.send(result)

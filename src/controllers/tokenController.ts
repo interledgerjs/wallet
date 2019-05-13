@@ -32,7 +32,7 @@ export async function token (req: Request, res: Response) {
   }
   try {
     const userExists = await retrieveUserByUserName(req.body.userName)
-    if (userExists) {
+    if (userExists && !userExists.deletedAt) {
       const result = await compareHash(userExists, req.body.pssword)
       if (result) {
         const authData = {
