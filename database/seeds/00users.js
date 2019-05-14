@@ -14,8 +14,8 @@ async function hash (pssword) {
 exports.seed = function(knex, Promise) {
   // Deletes ALL existing entries
   return knex('users').del()
+  // Inserts seed entries
   .then(async function () {
-    // Inserts seed entries
     return knex('users')
     .insert({
       userName: adminName,
@@ -24,7 +24,6 @@ exports.seed = function(knex, Promise) {
     });
   })
   .then(async function () {
-    // Inserts seed entries
     return knex('users')
     .insert({
       userName: 'renzo',
@@ -33,7 +32,6 @@ exports.seed = function(knex, Promise) {
     });
   })
   .then(async function () {
-    // Inserts seed entries
     return knex('users')
     .insert({
       userName: 'jadine',
@@ -42,7 +40,6 @@ exports.seed = function(knex, Promise) {
     });
   })
   .then(async function () {
-    // Inserts seed entries
     return knex('users')
     .insert({
       userName: 'talon',
