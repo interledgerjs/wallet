@@ -5,9 +5,9 @@ const saltRounds = 3
 adminName = process.env.ADMINNAME || 'admin'
 adminPassword = process.env.ADMINPASSWORD || 'admin'
 
-async function hash () {
+async function hash (pssword) {
   const salt = await bcrypt.genSalt(saltRounds)
-  const hash = await bcrypt.hash(adminPassword, salt)
+  const hash = await bcrypt.hash(pssword, salt)
   return hash
 }
 
@@ -20,7 +20,34 @@ exports.seed = function(knex, Promise) {
     .insert({
       userName: adminName,
       role: 'admin',
-      pssword: await hash(),
+      pssword: await hash(adminPassword),
     });
-  });
+  })
+  .then(async function () {
+    // Inserts seed entries
+    return knex('users')
+    .insert({
+      userName: 'renzo',
+      role: 'user',
+      pssword: await hash('123'),
+    });
+  })
+  .then(async function () {
+    // Inserts seed entries
+    return knex('users')
+    .insert({
+      userName: 'jadine',
+      role: 'user',
+      pssword: await hash('123'),
+    });
+  })
+  .then(async function () {
+    // Inserts seed entries
+    return knex('users')
+    .insert({
+      userName: 'talon',
+      role: 'user',
+      pssword: await hash('123'),
+    });
+  })
 };
