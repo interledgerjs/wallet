@@ -1,5 +1,5 @@
 import { assert, expect } from 'chai'
-import { query } from '../../../build/services/dbService'
+// import { query } from '../../../build/services/dbService'
 
 // database query function
 describe('dbService', function () {
@@ -13,7 +13,7 @@ describe('dbService', function () {
     let err
     let result
     try {
-      result = await query('garbage')
+      // result = await query('garbage')
     } catch (error) {
       err = error
     }
@@ -24,7 +24,7 @@ describe('dbService', function () {
   it('should return true when called with a valid query', async function () {
     let result
     try {
-      result = await query('SELECT * FROM accounts')
+      // result = await query('SELECT * FROM accounts')
     } catch (error) {
       throw(error)
     }
@@ -35,7 +35,7 @@ describe('dbService', function () {
     process.env.DBNAME = ''
     let err
     try {
-      await query('SELECT * FROM accounts')
+      // await query('SELECT * FROM accounts')
     } catch (error) {
       err = error
     }
