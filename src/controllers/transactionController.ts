@@ -94,19 +94,21 @@ export async function readTransactions (req: Request, res: Response) {
 
 export async function readTransactionById (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
-    try {
-      const idResult = await retrieveTransactionById(req.params.id)
-      if (!idResult) {
-        res.sendStatus(404)
-      } else {
+  try {
+    const idResult = await retrieveTransactionById(req.params.id)
+    if (idResult) {
+      const debitAccount = await retrieveAccountById(idResult.debitAccountId)
+      const creditAccount = await retrieveAccountById(idResult.creditAccountId)
+      if (isAuthorized(req.authData, debitAccount.owner) || isAuthorized(req.authData, creditAccount.owner)) {
         res.send(idResult)
+      } else {
+        res.send(401)
       }
-    } catch (error) {
-      logger.error(error)
-      res.sendStatus(500)
+    } else {
+      res.sendStatus(404)
     }
-  } else {
-    res.sendStatus(401)
+  } catch (error) {
+    logger.error(error)
+    res.sendStatus(500)
   }
 }
