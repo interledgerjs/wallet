@@ -26,7 +26,17 @@ export async function readUsers (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
     const result = await filterDeleted(await retrieveUsers())
-    res.send(result)
+    let returnArray = []
+    result.forEach(element => {
+      returnArray.push({
+        id: element.id,
+        userName: element.userName,
+        role: element.role,
+        dateCreated: element.dateCreated,
+        deletedAt: element.deletedAt
+      })
+    })
+    res.send(returnArray)
   } catch (error) {
     logger.error(error)
     res.sendStatus(500)
