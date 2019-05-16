@@ -50,6 +50,7 @@ Please change the example variables to suit your needs.
   - `loadtest` : Runs the loadtest and produces an artillery report afterwards
 
 ## Endpoints
+Please see the [wiki](https://github.com/interledgerjs/wallet/wiki) for a full breakdown on the individual endpoints.
 
 ### Services
 Services used throughout the API  
