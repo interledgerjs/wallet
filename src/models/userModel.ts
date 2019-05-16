@@ -72,16 +72,18 @@ export async function addAdmin (body: any): Promise<User> {
 // function to handle modifying a user
 export async function modifyUser (userExists: User, body: any): Promise<User> {
   if (body) {
+    let changes = {} as any
     if (body.userName) {
       const userExists = await retrieveUserByUserName(body.userName)
       if (userExists) {
         return (undefined)
       }
+      changes.userName = body.userName
     } if (body.pssword) {
       const hashedPssword = await hashing(body.pssword)
-      body.pssword = hashedPssword
+      changes.pssword = hashedPssword
     }
-    const result = await knexUpdateById(body, userExists.id, 'users')
+    const result = await knexUpdateById(changes, userExists.id, 'users')
     return (result[0])
   } else {
     return (undefined)
