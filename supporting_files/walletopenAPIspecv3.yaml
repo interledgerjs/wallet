@@ -1,0 +1,887 @@
+openapi: 3.0.1
+info:
+    title: Inteledger Wallet
+    description: >-
+        A working REST API that exposes the functions of a simple wallet system (accounts, users, transactions
+        etc) and integrates the functions required of an ILSP or wallet that can peer with connectors on the
+        Interledger.
+    version: 0.1-oas3
+servers:
+    -
+        url: 'http://localhost:3000'
+paths:
+    /accounts:
+        get:
+            tags:
+                - accounts
+            summary: Read all accounts
+            description: >-
+                Return all account entries. Can be filtered by owner. While using a User token, this route
+                cannot be accessed without the 'owner' parameter.
+            operationId: readAccounts
+            parameters:
+                -
+                    name: owner
+                    in: query
+                    description: unique numerical identifier of user by which results will be filtered
+                    schema:
+                        maximum: 4294967295
+                        minimum: 1
+                        type: integer
+                    example: 2
+            responses:
+                '200':
+                    description: An array of accounts
+                    content:
+                        application/json:
+                            schema:
+                                description: an array of AccountWithoutBalance objects
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/AccountWithoutBalance'
+                                example:
+                                    -
+                                        id: 2
+                                        name: firstExampleAccount
+                                        owner: 2
+                                        lastUpdated: '2019-05-15T13:09:01.000Z'
+                                    -
+                                        id: 3
+                                        name: secondExampleAccount
+                                        owner: 2
+                                        lastUpdated: '2019-05-15T13:12:56.000Z'
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorised
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        post:
+            tags:
+                - accounts
+            summary: Create an new account
+            description: Create a new account and return the newly created entry
+            operationId: createAccount
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    description: name of new account
+                                    maxLength: 255
+                                    type: string
+                                owner:
+                                    description: owner to whom this account will be assigned
+                                    maximum: 4294967295
+                                    minimum: 1
+                                    type: integer
+                        example:
+                            name: exampleAccountName
+                            owner: 2
+                required: true
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Account'
+                            example:
+                                id: 2
+                                name: exampleAccount
+                                owner: 2
+                                lastUpdated: '2019-05-15T13:09:01.000Z'
+                                balance: 0
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorised
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        servers:
+            -
+                url: 'http://localhost:3000'
+    '/accounts/{id}':
+        get:
+            tags:
+                - accounts
+            summary: Retrieve an account by id
+            description: Retrieve the specified account and return the entry
+            operationId: readAccount
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: ID of account to read
+                    required: true
+                    schema:
+                        maximum: 4294967295
+                        minimum: 1
+                        type: integer
+                    example: 2
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Account'
+                            example:
+                                id: 2
+                                name: exampleAccount
+                                owner: 2
+                                lastUpdated: '2019-05-15T13:09:01.000Z'
+                                balance: 500
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorised
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        put:
+            tags:
+                - accounts
+            summary: Update an acount by id
+            description: Update the specified account and return the updated entry
+            operationId: updateAccount
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: ID of account to update
+                    required: true
+                    schema:
+                        maximum: 4294967295
+                        minimum: 1
+                        type: integer
+                    example: 2
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    description: string which account name will be updated to
+                                    maxLength: 255
+                                    type: string
+                        example:
+                            name: updateExampleAccount
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Account'
+                            example:
+                                id: 2
+                                name: updatedExampleAccount
+                                owner: 2
+                                lastUpdated: '2019-05-15T13:09:01.000Z'
+                                balance: 500
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorised
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        delete:
+            tags:
+                - accounts
+            summary: Soft delete an account by id
+            description: Soft delete the specified account and return the updated entry
+            operationId: deleteAccount
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: ID of account to soft delete
+                    required: true
+                    schema:
+                        maximum: 4294967295
+                        minimum: 1
+                        type: integer
+                    example: 7
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Account'
+                            example:
+                                id: 2
+                                name: exampleAccount
+                                owner: 2
+                                deletedAt: '2019-05-15T13:09:01.000Z'
+                                lastUpdated: '2019-05-15T13:09:01.000Z'
+                                balance: 500
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        servers:
+            -
+                url: 'http://localhost:3000'
+    /transactions:
+        get:
+            tags:
+                - transactions
+            summary: Retrieves an array of transactions
+            description: >-
+                Retrieves an array of transactions. A list of array transactions can be retrieved by an
+                administrator or an array of transactions filtered by an account id which is retrievable by
+                either the account id or an administrator.
+            parameters:
+                -
+                    name: account
+                    in: query
+                    description: The account id
+                    required: false
+                    schema:
+                        maximum: 4294967295
+                        minimum: 1
+                        type: integer
+                    example: 2
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/Transaction'
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorised
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        post:
+            tags:
+                - transactions
+            summary: Create a new transaction
+            description: >-
+                Create a new transaction between two accounts. The generated transaction is is returned. Only
+                the owner of the debited account or an administrator is permitted to generate the transaction
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/TransactionBody'
+                        example:
+                            debitAccountId: 1
+                            creditAccountId: 2
+                            amount: 100
+                required: true
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Transaction'
+                            example:
+                                id: 2
+                                debitAccountId: 1
+                                creditAccountId: 2
+                                amount: 100
+                                date: '2019-05-15T09:22:27.000Z'
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorised
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        servers:
+            -
+                url: 'http://localhost:3000'
+    '/transactions/{id}':
+        get:
+            tags:
+                - transactions
+            summary: Retrieves a transaction by its id
+            description: >-
+                Retrieves a single account. The retrieved transaction is referenced by its id. Only the owner
+                of either the debit or credit account or an administrator can retrieve the transaction.
+            parameters:
+                -
+                    name: id
+                    in: path
+                    description: The transaction id
+                    required: true
+                    schema:
+                        maximum: 4294967295
+                        minimum: 1
+                        type: integer
+                    example: 2
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Transaction'
+                            example:
+                                id: 2
+                                debitAccountId: 1
+                                creditAccountId: 2
+                                amount: 100
+                                date: '2019-05-15T09:22:27.000Z'
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorised
+                '403':
+                    description: Forbidden
+                '404':
+                    description: Not Found
+                '500':
+                    description: Internal Server Error
+            security:
+                -
+                    bearerAuth: []
+            servers:
+                -
+                    url: 'http://localhost:3000'
+        servers:
+            -
+                url: 'http://localhost:3000'
+    /token:
+        post:
+            tags:
+                - token
+            summary: Login
+            description: User/admin login. Returns a JWT token.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewUser'
+                        example:
+                            userName: admin
+                            pssword: admin
+                required: true
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json; charset=utf-8:
+                            schema:
+                                $ref: '#/components/schemas/Token'
+                            example:
+                                token: >-
+                                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoRGF0YSI6eyJpZCI6MSwidXNlck5hbWUiOiJhZG1pbiIsInJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE1NTgwODEyNzUsImV4cCI6MTU1ODA4NDg3NX0.oXP3LHZ8fnGSPLcuBOKCSoF7WvSS6gAMoGfUCKZbKu0
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+    '/users/{id}':
+        get:
+            tags:
+                - users
+            summary: Retrieve a user by ID
+            description: Retrieve a user by id. Access is restricted to admins and the owner.
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json; charset=utf-8:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                            example:
+                                id: '1,'
+                                userName: userName
+                                dateCreated: '2019-05-15T09:22:27.000Z'
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+            security:
+                -
+                    bearerAuth: []
+        put:
+            tags:
+                - users
+            summary: Update a user
+            description: Returns a user object. Access is restricted to admins and the owner.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            oneOf:
+                                -
+                                    $ref: '#/components/schemas/UserUpdate-Admin'
+                                -
+                                    $ref: '#/components/schemas/UserUpdate-User'
+                        examples:
+                            admin:
+                                value:
+                                    userName: userName
+                                    pssword: password
+                                    role: user
+                                    deletedAt: 'false'
+                            user:
+                                value:
+                                    userName: userName
+                                    pssword: password
+                required: true
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json; charset=utf-8:
+                            schema:
+                                $ref: '#/components/schemas/User-Admin'
+                            examples:
+                                admin:
+                                    value:
+                                        id: 1
+                                        userName: userName
+                                        role: user
+                                        dateCreated: '2019-05-15T09:22:27.000Z'
+                                        deletedAt: '2019-05-17T08:24:33.000Z'
+                                user:
+                                    value:
+                                        id: 1
+                                        userName: userName
+                                        role: user
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+            security:
+                -
+                    bearerAuth: []
+        delete:
+            tags:
+                - users
+            summary: Soft delete a user
+            description: Delete a user by user id. Access is restricted to admins and the owner.
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json; charset=utf-8:
+                            schema:
+                                $ref: '#/components/schemas/User-Admin'
+                            example:
+                                id: 1
+                                userName: userName
+                                role: user
+                                dateCreated: '2019-05-15T09:22:27.000Z'
+                                deletedAt: '2019-05-17T08:24:33.000Z'
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+            security:
+                -
+                    bearerAuth: []
+        parameters:
+            -
+                name: id
+                in: path
+                description: The user ID
+                required: true
+                schema:
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+    /users:
+        get:
+            tags:
+                - users
+            summary: Retreive all users
+            description: Returns an array of non-deleted users. This can only be accessed by an admin.
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json; charset=utf-8:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/User-Admin'
+                            example:
+                                -
+                                    id: 1
+                                    userName: userName
+                                    role: user
+                                    dateCreated: '2019-05-15T09:22:27.000Z'
+                                    deletedAt: '2019-05-17T08:24:33.000Z'
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+            security:
+                -
+                    bearerAuth: []
+        post:
+            tags:
+                - users
+            summary: Create a new user
+            description: ''
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewUser'
+                        example:
+                            userName: userName
+                            pssword: password
+                required: true
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json; charset=utf-8:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                            example:
+                                id: 1
+                                userName: userName
+                                role: user
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+    /admin:
+        post:
+            tags:
+                - admin
+            summary: Create a new admin
+            description: ''
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/NewUser'
+                        example:
+                            userName: newAdmin
+                            pssword: password
+                required: true
+            responses:
+                '200':
+                    description: OK
+                    content:
+                        application/json; charset=utf-8:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                            example:
+                                id: 1
+                                userName: newAdmin
+                                role: admin
+                '400':
+                    description: Bad Request
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not Found
+            security:
+                -
+                    bearerAuth: []
+components:
+    schemas:
+        Account:
+            required:
+                - id
+                - name
+                - owner
+                - deletedAt
+                - lastUpdated
+                - balance
+            type: object
+            properties:
+                id:
+                    description: unique numerical identifier for this account
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                name:
+                    description: name of account
+                    maxLength: 255
+                    type: string
+                owner:
+                    description: unique numerical identifier of the user to whom this account is assigned
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                deletedAt:
+                    description: timestamp at which this account was soft deleted; 'null' if account is still active
+                    maxLength: 255
+                    type: string
+                lastUpdated:
+                    description: timestamp at which this account was most recently updated
+                    maxLength: 255
+                    type: string
+                balance:
+                    description: current calculated balance of account
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+        AccountWithoutBalance:
+            required:
+                - id
+                - name
+                - owner
+                - deletedAt
+                - lastUpdated
+            type: object
+            properties:
+                id:
+                    description: unique numerical identifier for this account
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                name:
+                    description: name of account
+                    maxLength: 255
+                    type: string
+                owner:
+                    description: unique numerical identifier of the user to whom this account is assigned
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                deletedAt:
+                    description: timestamp at which this account was soft deleted; 'null' if account is still active
+                    maxLength: 255
+                    type: string
+                lastUpdated:
+                    description: timestamp at which this account was most recently updated
+                    maxLength: 255
+                    type: string
+        Transaction:
+            type: object
+            properties:
+                id:
+                    description: unique numerical identifier for this transaction
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                debitAccountId:
+                    description: id of account to be debited
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                creditAccountId:
+                    description: id of account to be credited
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                amount:
+                    description: the value of the transaction
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                date:
+                    description: timestamp at which this transaction was made
+                    maxLength: 255
+                    type: string
+        TransactionBody:
+            type: object
+            properties:
+                amount:
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                debitAccountId:
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                creditAccountId:
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+        User:
+            type: object
+            properties:
+                id:
+                    description: unique numerical identifier for this user
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                userName:
+                    description: unique name referencing a user
+                    maxLength: 255
+                    type: string
+                dateCreated:
+                    description: timestamp at which this user was made
+                    maxLength: 255
+                    type: string
+        User-Admin:
+            description: user object returned to admin only endpoints
+            type: object
+            properties:
+                id:
+                    description: unique numerical identifier for this user
+                    maximum: 4294967295
+                    minimum: 1
+                    type: integer
+                userName:
+                    description: unique name referencing a user
+                    maxLength: 255
+                    type: string
+                dateCreated:
+                    description: timestamp at which this user was made
+                    maxLength: 255
+                    type: string
+                deletedAt:
+                    description: >-
+                        timestamp at which this user was deleted, a null value indicates that the user is
+                        still active
+                    maxLength: 255
+                    type: string
+                role:
+                    description: 'the role which the has, may be either \"user\" or \"admin\"'
+                    maxLength: 255
+                    type: string
+        Token:
+            description: object containing the token which is used to access secured endpoints
+            type: object
+            properties:
+                token:
+                    description: the token which is userd to access secured endpoints
+                    maxLength: 255
+                    type: string
+        UserUpdate-User:
+            description: object to be sent when updating a user
+            type: object
+            properties:
+                userName:
+                    description: unique name referencing the user
+                    maxLength: 255
+                    type: string
+                pssword:
+                    description: the password a user uses to retrieve their token
+                    maxLength: 255
+                    type: string
+        UserUpdate-Admin:
+            description: object to be sent when updating a user by an admin
+            type: object
+            properties:
+                userName:
+                    description: unique name referencing a user
+                    maxLength: 255
+                    type: string
+                pssword:
+                    description: the password a user uses to retrieve their token
+                    maxLength: 255
+                    type: string
+                role:
+                    description: >-
+                        the role which dictates the access a user has and must be either \"admin\" or
+                        \"user\". Must be admin
+                    maxLength: 255
+                    type: string
+                deletedAt:
+                    description: can only be \"false\" to reinstate a soft deleted user. Must be admin
+                    type: boolean
+        NewUser:
+            description: object to be sent when creating a new user
+            type: object
+            properties:
+                userName:
+                    description: unique name referencing a user
+                    maxLength: 255
+                    type: string
+                pssword:
+                    description: the password a user uses to retrieve their token
+                    maxLength: 255
+                    type: string
+    securitySchemes:
+        bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+security:
+    -
+        bearerAuth: []
