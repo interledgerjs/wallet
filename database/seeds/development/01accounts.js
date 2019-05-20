@@ -12,31 +12,31 @@ exports.seed = function(knex, Promise) {
   })
   .then(async function () {
     return knex('accounts').insert({
-      name: 'home',
+      name: 'America\'s A**e',
       owner: 2
     });
   })
   .then(async function () {
     return knex('accounts').insert({
-      name: 'cash',
+      name: 'Vibranium Shield',
       owner: 2
     });
   })
   .then(async function () {
     return knex('accounts').insert({
-      name: 'fuel',
+      name: 'Iron Man Armor MK III',
       owner: 3
     });
   })
   .then(async function () {
     return knex('accounts').insert({
-      name: 'food',
+      name: 'Hulkbuster Armor MK II',
       owner: 3
     });
   })
   .then(async function () {
     return knex('accounts').insert({
-      name: 'beverages',
+      name: 'Eye of Agamotto',
       owner: 4
     });
   });

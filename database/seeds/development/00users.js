@@ -26,25 +26,25 @@ exports.seed = function(knex, Promise) {
   .then(async function () {
     return knex('users')
     .insert({
-      userName: 'renzo',
+      userName: 'SteveRogers1918',
       role: 'user',
-      pssword: await hash('123'),
+      pssword: await hash('bucky4ever'),
     });
   })
   .then(async function () {
     return knex('users')
     .insert({
-      userName: 'jadine',
+      userName: 'TonyStark1970',
       role: 'user',
-      pssword: await hash('123'),
+      pssword: await hash('iloveyou3000'),
     });
   })
   .then(async function () {
     return knex('users')
     .insert({
-      userName: 'talon',
+      userName: 'StevenStrange1930',
       role: 'user',
-      pssword: await hash('123'),
+      pssword: await hash('shamballa'),
     });
   })
 };
