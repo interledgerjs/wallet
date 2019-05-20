@@ -1,4 +1,3 @@
-var options = require('../knexfile')
-// var environment = process.env.NODE_EN || 'development'
-var config = options
+var environment = process.env.NODE_ENV || "development"
+var config = require('../knexfile.js')[environment]
 module.exports = require('knex')(config)

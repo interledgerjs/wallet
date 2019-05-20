@@ -6,17 +6,34 @@ const databaseUser = process.env.DBUSER || process.env.MYSQL_USER
 const databaseHost = process.env.DBHOST || process.env.MYSQL_HOST
 
 module.exports = {
-  client: 'mysql',
-  connection: {
-    user: databaseUser,
-    password: databasePassword,
-    database: databaseName,
-    host: databaseHost
+  development: {
+    client: 'mysql',
+    connection: {
+      user: databaseUser,
+      password: databasePassword,
+      database: databaseName,
+      host: databaseHost
+    },
+    migrations: {
+      directory: __dirname + '/database/migrations'
+    },
+    seeds: {
+      directory: __dirname + '/database/seeds/development'
+    }
   },
-  migrations: {
-    directory: __dirname + '/database/migrations'
-  },
-  seeds: {
-    directory: __dirname + '/database/seeds'
-  }  
+  production: {
+    client: 'mysql',
+    connection: {
+      user: databaseUser,
+      password: databasePassword,
+      database: databaseName,
+      host: databaseHost
+    },
+    migrations: {
+      directory: __dirname + '/database/migrations'
+    },
+    seeds: {
+      directory: __dirname + '/database/seeds/production'
+    }
+  }
 }
