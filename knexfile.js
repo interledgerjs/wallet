@@ -20,5 +20,20 @@ module.exports = {
     seeds: {
       directory: __dirname + '/database/seeds/development'
     }
+  },
+  production: {
+    client: 'mysql',
+    connection: {
+      user: databaseUser,
+      password: databasePassword,
+      database: databaseName,
+      host: databaseHost
+    },
+    migrations: {
+      directory: __dirname + '/database/migrations'
+    },
+    seeds: {
+      directory: __dirname + '/database/seeds/production'
+    }
   }
 }

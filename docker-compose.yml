@@ -16,6 +16,7 @@ services:
       DBUSER: root
       DBPASSWORD: password
       DBFOLDER: ./database/
+      NODE_ENV: production
       # Set port for the API service
       PORT: 3000
       # Set the secret key to be used by JSON Web Token Authentication
