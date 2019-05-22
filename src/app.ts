@@ -4,11 +4,13 @@ import * as express from 'express'
 import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readAccountById, readTransactionById, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
 import { verifyToken, Roles } from './services'
 import { postUserInputValidator, putUserInputValidator, postAccountInputValidator, postTransactionInputValidator, putAccountInputValidator } from './services/validation'
+import * as cors from 'cors'
 
 dotenv.config()
 const app = express()
 module.exports = app
 app.use(bodyParser.json())
+app.use(cors())
 
 app.post('/transactions', postTransactionInputValidator, verifyToken(Roles.User), createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
 app.get('/transactions/', verifyToken(Roles.User), readTransactions) // no required input
