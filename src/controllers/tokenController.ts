@@ -41,7 +41,7 @@ export async function token (req: Request, res: Response) {
           role: userExists.role
         }
         logger.info(authData)
-        jwt.sign({ authData }, 'secret',{ expiresIn: '1h' }, (_err, token) => {
+        jwt.sign({ authData }, process.env.SECRETKEY ,{ expiresIn: '1h' }, (_err, token) => {
           res.json({ token })
         })
       } else {
