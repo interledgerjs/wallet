@@ -5,7 +5,6 @@ import { createAccount, createAdmin, createTransaction, createUser, deleteAccoun
 import { verifyToken, Roles } from './services'
 import { postUserInputValidator, putUserInputValidator, postAccountInputValidator, postTransactionInputValidator, putAccountInputValidator } from './services/validation'
 import * as cors from 'cors'
-import { retrieveUserById } from './models';
 
 dotenv.config()
 const app = express()
