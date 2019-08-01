@@ -7,6 +7,9 @@ import { compareHash } from '../services'
 import { validate } from '../services/validation'
 
 dotenv.config()
+
+const SECRET = process.env.SECRETKEY || 'secret'
+
 const logger = createLogger({
   level: 'info',
   format: format.combine(
@@ -41,7 +44,7 @@ export async function token (req: Request, res: Response) {
           role: userExists.role
         }
         logger.info(authData)
-        jwt.sign({ authData }, process.env.SECRETKEY ,{ expiresIn: '1h' }, (_err, token) => {
+        jwt.sign({ authData }, SECRET ,{ expiresIn: '1h' }, (_err, token) => {
           res.json({ token })
         })
       } else {
