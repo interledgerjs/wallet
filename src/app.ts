@@ -10,7 +10,9 @@ dotenv.config()
 const app = express()
 module.exports = app
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+  exposedHeaders: 'Link'
+}))
 
 app.post('/transactions', postTransactionInputValidator, verifyToken(Roles.User), createTransaction) // body.debitAccountId, body.creditAccountId, body.amount
 app.get('/transactions/', verifyToken(Roles.User), readTransactions) // no required input
@@ -30,6 +32,13 @@ app.delete('/users/:id', verifyToken(Roles.User), deleteUser) // id as param
 
 app.post('/admin', verifyToken(Roles.Admin), postUserInputValidator, createAdmin) // body.userName, body.password
 app.post('/token', postUserInputValidator, token) // body.userName, body.password
+
+// payment pointers for users
+app.get('/:id', async (req, res) => {
+  const authUrl = process.env.HYDRA_AUTH_URL || 'http://localhost:9000/oauth2/auth'
+  res.set('Link', `<${authUrl}>; rel="authorization_endpoint"`)
+  res.sendStatus(200)
+})
 
 app.all('*', (req, res) => {
   res.sendStatus(404)
