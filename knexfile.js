@@ -6,6 +6,18 @@ const databaseUser = process.env.DBUSER || process.env.MYSQL_USER
 const databaseHost = process.env.DBHOST || process.env.MYSQL_HOST
 
 module.exports = {
+  testing: {
+    client: 'sqlite3',
+    connection: {
+      filename: './test.db'
+    },
+    migrations: {
+      directory: __dirname + '/database/migrations'
+    },
+    seeds: {
+      directory: __dirname + '/database/seeds/development'
+    }
+  },
   development: {
     client: 'mysql',
     connection: {
