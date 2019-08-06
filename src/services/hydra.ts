@@ -3,8 +3,8 @@ const querystring = require('querystring')
 
 const hydraUrl = process.env.HYDRA_ADMIN_URL || 'http://localhost:9001'
 let mockTlsTermination = {}
-process.env.MOCK_TLS_TERMINATION = 'true'
-if (process.env.MOCK_TLS_TERMINATION) {
+const MOCK_TLS_TERMINATION = process.env.MOCK_TLS_TERMINATION || 'true'
+if (MOCK_TLS_TERMINATION === 'true') {
   mockTlsTermination = {
     'X-Forwarded-Proto': 'https'
   }
@@ -18,9 +18,7 @@ function get (flow: Flow, challenge: string) {
   const url = new URL('/oauth2/auth/requests/' + flow, hydraUrl)
   url.search = querystring.stringify({ [flow + '_challenge']: challenge })
   return axios.get(url.toString(), {
-    headers: {
-      'X-Forwarded-Proto': 'https'
-    },
+    headers: mockTlsTermination,
     timeout: 5000
   }).then(res => {
     return res.data
@@ -31,11 +29,9 @@ function get (flow: Flow, challenge: string) {
 function put (flow: Flow, action: Action, challenge: string, body: any) {
   const url = new URL('/oauth2/auth/requests/' + flow + '/' + action, hydraUrl)
   url.search = querystring.stringify({ [flow + '_challenge']: challenge })
+  const headers = Object.assign(mockTlsTermination, { 'Content-Type': 'application/json' })
   return axios.put(url.toString(), body, {
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Forwarded-Proto': 'https'
-    },
+    headers,
     timeout: 5000
   }).then(res => res.data)
 }

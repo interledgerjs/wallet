@@ -84,3 +84,6 @@ report.json
 
 #config files
 .env
+
+# test dbs
+test.db

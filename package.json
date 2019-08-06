@@ -15,6 +15,8 @@
     "pretest": "knex migrate:rollback && knex migrate:latest && knex seed:run && tsc --build",
     "preversion": "npm run lint && npm test",
     "redb": "knex migrate:rollback && knex migrate:latest && knex seed:run",
+    "migrate:latest": "knex migrate:rollback && knex migrate:latest && knex seed:run",
+    "start": "npm run build && node build/app.js",
     "start-docker": "knex migrate:rollback && knex migrate:latest && knex seed:run && npm run watch-node",
     "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register test/index.test.ts",
     "watch-node": "nodemon app.js --ignore ./test/",
