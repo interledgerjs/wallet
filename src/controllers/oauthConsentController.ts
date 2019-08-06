@@ -39,7 +39,11 @@ export async function get (req: Request, res: Response) {
 
   const originalUrlParams = new URL(consentRequest.request_url).searchParams
 
-  const agreement = JSON.parse(decodeURI(originalUrlParams.get('agreement') || ''))
+  // Get Agreement
+  const agreement = await agreements.getAgreementRequest(originalUrlParams.get('agreementId')).catch(error => {
+    console.error('Could not insert agreement into db.')
+    throw error
+  })
   const accounts = await retrieveAccountByOwner(consentRequest.subject)
 
   res.json({
@@ -52,7 +56,7 @@ export async function get (req: Request, res: Response) {
 }
 
 export async function post (req: Request, res: Response) {
-   // The challenge is now a hidden input field, so let's take it from the request body instead
+  // The challenge is now a hidden input field, so let's take it from the request body instead
   const { accept, challenge, accountId } = req.body
 
   if (!accountId) {
@@ -79,7 +83,9 @@ export async function post (req: Request, res: Response) {
   })
 
   // Get Agreement
-  const agreement = await agreements.getAgreementRequest('1').catch(error => {
+  const originalUrlParams = new URL(getConsentRequest.request_url).searchParams
+
+  const agreement = await agreements.getAgreementRequest(originalUrlParams.get('agreementId')).catch(error => {
     console.error('Could not insert agreement into db.')
     throw error
   })
@@ -98,20 +104,17 @@ export async function post (req: Request, res: Response) {
     session: {
       // This data will be available when introspecting the token. Try to avoid sensitive information here,
       // unless you limit who can introspect tokens.
-      access_token: { ilp: {
-        agreementId: agreement.id
-      } },
+      access_token: {
+        interledger: {
+          agreementId: agreement.id
+        }
+      },
 
       // This data will be available in the ID token.
       id_token: {
-        // ilp: {
-        //   'asset_code': agreement.assetCode,
-        //   'asset_scale': agreement.assetScale,
-        //   'endpoints': {
-        //     'http': process.env.CONNECTOR_HTTP_URL || 'http://localhost:3000/ilp'
-        //   },
-        //   'agreement': agreement.$formatJson()
-        // }
+        interledger: {
+          'agreement': agreement
+        }
       }
     }
   }).catch(error => {
