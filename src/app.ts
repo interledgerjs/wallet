@@ -4,6 +4,8 @@ import * as express from 'express'
 import { createAccount, createAdmin, createTransaction, createUser, deleteAccount, deleteUser, readAccounts, readAccountById, readTransactionById, readTransactions, readUserById, readUsers, token, updateAccount, updateUser } from './controllers'
 import { verifyToken, Roles } from './services'
 import { postUserInputValidator, putUserInputValidator, postAccountInputValidator, postTransactionInputValidator, putAccountInputValidator } from './services/validation'
+import { get as getOauthLogin, post as postOauthLogin } from './controllers/oauthLoginController'
+import { get as getOauthConsent, post as postOauthConsent } from './controllers/oauthConsentController'
 import * as cors from 'cors'
 
 dotenv.config()
@@ -32,6 +34,12 @@ app.delete('/users/:id', verifyToken(Roles.User), deleteUser) // id as param
 
 app.post('/admin', verifyToken(Roles.Admin), postUserInputValidator, createAdmin) // body.userName, body.password
 app.post('/token', postUserInputValidator, token) // body.userName, body.password
+
+// Oauth Login and Consent
+app.get('/oauth/login', getOauthLogin)
+app.post('/oauth/login', postOauthLogin)
+app.get('/oauth/consent', getOauthConsent)
+app.post('/oauth/consent', postOauthConsent)
 
 // payment pointers for users
 app.get('/:id', async (req, res) => {
