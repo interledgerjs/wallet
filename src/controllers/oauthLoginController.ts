@@ -37,12 +37,13 @@ export async function post (req: Request, res: Response) {
       return res.status(400)
     }
     const acceptLogin = await hydra.acceptLoginRequest(login_challenge, {
-      subject: user.id,
+      subject: user.id.toString(),
       remember: false
     })
 
     return res.json({ redirect_to: acceptLogin.redirect_to })
   } catch (error) {
+    console.log('error', error)
     console.error('Failed to log in to the wallet', { error: error.message })
     return res.status(400)
   }

@@ -41,7 +41,7 @@ export async function get (req: Request, res: Response) {
 
   // Get Agreement
   const agreement = await agreements.getAgreementRequest(originalUrlParams.get('agreementId')).catch(error => {
-    console.error('Could not insert agreement into db.')
+    console.error('Could not get agreement.', error)
     throw error
   })
   const accounts = await retrieveAccountByOwner(consentRequest.subject)
@@ -86,10 +86,12 @@ export async function post (req: Request, res: Response) {
   const originalUrlParams = new URL(getConsentRequest.request_url).searchParams
 
   const agreement = await agreements.getAgreementRequest(originalUrlParams.get('agreementId')).catch(error => {
-    console.error('Could not insert agreement into db.')
+    console.error('Could not get agreement.')
     throw error
   })
 
+  // update the agreement to record account id, userId
+  const updatedAgreement = await agreements.updateAgreement(agreement.id, { accountId, userId: getConsentRequest.subject })
   let grantScope = getConsentRequest.requested_scope
 
   if (!Array.isArray(grantScope)) {
@@ -113,7 +115,7 @@ export async function post (req: Request, res: Response) {
       // This data will be available in the ID token.
       id_token: {
         interledger: {
-          'agreement': agreement
+          'agreement': updatedAgreement
         }
       }
     }
