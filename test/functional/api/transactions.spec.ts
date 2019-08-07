@@ -4,8 +4,10 @@ import * as app from '../../../build/app'
 import * as knex from '../../../database/knex'
 import { knexSelectAll, knexInsert } from '../../../build/services/dbService'
 import * as dotenv from 'dotenv'
+import { retrieveAccountById } from '../../../src/models'
 
 dotenv.config()
+
 let adminName = 'admin'
 let adminPassword = 'admin'
 if (process.env.ADMINNAME) {
@@ -73,23 +75,54 @@ describe('.post/transactions', function () {
     process.env.DBNAME = database
   })
 
-  it('create transaction and adjust account balances if account has sufficient available balance', async () => {
+  it('creates transaction and adjusts account balances correctly', async () => {
     const data = {
       'debitAccountId': 1,
       'creditAccountId': transactionTestAccount.id,
       'amount': 100
     }
+    const debitAccountBefore = await retrieveAccountById(1)
+    const creditAccountBefore = await retrieveAccountById(transactionTestAccount.id)
+
     const response = await request(app)
                             .post('/transactions')
                             .send(data)
                             .set('Authorization', 'Bearer ' + adminToken)
     assert.equal(response.status, 200)
 
+    const debitAccountAfter = await retrieveAccountById(1)
+    const creditAccountAfter = await retrieveAccountById(transactionTestAccount.id)
+
+    assert.equal(debitAccountAfter.balance - debitAccountBefore.balance,-100)
+    assert.equal(creditAccountAfter.balance - creditAccountBefore.balance,100)
     assertFragment(response.body, {
       debitAccountId: 1,
       creditAccountId: transactionTestAccount.id,
       amount: 100
     })
+  })
+
+  it('fails transaction for non admin if balance drops below 0 for given transaction', async () => {
+    const debitAccountBefore = await retrieveAccountById(transactionTestAccount.id)
+    const creditAccountBefore = await retrieveAccountById(1)
+
+    const data = {
+      'debitAccountId': transactionTestAccount.id,
+      'creditAccountId': 1,
+      'amount': debitAccountBefore.balance + 1
+    }
+
+    const response = await request(app)
+      .post('/transactions')
+      .send(data)
+      .set('Authorization', 'Bearer ' + adminToken)
+
+    assert.equal(response.status, 400)
+    const debitAccountAfter = await retrieveAccountById(transactionTestAccount.id)
+    const creditAccountAfter = await retrieveAccountById(1)
+
+    assert.equal(debitAccountAfter.balance , debitAccountBefore.balance)
+    assert.equal(creditAccountAfter.balance, creditAccountBefore.balance)
   })
 
   it('should return HTTP 400 when called with bad data', function () {
@@ -132,16 +165,6 @@ describe('.get/transactions', function () {
       })
   })
 
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   return request(app)
-  //     .get('/transactions')
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
-
   it('should return HTTP 200 when querying by valid account', function () {
     return request(app)
       .get('/transactions/?account=1')
@@ -160,16 +183,6 @@ describe('.get/transactions', function () {
       })
   })
 
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   return request(app)
-  //     .get('/transactions/?account=1')
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
-
   it('should return HTTP 200 when querying by valid id', function () {
     return request(app)
       .get('/transactions/1')
@@ -187,14 +200,4 @@ describe('.get/transactions', function () {
         assert.equal(response.status, 404)
       })
   })
-
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   return request(app)
-  //     .get('/transactions/1')
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
 })

@@ -45,7 +45,7 @@ export async function readUsers (req: Request, res: Response) {
 
 export async function readUserById (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+  if (isAuthorized(req.app.locals.authData, parseInt(req.params.id, 10))) {
     try {
       const userById = await retrieveUserById(req.params.id)
       if (userById && !userById.deletedAt) {
@@ -139,7 +139,7 @@ export async function createAdmin (req: Request, res: Response) {
 // put /user/:id
 export async function updateUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+  if (isAuthorized(req.app.locals.authData, parseInt(req.params.id, 10))) {
     const valid = validate(req, res)
     if (!valid) {
       return
@@ -150,7 +150,7 @@ export async function updateUser (req: Request, res: Response) {
       const userExists = await retrieveUserById(req.params.id)
       if (userExists) {
          // admin access
-        if (req.authData.role === 'admin') {
+        if (req.app.locals.authData.role === 'admin') {
           const result = await modifyUserAdmin(userExists, req.body)
           if (result) {
             const returnObject = {
@@ -165,7 +165,7 @@ export async function updateUser (req: Request, res: Response) {
             res.sendStatus(400)
           }
        // user access
-        } else if (parseInt(req.params.id, 10) === req.authData.id) {
+        } else if (parseInt(req.params.id, 10) === req.app.locals.authData.id) {
           const result = await modifyUser(userExists, req.body)
           if (result) {
             const returnObject = {
@@ -193,7 +193,7 @@ export async function updateUser (req: Request, res: Response) {
 // delete /user/:id
 export async function deleteUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, parseInt(req.params.id, 10))) {
+  if (isAuthorized(req.app.locals.authData, parseInt(req.params.id, 10))) {
     try {
       const userExists = await retrieveUserById(req.params.id)
       if (userExists && !userExists.deletedAt) {

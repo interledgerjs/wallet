@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
 import { addTransaction, retrieveTransactionById, retrieveTransactions, retrieveTransactionsByAccountId, retrieveAccountById, calculateBalance } from '../models'
-import { isAuthorized } from '../services'
+import {isAuthorized, knexUpdateAccountBalance} from '../services'
 import { validate } from '../services/validation'
 
 dotenv.config()
@@ -35,13 +35,16 @@ export async function createTransaction (req: Request, res: Response) {
       res.sendStatus(400)
       return
     }
-    if (isAuthorized(req.authData, authorizedAccount.owner)) {
-      const newBalance = await calculateBalance(req.body.debitAccountId) - req.body.amount
+    if (isAuthorized(req.app.locals.authData, authorizedAccount.owner)) {
+      const { amount } = req.body
       const debitAccount = await retrieveAccountById(req.body.debitAccountId)
       const creditAccount = await retrieveAccountById(req.body.creditAccountId)
+      const newBalance = debitAccount.balance - amount
       if ((newBalance >= 0 || req.body.debitAccountId === 1) && creditAccount && debitAccount && req.body.debitAccountId !== req.body.creditAccountId) {
         const result = await addTransaction(req.body)
         if (result) {
+          await knexUpdateAccountBalance(debitAccount.id, -Math.abs(amount))
+          await knexUpdateAccountBalance(creditAccount.id, amount)
           res.send(result)
         } else {
           res.sendStatus(400)
@@ -67,7 +70,7 @@ export async function readTransactions (req: Request, res: Response) {
       case ('account'):
         const requestedAccount = await retrieveAccountById(req.query.account)
         if (requestedAccount) {
-          if (isAuthorized(req.authData, requestedAccount.owner)) {
+          if (isAuthorized(req.app.locals.authData, requestedAccount.owner)) {
             const result = await retrieveTransactionsByAccountId(req.query.account)
             res.send(result)
           } else {
@@ -78,7 +81,7 @@ export async function readTransactions (req: Request, res: Response) {
         }
         break
       default:
-        if (isAuthorized(req.authData, null)) {
+        if (isAuthorized(req.app.locals.authData, null)) {
           const allResult = await retrieveTransactions()
           res.send(allResult)
         } else {
@@ -99,7 +102,7 @@ export async function readTransactionById (req: Request, res: Response) {
     if (idResult) {
       const debitAccount = await retrieveAccountById(idResult.debitAccountId)
       const creditAccount = await retrieveAccountById(idResult.creditAccountId)
-      if (isAuthorized(req.authData, debitAccount.owner) || isAuthorized(req.authData, creditAccount.owner)) {
+      if (isAuthorized(req.app.locals.authData, debitAccount.owner) || isAuthorized(req.app.locals.authData, creditAccount.owner)) {
         res.send(idResult)
       } else {
         res.send(401)

@@ -23,7 +23,7 @@ if (process.env.LOGFILE === 'true') {
 
 export async function createAccount (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
-  if (isAuthorized(req.authData, parseInt(req.body.owner, 10))) {
+  if (isAuthorized(req.app.locals.authData, parseInt(req.body.owner, 10))) {
     const valid = validate(req, res)
     if (!valid) {
       return
@@ -53,7 +53,7 @@ export async function readAccounts (req: Request, res: Response) {
   try {
     switch (queryBy) {
       case ('owner'):
-        if (isAuthorized(req.authData, parseInt(req.query['owner'], 10))) {
+        if (isAuthorized(req.app.locals.authData, parseInt(req.query['owner'], 10))) {
           const accountsByOwner = await filterDeleted(await retrieveAccountByOwner(req.query.owner))
           if (accountsByOwner) {
             res.send(accountsByOwner)
@@ -65,7 +65,7 @@ export async function readAccounts (req: Request, res: Response) {
         }
         break
       default:
-        if (isAuthorized(req.authData, null)) {
+        if (isAuthorized(req.app.locals.authData, null)) {
           const result = await retrieveAccounts()
           if (result) {
             res.send(result)
@@ -87,7 +87,7 @@ export async function readAccountById (req: Request, res: Response) {
   try {
     const accountById = await retrieveAccountById(req.params.id)
     if (accountById && !accountById.deletedAt) {
-      if (isAuthorized(req.authData, accountById.owner)) {
+      if (isAuthorized(req.app.locals.authData, accountById.owner)) {
         res.send(accountById)
       } else {
         res.sendStatus(401)
@@ -113,7 +113,7 @@ export async function updateAccount (req: Request, res: Response) {
   try {
     const accountExists = await retrieveAccountById(req.params.id)
     if (accountExists && !accountExists.deletedAt) {
-      if (isAuthorized(req.authData, accountExists.owner)) {
+      if (isAuthorized(req.app.locals.authData, accountExists.owner)) {
         const result = await modifyAccount(accountExists, req.body)
         res.send(result)
       } else {
