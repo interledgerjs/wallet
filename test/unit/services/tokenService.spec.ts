@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import { compareHash } from '../../../build/services/tokenService'
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 const saltRounds = 3
 
 describe('tokenService', async function () {
