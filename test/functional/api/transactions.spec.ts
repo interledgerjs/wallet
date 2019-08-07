@@ -48,6 +48,12 @@ before(function () {
 
 const database = process.env.DBNAME
 
+const assertFragment = (obj: object, expected: object) => {
+  Object.keys(expected).forEach((key: string) => {
+    assert.equal(obj[key], expected[key])
+  })
+}
+
 before(async function () {
   knexInsert([{
     name: 'testAccount1',
@@ -67,22 +73,24 @@ describe('.post/transactions', function () {
     process.env.DBNAME = database
   })
 
-  it('should return HTTP 200 when called with good data', function () {
-    let data = {
+  it('create transaction and adjust account balances if account has sufficient available balance', async () => {
+    const data = {
       'debitAccountId': 1,
       'creditAccountId': transactionTestAccount.id,
       'amount': 100
     }
-    return request(app)
-      .post('/transactions')
-      .send(data)
-      .set('Authorization', 'Bearer ' + adminToken)
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
+    const response = await request(app)
+                            .post('/transactions')
+                            .send(data)
+                            .set('Authorization', 'Bearer ' + adminToken)
+    assert.equal(response.status, 200)
 
-  // data vlidation being reimplemented, please uncomment test when functioning
+    assertFragment(response.body, {
+      debitAccountId: 1,
+      creditAccountId: transactionTestAccount.id,
+      amount: 100
+    })
+  })
 
   it('should return HTTP 400 when called with bad data', function () {
     let data = {
@@ -98,22 +106,6 @@ describe('.post/transactions', function () {
         assert.equal(response.status, 400)
       })
   })
-
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   let data = {
-  //     'debitAccountId' : 1,
-  //     'creditAccountId' : transactionTestAccount.id,
-  //     'amount' : 100
-  //   }
-  //   return request(app)
-  //     .post('/transactions')
-  //     .send(data)
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
 })
 
 describe('.get/transactions', function () {
