@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from 'bcryptjs'
 import { User } from '../models'
 
 export async function compareHash (userExists: User, pssword: string): Promise<boolean> {

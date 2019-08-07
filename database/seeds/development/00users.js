@@ -1,5 +1,5 @@
 const dotenv = require('dotenv').config()
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const saltRounds = 3
 
 adminName = process.env.ADMINNAME || 'admin'
