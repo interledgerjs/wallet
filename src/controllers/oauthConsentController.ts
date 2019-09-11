@@ -108,7 +108,7 @@ export async function post (req: Request, res: Response) {
       // unless you limit who can introspect tokens.
       access_token: {
         interledger: {
-          agreementId: agreement.id
+          agreement: updatedAgreement
         }
       },
 
@@ -124,5 +124,5 @@ export async function post (req: Request, res: Response) {
     throw error
   })
 
-  res.json({ redirect_to: acceptConsentRequest.redirect_to })
+  res.json({ redirect_to:  acceptConsentRequest.redirect_to })
 }
