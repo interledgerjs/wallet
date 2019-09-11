@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import { Request, Response } from 'express'
 import { createLogger, format, transports } from 'winston'
 import { addTransaction, retrieveTransactionById, retrieveTransactions, retrieveTransactionsByAccountId, retrieveAccountById, calculateBalance } from '../models'
-import {isAuthorized, knexUpdateAccountBalance} from '../services'
+import { isAuthorized, knexUpdateAccountBalance } from '../services'
 import { validate } from '../services/validation'
 
 dotenv.config()
