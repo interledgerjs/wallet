@@ -67,3 +67,12 @@ export function knexSelectTransactionByEitherAccount (id, targetTable) {
             return result
           })
 }
+
+export function knexUpdateAccountBalance (accountId, amount) {
+  const query = knex('accounts').where('id', '=', accountId)
+  return (amount > 0 ? query.increment('balance', Math.abs(amount)) : query.decrement('balance', Math.abs(amount)))
+          .then(function (result) {
+            result = JSON.parse(JSON.stringify(result))
+            return result
+          })
+}

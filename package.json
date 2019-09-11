@@ -18,7 +18,7 @@
     "migrate:latest": "knex migrate:rollback && knex migrate:latest && knex seed:run",
     "start": "npm run build && node build/app.js",
     "start-docker": "knex migrate:rollback && knex migrate:latest && knex seed:run && npm run watch-node",
-    "test": "nyc --reporter=html --reporter=text --reporter=lcovonly mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register test/index.test.ts",
+    "test": "mocha -S --require ts-node/register --ui mocha-typescript --require source-map-support/register test/index.test.ts",
     "watch-node": "nodemon app.js --ignore ./test/",
     "watch-ts": "tsc -w",
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"npm run watch-ts\" \"npm run watch-node\""

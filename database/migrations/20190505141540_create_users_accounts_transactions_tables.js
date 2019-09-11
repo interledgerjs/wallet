@@ -11,10 +11,9 @@ exports.up = function(knex, Promise) {
     table.increments('id')
     table.string('name')
     table.integer('owner').unsigned().references('id').inTable('users')
+    table.integer('balance').defaultTo(0)
     table.timestamp('deletedAt').nullable()
     table.timestamp('lastUpdated').notNullable().defaultTo(knex.fn.now())
-
-    // table.integer('userId').references('id').inTable('users') // example of foreign key implementation
   })
   .createTable('transactions', function (table) {
     table.increments()

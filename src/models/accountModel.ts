@@ -33,16 +33,13 @@ function isAccountArray (result: any): result is Account[] {
       }
     })
   }
-  return (
-    isAccountArray || result === null
-  )
+  return isAccountArray || result === null
 }
 
 function makeDisplayAccount (account: Account): Promise<DisplayAccount> {
   return new Promise(async function (resolve, reject) {
     try {
       let displayObject: any = account
-      displayObject.balance = await calculateBalance(account.id)
       resolve(displayObject)
     } catch (error) {
       reject(error)
@@ -83,7 +80,7 @@ export async function retrieveAccountById (id: number): Promise<DisplayAccount> 
     return undefined
   }
   if (isAccount(result)) {
-    const displayAccount = makeDisplayAccount(result)
+    const displayAccount = await makeDisplayAccount(result)
     return(displayAccount)
   } else {
     throw new Error('Not an account')

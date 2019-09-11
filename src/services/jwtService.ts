@@ -26,7 +26,7 @@ export enum Roles {
   User = 'user'
 }
 
-/** @returns req.authdata object */
+/** @returns req.app.locals.authData object */
 export function verifyToken (roles: Roles) {
 
   return function (req: Request, res: Response, next: any) {
@@ -37,16 +37,15 @@ export function verifyToken (roles: Roles) {
             // pulls token out of header
       const bearer: string[] = bearerHeader.split(' ')
       const bearerToken: string = bearer[1]
-      req['token'] = bearerToken
 
-            // verifies token and returns authData
-      jwt.verify(req.token, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, tokenData: any) => {
+      // verifies token and returns authData
+      jwt.verify(bearerToken, process.env.SECRETKEY, { algorithms: ['HS256'] }, (err: Error, tokenData: any) => {
         if (err) {
           res.sendStatus(403)
         } else if (tokenData.authData.role !== roles && tokenData.authData.role !== Roles.Admin) {
           res.sendStatus(401)
         } else {
-          req.authData = tokenData.authData
+          req.app.locals.authData = tokenData.authData
           next()
         }
       })

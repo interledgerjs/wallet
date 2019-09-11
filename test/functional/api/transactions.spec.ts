@@ -4,8 +4,10 @@ import * as app from '../../../build/app'
 import * as knex from '../../../database/knex'
 import { knexSelectAll, knexInsert } from '../../../build/services/dbService'
 import * as dotenv from 'dotenv'
+import { retrieveAccountById } from '../../../src/models'
 
 dotenv.config()
+
 let adminName = 'admin'
 let adminPassword = 'admin'
 if (process.env.ADMINNAME) {
@@ -48,6 +50,12 @@ before(function () {
 
 const database = process.env.DBNAME
 
+const assertFragment = (obj: object, expected: object) => {
+  Object.keys(expected).forEach((key: string) => {
+    assert.equal(obj[key], expected[key])
+  })
+}
+
 before(async function () {
   knexInsert([{
     name: 'testAccount1',
@@ -67,22 +75,55 @@ describe('.post/transactions', function () {
     process.env.DBNAME = database
   })
 
-  it('should return HTTP 200 when called with good data', function () {
-    let data = {
+  it('creates transaction and adjusts account balances correctly', async () => {
+    const data = {
       'debitAccountId': 1,
       'creditAccountId': transactionTestAccount.id,
       'amount': 100
     }
-    return request(app)
+    const debitAccountBefore = await retrieveAccountById(1)
+    const creditAccountBefore = await retrieveAccountById(transactionTestAccount.id)
+
+    const response = await request(app)
+                            .post('/transactions')
+                            .send(data)
+                            .set('Authorization', 'Bearer ' + adminToken)
+    assert.equal(response.status, 200)
+
+    const debitAccountAfter = await retrieveAccountById(1)
+    const creditAccountAfter = await retrieveAccountById(transactionTestAccount.id)
+
+    assert.equal(debitAccountAfter.balance - debitAccountBefore.balance,-100)
+    assert.equal(creditAccountAfter.balance - creditAccountBefore.balance,100)
+    assertFragment(response.body, {
+      debitAccountId: 1,
+      creditAccountId: transactionTestAccount.id,
+      amount: 100
+    })
+  })
+
+  it('fails transaction for non admin if balance drops below 0 for given transaction', async () => {
+    const debitAccountBefore = await retrieveAccountById(transactionTestAccount.id)
+    const creditAccountBefore = await retrieveAccountById(1)
+
+    const data = {
+      'debitAccountId': transactionTestAccount.id,
+      'creditAccountId': 1,
+      'amount': debitAccountBefore.balance + 1
+    }
+
+    const response = await request(app)
       .post('/transactions')
       .send(data)
       .set('Authorization', 'Bearer ' + adminToken)
-      .then(function (response) {
-        assert.equal(response.status, 200)
-      })
-  })
 
-  // data vlidation being reimplemented, please uncomment test when functioning
+    assert.equal(response.status, 400)
+    const debitAccountAfter = await retrieveAccountById(transactionTestAccount.id)
+    const creditAccountAfter = await retrieveAccountById(1)
+
+    assert.equal(debitAccountAfter.balance , debitAccountBefore.balance)
+    assert.equal(creditAccountAfter.balance, creditAccountBefore.balance)
+  })
 
   it('should return HTTP 400 when called with bad data', function () {
     let data = {
@@ -98,22 +139,6 @@ describe('.post/transactions', function () {
         assert.equal(response.status, 400)
       })
   })
-
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   let data = {
-  //     'debitAccountId' : 1,
-  //     'creditAccountId' : transactionTestAccount.id,
-  //     'amount' : 100
-  //   }
-  //   return request(app)
-  //     .post('/transactions')
-  //     .send(data)
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
 })
 
 describe('.get/transactions', function () {
@@ -140,16 +165,6 @@ describe('.get/transactions', function () {
       })
   })
 
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   return request(app)
-  //     .get('/transactions')
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
-
   it('should return HTTP 200 when querying by valid account', function () {
     return request(app)
       .get('/transactions/?account=1')
@@ -168,16 +183,6 @@ describe('.get/transactions', function () {
       })
   })
 
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   return request(app)
-  //     .get('/transactions/?account=1')
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
-
   it('should return HTTP 200 when querying by valid id', function () {
     return request(app)
       .get('/transactions/1')
@@ -195,14 +200,4 @@ describe('.get/transactions', function () {
         assert.equal(response.status, 404)
       })
   })
-
-  // it('should return HTTP 500 when db cannot be found', function () {
-  //   process.env.DBNAME = ''
-  //   return request(app)
-  //     .get('/transactions/1')
-  //     .set('Authorization', 'Bearer ' + adminToken)
-  //     .then(function (response) {
-  //       assert.equal(response.status, 500)
-  //     })
-  // })
 })
