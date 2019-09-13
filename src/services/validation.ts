@@ -29,7 +29,8 @@ export const putAccountInputValidator = [
 export const postTransactionInputValidator = [
   check('debitAccountId').exists().isInt(),
   check('creditAccountId').exists().isInt(),
-  check('amount').exists().isInt().not().contains('-')
+  check('amount').exists().isInt().not().contains('-'),
+  check('description')
 ]
 
 export function validate (req, res) {
