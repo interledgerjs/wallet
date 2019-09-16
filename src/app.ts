@@ -12,7 +12,7 @@ export type OAuthServerMetaData = {
   // Ilp extension to meta data
   payment_intents_endpoint: string
   payment_mandates_endpoint: string
-  payment_assets_supported: string[]
+  payment_assets_supported: { code: string, scale: number }[]
   // Subset of current meta data specified in RFC8414
   issuer: string
   authorization_endpoint: string
@@ -72,8 +72,8 @@ app.get('/:id', async (req, res) => {
     authorization_endpoint: process.env.AUTHORIZATION_ENDPOINT || 'http://localhost:9000/oauth2/auth',
     token_endpoint: process.env.TOKEN_ENDPOINT || 'http://localhost:9000/oauth2/token',
     registration_endpoint: process.env.REGISTRATION_ENDPOINT || 'http://localhost:9001/clients',
-    response_types_supported:  JSON.parse(process.env.RESPONSE_TYPES_SUPPORTED || "['openid', 'offline_access']"),
-    payment_assets_supported: JSON.parse(process.env.PAYMENT_ASSETS_SUPPORTED || '[]'),
+    response_types_supported:  ['openid', 'offline_access'],
+    payment_assets_supported: [{"code": "USD", "scale": 2}],
     payment_intents_endpoint: process.env.PAYMENT_INTENTS_ENDPOINT || 'http://localhost:3001/agreements',
     payment_mandates_endpoint: process.env.PAYMENT_MANDATES_ENDPOINT || 'http://localhost:3001/agreements'
   }
