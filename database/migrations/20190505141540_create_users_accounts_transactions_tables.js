@@ -20,6 +20,7 @@ exports.up = function(knex, Promise) {
     table.integer('debitAccountId').unsigned().references('id').inTable('accounts')
     table.integer('creditAccountId').unsigned().references('id').inTable('accounts')
     table.integer('amount')
+    table.string('description')
     table.timestamp('date').notNullable().defaultTo(knex.fn.now())
   })
 };

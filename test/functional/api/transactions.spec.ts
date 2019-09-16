@@ -79,7 +79,8 @@ describe('.post/transactions', function () {
     const data = {
       'debitAccountId': 1,
       'creditAccountId': transactionTestAccount.id,
-      'amount': 100
+      'amount': 100,
+      'description': 'agreement 123'
     }
     const debitAccountBefore = await retrieveAccountById(1)
     const creditAccountBefore = await retrieveAccountById(transactionTestAccount.id)
@@ -95,10 +96,12 @@ describe('.post/transactions', function () {
 
     assert.equal(debitAccountAfter.balance - debitAccountBefore.balance,-100)
     assert.equal(creditAccountAfter.balance - creditAccountBefore.balance,100)
+    console.log(response.body)
     assertFragment(response.body, {
       debitAccountId: 1,
       creditAccountId: transactionTestAccount.id,
-      amount: 100
+      amount: 100,
+      description: 'agreement 123'
     })
   })
 
