@@ -85,7 +85,7 @@ export async function readAccounts (req: Request, res: Response) {
 export async function readAccountById (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
   try {
-    const accountById = await retrieveAccountById(parseInt(req.params.id))
+    const accountById = await retrieveAccountById(parseInt(req.params.id, 10))
     if (accountById && !accountById.deletedAt) {
       if (isAuthorized(req.app.locals.authData, accountById.owner)) {
         res.send(accountById)
@@ -111,7 +111,7 @@ export async function updateAccount (req: Request, res: Response) {
     req.body = valid
   }
   try {
-    const accountExists = await retrieveAccountById(parseInt(req.params.id))
+    const accountExists = await retrieveAccountById(parseInt(req.params.id, 10))
     if (accountExists && !accountExists.deletedAt) {
       if (isAuthorized(req.app.locals.authData, accountExists.owner)) {
         const result = await modifyAccount(accountExists, req.body)
@@ -136,10 +136,10 @@ export async function deleteAccount (req: Request, res: Response) {
     !isNaN(parseInt(req.params.id, 10))
   ) {
     try {
-      const accountExists = await retrieveAccountById(parseInt(req.params.id))
+      const accountExists = await retrieveAccountById(parseInt(req.params.id, 10))
       if (accountExists && !accountExists.deletedAt) {
         if (accountExists.balance === 0) {
-          const result = await removeAccount(parseInt(req.params.id))
+          const result = await removeAccount(parseInt(req.params.id, 10))
           if (result) {
             res.send(result)
           }

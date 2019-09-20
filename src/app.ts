@@ -25,7 +25,7 @@ export type OAuthServerMetaData = {
   grant_types_supported?: string[]
   token_endpoint_auth_methods_supported?: string[]
   service_documentation?: string
-  token_endpoint_auth_signing_alg_values_supported?:  string[]
+  token_endpoint_auth_signing_alg_values_supported?: string[]
   ui_locales_supported?: string
   op_policy_uri?: string
   op_tos_uri?: string
@@ -73,7 +73,7 @@ app.get('/:id', async (req, res) => {
     token_endpoint: process.env.TOKEN_ENDPOINT || 'http://localhost:9000/oauth2/token',
     registration_endpoint: process.env.REGISTRATION_ENDPOINT || 'http://localhost:9001/clients',
     response_types_supported:  ['openid', 'offline_access'],
-    payment_assets_supported: [{"code": "USD", "scale": 2}],
+    payment_assets_supported: [{ 'code': 'USD', 'scale': 2 }],
     payment_intents_endpoint: process.env.PAYMENT_INTENTS_ENDPOINT || 'http://localhost:3001/agreements',
     payment_mandates_endpoint: process.env.PAYMENT_MANDATES_ENDPOINT || 'http://localhost:3001/agreements'
   }

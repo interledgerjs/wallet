@@ -98,7 +98,7 @@ export async function readTransactions (req: Request, res: Response) {
 export async function readTransactionById (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   try {
-    const idResult = await retrieveTransactionById(parseInt(req.params.id))
+    const idResult = await retrieveTransactionById(parseInt(req.params.id, 10))
     if (idResult) {
       const debitAccount = await retrieveAccountById(idResult.debitAccountId)
       const creditAccount = await retrieveAccountById(idResult.creditAccountId)
