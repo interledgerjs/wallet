@@ -47,7 +47,7 @@ export async function readUserById (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, query: req.query, path: req.path, method: req.method })
   if (isAuthorized(req.app.locals.authData, parseInt(req.params.id, 10))) {
     try {
-      const userById = await retrieveUserById(req.params.id)
+      const userById = await retrieveUserById(parseInt(req.params.id, 10))
       if (userById && !userById.deletedAt) {
         const returnObject = {
           id: userById.id,
@@ -147,7 +147,7 @@ export async function updateUser (req: Request, res: Response) {
       req.body = valid
     }
     try {
-      const userExists = await retrieveUserById(req.params.id)
+      const userExists = await retrieveUserById(parseInt(req.params.id, 10))
       if (userExists) {
          // admin access
         if (req.app.locals.authData.role === 'admin') {
@@ -195,9 +195,9 @@ export async function deleteUser (req: Request, res: Response) {
   logger.info({ body: req.body, params: req.params, path: req.path, method: req.method })
   if (isAuthorized(req.app.locals.authData, parseInt(req.params.id, 10))) {
     try {
-      const userExists = await retrieveUserById(req.params.id)
+      const userExists = await retrieveUserById(parseInt(req.params.id, 10))
       if (userExists && !userExists.deletedAt) {
-        const result = await removeUser(req.params.id)
+        const result = await removeUser(parseInt(req.params.id, 10))
         if (result) {
           const returnObject = {
             id: result.id,

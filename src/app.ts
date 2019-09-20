@@ -8,6 +8,29 @@ import { get as getOauthLogin, post as postOauthLogin } from './controllers/oaut
 import { get as getOauthConsent, post as postOauthConsent } from './controllers/oauthConsentController'
 import * as cors from 'cors'
 
+export type OAuthServerMetaData = {
+  // Ilp extension to meta data
+  payment_intents_endpoint: string
+  payment_mandates_endpoint: string
+  payment_assets_supported: { code: string, scale: number }[]
+  // Subset of current meta data specified in RFC8414
+  issuer: string
+  authorization_endpoint: string
+  token_endpoint: string
+  response_types_supported: string[]
+  jwks_uri?: string
+  registration_endpoint?: string
+  scopes_supported?: string[]
+  response_modes_supported?: string[]
+  grant_types_supported?: string[]
+  token_endpoint_auth_methods_supported?: string[]
+  service_documentation?: string
+  token_endpoint_auth_signing_alg_values_supported?: string[]
+  ui_locales_supported?: string
+  op_policy_uri?: string
+  op_tos_uri?: string
+}
+
 dotenv.config()
 const app = express()
 module.exports = app
@@ -43,9 +66,19 @@ app.post('/oauth/consent', postOauthConsent)
 
 // payment pointers for users
 app.get('/:id', async (req, res) => {
-  const authUrl = process.env.HYDRA_AUTH_URL || 'http://localhost:9000/oauth2/auth'
-  res.set('Link', `<${authUrl}>; rel="authorization_endpoint"`)
-  res.sendStatus(200)
+  res.set('content-type', 'application/json')
+  const serverMetaData: OAuthServerMetaData = {
+    issuer: process.env.HOST,
+    authorization_endpoint: process.env.AUTHORIZATION_ENDPOINT || 'http://localhost:9000/oauth2/auth',
+    token_endpoint: process.env.TOKEN_ENDPOINT || 'http://localhost:9000/oauth2/token',
+    registration_endpoint: process.env.REGISTRATION_ENDPOINT || 'http://localhost:9001/clients',
+    response_types_supported:  ['openid', 'offline_access'],
+    payment_assets_supported: [{ 'code': 'USD', 'scale': 2 }],
+    payment_intents_endpoint: process.env.PAYMENT_INTENTS_ENDPOINT || 'http://localhost:3001/agreements',
+    payment_mandates_endpoint: process.env.PAYMENT_MANDATES_ENDPOINT || 'http://localhost:3001/agreements'
+  }
+
+  res.status(200).send(serverMetaData)
 })
 
 app.all('*', (req, res) => {
