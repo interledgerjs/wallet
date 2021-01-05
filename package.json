@@ -35,7 +35,7 @@
     "@types/mysql": "^2.15.6",
     "@types/nock": "^9.3.1",
     "@types/node": "^10.14.6",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "chai-http": "^4.3.0",
     "cors": "^2.8.5",
